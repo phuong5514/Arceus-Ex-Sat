@@ -16,4 +16,13 @@ router.get("/", async (req, res) => {
     res.render("index", {title : "Student management system", students: students});
 });
 
+router.get("/view/:id", 
+    async (req, res) => {
+        const response = await fetch(`http://http://127.0.0.1:8090/api/collections/students/records/${req.params.id}`);
+        const student = await response.json();
+        student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
+        res.render("student", {title : "Student management system", student: student});
+    }
+)
+
 module.exports = router;

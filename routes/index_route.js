@@ -1,14 +1,12 @@
-const express = require('express');
+import express from 'express';
+import dayjs from 'dayjs';
+import superuserClient from '../superuser.js';
+
 const router = express.Router();
 
-// import dayjs from "dayjs";
-const dayjs = require('dayjs');
-
 router.get("/", async (req, res) => {
-    const response = await fetch('http://127.0.0.1:8090/api/collections/students/records');
-    const data = await response.json();
-    // console.log(data);
-    const students = data.items;
+    const students = await superuserClient.collection("students").getFullList();
+    
     students.forEach(student => {
         student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
     });
@@ -25,4 +23,4 @@ router.get("/view/:id",
     }
 )
 
-module.exports = router;
+export default router;

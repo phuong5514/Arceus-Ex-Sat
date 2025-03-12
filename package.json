@@ -14,5 +14,14 @@
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "nodemon": "^3.1.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phuong5514/Arceus-Ex-Sat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phuong5514/Arceus-Ex-Sat/issues"
+  },
+  "homepage": "https://github.com/phuong5514/Arceus-Ex-Sat#readme",
+  "devDependencies": {}
 }

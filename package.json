@@ -11,5 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phuong5514/Arceus-Ex-Sat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phuong5514/Arceus-Ex-Sat/issues"
+  },
+  "homepage": "https://github.com/phuong5514/Arceus-Ex-Sat#readme",
+  "devDependencies": {}
 }

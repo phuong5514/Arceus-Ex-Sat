@@ -5,7 +5,35 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1><%= message %></h1>
-    <p>This is a dynamic page using EJS.</p>
+    <table class="table">
+        <tr>
+            <th class="table_cell">Mã số sinh viên</th>
+            <th class="table_cell">Họ tên</th>
+            <th class="table_cell">Ngày sinh</th>
+            <th class="table_cell">Giới tính</th>
+            <th class="table_cell">Khoa</th>
+            <th class="table_cell">Khóa</th>
+            <th class="table_cell">Chương trình</th>
+            <th class="table_cell">Địa chỉ</th>
+            <th class="table_cell">Email</th>
+            <th class="table_cell">Số điện thoại</th>
+            <th class="table_cell">Tình trạng</th>    
+        </tr>
+        <% for (var i = 0; i < students.length; i++) { %>
+            <tr>
+                <td class="table_cell"><%= students[i].student_id %></td>
+                <td class="table_cell"><%= students[i].name %></td>
+                <td class="table_cell"><%= students[i].birthdate %></td>
+                <td class="table_cell"><%= students[i].gender %></td>
+                <td class="table_cell"><%= students[i].major %></td>
+                <td class="table_cell"><%= students[i].class_year %></td>
+                <td class="table_cell"><%= students[i].program %></td>
+                <td class="table_cell"><%= students[i].address %></td>
+                <td class="table_cell"><%= students[i].email %></td>
+                <td class="table_cell"><%= students[i].phone_number %></td>
+                <td class="table_cell"><%= students[i].status %></td>
+            </tr>
+        <% } %>
+    </table>
 </body>
 </html>

@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <div class="main_container"> 
-        <list class="header">
-            <li class="header_item clear_button">Thêm sinh viên</li>
-            <li class="header_item clear_button active">Xóa sinh viên</li>
-            <li class="header_item clear_button">Sửa thông tin sinh viên</li>
-            <li class="header_item searchbar">
-                <form action="/search" method="POST">
-                    <input type="text" name="search" class="input" placeholder="Tìm kiếm...">
-                    <button type="submit" class="button">Tìm kiếm</button>
-                </form>
-            </li>
-        </list>
 
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="javascripts/index_script.js"></script>
+</head>
+
+<body>
+    <nav>
+        <div class="flex-row">
+            <button class="flex-row-item" onclick="onAddStudentClicked()">Thêm sinh viên</button>
+            <button class="flex-row-item">Xóa sinh viên</button>
+            <button class="flex-row-item">Sửa thông tin sinh viên</button>
+            <div class="flex-row-item"></div>
+            <div class="flex-row-item">
+                <form class="flex-row" action="/search" method="POST">
+                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm...">
+                    <button class="flex-row-item" type="submit">Tìm kiếm</button>
+                </form>
+            </div>
+         </div>
+    </nav>
+
+    <div class="add">
+        <div class="flex-row">
+            <button class="save-button" onclick="onAddStudentSaved()">Lưu</button>
+            <button class="cancel-button" onclick="onAddStudentCancled()">Hủy</button>
+            <div class="flex-row-item"></div>
+        </div>
+    </div>
+    <div class="main_container">
         <table>
             <tr>
                 <th>MSSV</th>
@@ -30,30 +45,100 @@
                 <th>Địa chỉ</th>
                 <th>Email</th>
                 <th>SĐT</th>
-                <th>Tình trạng</th>    
+                <th>Tình trạng</th>
             </tr>
-            <% for (var i = 0; i < students.length; i++) { %>
+            <tr class="add">
+                <td>
+                    <input type="text" id="add-student_id" name="student_id" placeholder="MSSV">
+                </td>
+                <td>
+                    <input type="text" id="add-full_name" name="name" placeholder="Họ tên">
+                </td>
+                <td>
+                    <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
+                </td>
+                <td>
+                    <select name="gender" id="add-gender">
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="major" id="add-major">
+                        <option value="Luật">Luật</option>
+                        <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
+                        <option value="Tiếng Nhật">Tiếng Nhật</option>
+                        <option value="Tiếng Pháp">Tiếng Pháp</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" id="add-class_year" name="class_year" placeholder="Khóa">
+                </td>
+                <td>
+                    <select name="program" id="add-program">
+                        <option value="Chính quy">Chính quy</option>
+                        <option value="Chất lượng cao">Chất lượng cao</option>
+                        <option value="Tài năng">Tài năng</option>
+                        <option value="Tiên tiến">Tiên tiến</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" id="add-address" name="address" placeholder="Địa chỉ">
+                </td>
+                <td>
+                    <input type="email" id="add-email" name="email" placeholder="Email">
+                </td>
+                <td>
+                    <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT">
+                </td>
+                <td>
+                    <select name="status" id="add-status">
+                        <option value="Đang học">Đang học</option>
+                        <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                        <option value="Đã thôi học">Đã thôi học</option>
+                        <option value="Tạm dừng học">Tạm dừng học</option>
+                    </select>
+                </td>
+            </tr>
+            <% for (var i=0; i < students.length; i++) { %>
                 <tr>
-                    <td><%= students[i].student_id %></td>
-                    <td><%= students[i].name %></td>
-                    <td><%= students[i].birthdate %></td>
-                    <td><%= students[i].gender %></td>
-                    <td><%= students[i].major %></td>
-                    <td><%= students[i].class_year %></td>
-                    <td><%= students[i].program %></td>
-                    <td><%= students[i].address %></td>
-                    <td><%= students[i].email %></td>
-                    <td><%= students[i].phone_number %></td>
-                    <td><%= students[i].status %></td>
+                    <td>
+                        <%= students[i].student_id %>
+                    </td>
+                    <td>
+                        <%= students[i].name %>
+                    </td>
+                    <td>
+                        <%= students[i].birthdate %>
+                    </td>
+                    <td>
+                        <%= students[i].gender %>
+                    </td>
+                    <td>
+                        <%= students[i].major %>
+                    </td>
+                    <td>
+                        <%= students[i].class_year %>
+                    </td>
+                    <td>
+                        <%= students[i].program %>
+                    </td>
+                    <td>
+                        <%= students[i].address %>
+                    </td>
+                    <td>
+                        <%= students[i].email %>
+                    </td>
+                    <td>
+                        <%= students[i].phone_number %>
+                    </td>
+                    <td>
+                        <%= students[i].status %>
+                    </td>
                 </tr>
-            <% } %>
-               
+                <% } %>
         </table>
-
-        <footer>
-            a
-        </footer>
     </div>
-
 </body>
+
 </html>

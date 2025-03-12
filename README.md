@@ -1,2 +1,8 @@
-# ThietKePhanMem_Ex1
-chương trình quản lý danh sách sinh viên cơ bản
+# Project Name
+
+## Cấu trúc source code
+
+## Hướng dẫn cài đặt & chạy chương trình
+
+# Biên dịch (tùy theo ngôn ngữ sử dụng)
+# Chạy chương trình

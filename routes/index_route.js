@@ -32,7 +32,7 @@ router.post("/search", async (req, res) => {
     if (!query || query.trim() === "") {
         const students = await superuserClient.collection("students").getFullList();
         formatStudentData(students);
-        return res.render("index", {title : "Student management system", students: students, query: "", search_by: "student_id"});
+        return res.render("index", {title : "Student management system", students: students, query: "", search_by: search_by});
     }
 
     const regex = /^[\p{L}\p{N}\s]+$/u;

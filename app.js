@@ -1,10 +1,11 @@
-import express from 'express';
+import express, { json } from 'express';
 import path from 'path';
 import indexRoute from './routes/index_route.js';
 import { fileURLToPath } from 'url';
 
 const app = express();
 const port = 3000;
+app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

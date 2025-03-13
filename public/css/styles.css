@@ -1,9 +1,12 @@
 :root {
   --light_grey: #ddd;
-  --grey: #f2f2f2;
+  --grey: #f2f2f2af;
   --white: #fff;
+  --dark_grey: #333;
   --light_orange: #fcb69c;
   --orange: rgb(238, 120, 10);
+  --red: #f44336;
+  --dark_yellow: #9aa31d;
   --green: #04AA6D;
 
   --table_header: var(--green);
@@ -121,6 +124,36 @@ tr:nth-child(even) {
   display: none;
 }
 
-.header_button.active {
+.active {
   background-color: var(--active);
+}
+
+.reload-button {
+  display: none;
+}
+
+.message-panel {
+  display: none;
+  padding: 8px;
+  text-align: center;
+}
+
+.error{
+  color: var(--red);
+  font-weight: bold;
+}
+
+.success{
+  color: var(--green);
+  font-weight: bold;
+}
+
+.warning{
+  color: var(--dark_yellow);
+  font-weight: bold;
+}
+
+.info{
+  color: var(--dark_grey);
+  font-weight: bold;
 }

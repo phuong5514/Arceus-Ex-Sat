@@ -1,41 +1,29 @@
 mode = "view";
-const DEFAULT_MODE = "view";
-
-function toggleMode(newMode) {
-  if (mode != newMode) {
-    mode = newMode;
-  } else {
-    mode = DEFAULT_MODE;
-  }
-  toggleButtonState();
-}
 
 function onAddStudentClicked(){
-  toggleMode("add");
-  const elements = document.getElementsByClassName("add");
-  for (let i = 0; i < elements.length; i++) {
-    changeElementDisplay(elements[i], mode === "add");
-  }
+  changeToMode("add");
 }
 
 function onEditStudentClicked(){
-  toggleMode("edit");
+  changeToMode("edit");
 }
 
 function onRemoveStudentClicked(){
-  toggleMode("remove");
+  changeToMode("remove");
 }
 
-function onAddStudentSaved(){
-  mode = "view";
-  var elements = document.getElementsByClassName("add");
-  for (let i = 0; i < elements.length; i++) {
-    changeElementDisplay(elements[i], false);
-  }
+function onEditStudentClicked(){
+  changeToMode("edit");
+}
 
+function onRemoveStudentClicked(){
+  changeToMode("remove");
+}
+
+async function onAddStudentSaved(){
   var student = {
     student_id: document.getElementById("add-student_id").value,
-    full_name: document.getElementById("add-full_name").value,
+    name: document.getElementById("add-name").value,
     email: document.getElementById("add-email").value,
     phone_number: document.getElementById("add-phone_number").value,
     address: document.getElementById("add-address").value,
@@ -46,6 +34,23 @@ function onAddStudentSaved(){
     program: document.getElementById("add-program").value,
     status: document.getElementById("add-status").value
   };
+
+  const response = await fetch("/students", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(student),
+  });
+  if (response.ok){
+    const result = await response.json();
+    markDataChanged();
+    changeToMode("view");
+    setMessage("success", "Thêm sinh viên thành công!");
+  } else {
+    const result = await response.json();
+    setMessage("error", result.error);
+  }
 }
 
 function onAddStudentCancled(){
@@ -70,11 +75,10 @@ function changeElementDisplay(element, visible){
   element.style.display = visible ? visibleDisplay : "none";
 }
 
-const header_button_ids = ["header_add_student", "header_update_student", "header_remove_student"];
-
-
-function toggleButtonState() {
-  const buttons = header_button_ids.map(id => document.getElementById(id));
+function setButtonState() {
+  const buttonIds = ["add-student-btn", "edit-student-btn", "remove-student-btn"];
+  const buttons = buttonIds.map(id => document.getElementById(id));
+  buttons.forEach(button => console.log(button.id));
   switch (mode) {
     case "add":
       addState(buttons[0], "active");
@@ -105,10 +109,41 @@ function addState(element, state) {
   }
 }
 
-function toggleState(element, state) {
-  if (element.classList.contains(state)) {
-    element.classList.remove(state);
-  } else {
-    element.classList.add(state);
+function markDataChanged(){
+  dataChanged = true;
+  const reloadButton = document.querySelector(".reload-button");
+  reloadButton.style.display = "inline";
+}
+
+function setMessage(tag, messageText){
+  const message = document.getElementById("message");
+  if (messageText == ""){
+    message.style.display = "none";
+    return;
   }
+  message.style.display = "block";
+  message.classList.remove("info", "error", "warning", "success");
+  message.classList.add(tag);
+  message.innerHTML = messageText;
+}
+
+function changeToMode(newMode){
+  if (mode == newMode){
+    return;
+  }
+  if (mode != 'view'){
+    const elements = document.getElementsByClassName(mode);
+    for (let i = 0; i < elements.length; i++) {
+      changeElementDisplay(elements[i], false);
+    }
+  }
+  if (newMode != 'view'){
+    const newElements = document.getElementsByClassName(newMode);
+    for (let i = 0; i < newElements.length; i++) {
+      changeElementDisplay(newElements[i], true);
+    }
+  }
+  mode = newMode;
+  setMessage("", "");
+  setButtonState();
 }

@@ -8,7 +8,6 @@ const statusList = ["Đang học", "Đã thôi học", "Đã tốt nghiệp", "T
 const genderList = ["Nam", "Nữ"];
 const programList = ["Chính quy", "Chất lượng cao", "Tài năng", "Tiên tiến"];
 
-
     
 const router = express.Router();
 const PAGE_SIZE = 20;

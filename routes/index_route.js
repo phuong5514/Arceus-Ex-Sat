@@ -28,6 +28,13 @@ router.get("/", async (req, res) => {
 router.post("/search", async (req, res) => {  
     const query = req.body.search;
     const search_by = req.body.search_by;
+
+    if (!query || query.trim() === "") {
+        const students = await superuserClient.collection("students").getFullList();
+        formatStudentData(students);
+        return res.render("index", {title : "Student management system", students: students, query: "", search_by: "student_id"});
+    }
+
     const regex = /^[\p{L}\p{N}\s]+$/u;
 
     if (regex.test(query) === false) {

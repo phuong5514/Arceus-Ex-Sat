@@ -28,8 +28,13 @@ router.get("/", async (req, res) => {
 router.post("/search", async (req, res) => {  
     const query = req.body.search;
     const search_by = req.body.search_by;
+    const regex = /^[\p{L}\p{N}\s]+$/u;
+    // handle invalid query and sql injection
+    if (regex.test(query) === false) {
+        return res.status(400).json({ok: false, error: "Dữ liệu không hợp lệ"}) 
+    };
+
     const filter = `${search_by} ~ "${query}"`;
-    console.log(`searching for students with ${req.body.param_name}: ${query}`);
     const json = await superuserClient.collection("students").getList(
         1,
         PAGE_SIZE,
@@ -37,7 +42,6 @@ router.post("/search", async (req, res) => {
     );
     const students = json.items;
 
-    console.log(students);
     formatStudentData(students);
     res.render("index", {title : "Student management system", students: students, query: query, search_by: search_by});
 });

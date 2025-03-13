@@ -24,8 +24,10 @@
 
             <div class="flex-row-item">
                 <form class="flex-row" action="/search" method="POST">
-                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm..." value=<%= query %>>   
-                    <select class="flex-row-item" name="search_by">
+                    <!-- https://stackoverflow.com/questions/3059559/restrict-a-character-to-type-in-a-text-box -->
+                    <!-- https://stackoverflow.com/questions/150033/regular-expression-to-match-non-ascii-characters -->
+                    <input class="flex-row-item" type="text" oninput="this.value = this.value.replace(/^[^\p{L}\p{N}\s]+$/u, '')" name="search" class="input" placeholder="Tìm kiếm..." value="<%= query %>">   
+                    <select class="flex-row-item" name="search_by"">
                         <option value="student_id" <%= search_by === "student_id" ? "selected" : "" %>>MSSV</option>
                         <option value="name" <%= search_by === "name" ? "selected" : "" %>>Họ tên</option>
                     </select>    

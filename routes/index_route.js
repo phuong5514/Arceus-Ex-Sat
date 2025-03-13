@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { query } from 'express';
 import dayjs from 'dayjs';
 import superuserClient from '../superuser.js';
 
@@ -19,12 +19,13 @@ router.get("/", async (req, res) => {
     //     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
     // });
     formatStudentData(students);
-    res.render("index", {title : "Student management system", students: students});
+    res.render("index", {title : "Student management system", students: students, query: "", search_by: "student_id"});
 });
 
 router.post("/search", async (req, res) => {  
-    const filter = `${req.body.search_by} ~ "${req.body.search}"`;
     const query = req.body.search;
+    const search_by = req.body.search_by;
+    const filter = `${search_by} ~ "${query}"`;
     console.log(`searching for students with ${req.body.param_name}: ${query}`);
     const json = await superuserClient.collection("students").getList(
         1,
@@ -35,7 +36,7 @@ router.post("/search", async (req, res) => {
 
     console.log(students);
     formatStudentData(students);
-    res.render("index", {title : "Student management system", students: students});
+    res.render("index", {title : "Student management system", students: students, query: query, search_by: search_by});
 });
 
 router.get("/view/:id", 

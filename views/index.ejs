@@ -18,10 +18,10 @@
             <div class="flex-row-item"></div>
             <div class="flex-row-item">
                 <form class="flex-row" action="/search" method="POST">
-                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm...">
+                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm..." value=<%= query %>>   
                     <select class="flex-row-item" name="search_by">
-                        <option value="student_id">MSSV</option>
-                        <option value="name">Họ tên</option>
+                        <option value="student_id" <%= search_by === "student_id" ? "selected" : "" %>>MSSV</option>
+                        <option value="name" <%= search_by === "name" ? "selected" : "" %>>Họ tên</option>
                     </select>    
                     <button class="flex-row-item clear_button" type="submit">Tìm kiếm</button>
                 </form>

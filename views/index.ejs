@@ -10,150 +10,262 @@
 </head>
 
 <body>
-    <nav class=" bg-light">
+    <nav class="bg-light">
         <div class="flex-row">
             <button class="flex-row-item" id="add-student-btn" onclick="onAddStudentClicked()">Thêm sinh viên</button>
-            <button class="flex-row-item" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh viên</button>
-            <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh viên</button>
-            
+            <button class="flex-row-item" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh
+                viên</button>
+            <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
+                viên</button>
+
             <div class="flex-row-item" style="max-width: 128px;">
                 <a class="reload-button" href="/">
-                    <svg width="24px" heigh="24px" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 30 30" version="1.1" id="svg822" inkscape:version="0.92.4 (f8dce91, 2019-08-02)" sodipodi:docname="reload.svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs id="defs816"></defs> <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="17.833333" inkscape:cx="20.567048" inkscape:cy="12.77705" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="true" units="px" inkscape:window-width="1366" inkscape:window-height="713" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" showguides="false"> <inkscape:grid type="xygrid" id="grid816"></inkscape:grid> </sodipodi:namedview> <metadata id="metadata819"> <rdf:rdf> <cc:work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type> <dc:title> </dc:title> </cc:work> </rdf:rdf> </metadata> <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(0,-289.0625)"> <path style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" d="M 15 6 C 10.041282 6 6 10.04128 6 15 C 6 19.95872 10.041282 24 15 24 C 16.586491 24 18.07668 23.58246 19.373047 22.857422 L 17.888672 21.375 C 17.00816 21.772814 16.032235 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 11.12216 11.122162 8 15 8 C 18.877838 8 22 11.12216 22 15 L 19 15 L 23 20 L 27 15 L 24 15 C 24 10.04128 19.958718 6 15 6 z " id="path819" transform="translate(0,289.0625)"></path> </g> </g></svg>
+                    <svg width="24px" heigh="24px" xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:cc="http://creativecommons.org/ns#"
+                        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+                        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 30 30" version="1.1"
+                        id="svg822" inkscape:version="0.92.4 (f8dce91, 2019-08-02)" sodipodi:docname="reload.svg"
+                        fill="#000000">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <defs id="defs816"></defs>
+                            <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0"
+                                inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="17.833333"
+                                inkscape:cx="20.567048" inkscape:cy="12.77705" inkscape:document-units="px"
+                                inkscape:current-layer="layer1" showgrid="true" units="px" inkscape:window-width="1366"
+                                inkscape:window-height="713" inkscape:window-x="0" inkscape:window-y="0"
+                                inkscape:window-maximized="1" showguides="false">
+                                <inkscape:grid type="xygrid" id="grid816"></inkscape:grid>
+                            </sodipodi:namedview>
+                            <metadata id="metadata819">
+                                <rdf:rdf>
+                                    <cc:work rdf:about="">
+                                        <dc:format>image/svg+xml</dc:format>
+                                        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+                                        <dc:title> </dc:title>
+                                    </cc:work>
+                                </rdf:rdf>
+                            </metadata>
+                            <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1"
+                                transform="translate(0,-289.0625)">
+                                <path
+                                    style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+                                    d="M 15 6 C 10.041282 6 6 10.04128 6 15 C 6 19.95872 10.041282 24 15 24 C 16.586491 24 18.07668 23.58246 19.373047 22.857422 L 17.888672 21.375 C 17.00816 21.772814 16.032235 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 11.12216 11.122162 8 15 8 C 18.877838 8 22 11.12216 22 15 L 19 15 L 23 20 L 27 15 L 24 15 C 24 10.04128 19.958718 6 15 6 z "
+                                    id="path819" transform="translate(0,289.0625)"></path>
+                            </g>
+                        </g>
+                    </svg>
                 </a>
             </div>
 
             <div class="flex-row-item">
                 <form class="flex-row" action="/search" method="POST">
-                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm..." value="<%= query %>">   
+                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm..."
+                        value="<%= query %>">
                     <select class="flex-row-item" name="search_by"">
-                        <option value="student_id" <%= search_by === "student_id" ? "selected" : "" %>>MSSV</option>
-                        <option value="name" <%= search_by === "name" ? "selected" : "" %>>Họ tên</option>
-                    </select>    
+                        <option value=" student_id" <%=search_by==="student_id" ? "selected" : "" %>>MSSV</option>
+                        <option value="name" <%=search_by==="name" ? "selected" : "" %>>Họ tên</option>
+                    </select>
                     <button class="flex-row-item clear_button" type="submit">Tìm kiếm</button>
                 </form>
             </div>
-         </div>
+        </div>
         <div class="flex-row">
             <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
-            <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận xóa</button>
+            <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận
+                xóa</button>
             <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
             <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
+            <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()">Lưu</button>
+            <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
             <div id="message" class="message-panel flex-row-item"></div>
         </div>
     </nav>
-
-    
-
+    <div style="height: 80px;"></div>
     <div class="main_container">
         <table>
-            <tr class="header-row">
-                <th>MSSV</th>
-                <th>Họ tên</th>
-                <th>Ngày sinh</th>
-                <th>Giới tính</th>
-                <th>Khoa</th>
-                <th>Khóa</th>
-                <th>Chương trình</th>
-                <th>Địa chỉ</th>
-                <th>Email</th>
-                <th>SĐT</th>
-                <th>Tình trạng</th>
-            </tr>
-            <tr class="add">
-                <td>
-                    <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
-                </td>
-                <td>
-                    <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
-                </td>
-                <td>
-                    <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
-                </td>
-                <td>
-                    <select name="gender" id="add-gender">
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="major" id="add-major">
-                        <option value="Luật">Luật</option>
-                        <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
-                        <option value="Tiếng Nhật">Tiếng Nhật</option>
-                        <option value="Tiếng Pháp">Tiếng Pháp</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
-                </td>
-                <td>
-                    <select name="program" id="add-program">
-                        <option value="Chính quy">Chính quy</option>
-                        <option value="Chất lượng cao">Chất lượng cao</option>
-                        <option value="Tài năng">Tài năng</option>
-                        <option value="Tiên tiến">Tiên tiến</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" id="add-address" name="address" placeholder="Địa chỉ" size="50">
-                </td>
-                <td>
-                    <input type="email" id="add-email" name="email" placeholder="Email" size="20">
-                </td>
-                <td>
-                    <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
-                </td>
-                <td>
-                    <select name="status" id="add-status">
-                        <option value="Đang học">Đang học</option>
-                        <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
-                        <option value="Đã thôi học">Đã thôi học</option>
-                        <option value="Tạm dừng học">Tạm dừng học</option>
-                    </select>
-                </td>
-            </tr>
-            <% for (var i=0; i < students.length; i++) { %>
-                <tr class="student-row">
+            <thead>
+                <tr class="header-row">
+                    <th></th>
+                    <th>MSSV</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Khoa</th>
+                    <th>Khóa</th>
+                    <th>Chương trình</th>
+                    <th>Địa chỉ</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Tình trạng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="add editable-row">
+                    <td> </td>
                     <td>
-                        <%= students[i].student_id %>
+                        <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
                     </td>
                     <td>
-                        <%= students[i].name %>
+                        <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
                     </td>
                     <td>
-                        <%= students[i].birthdate %>
+                        <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
                     </td>
                     <td>
-                        <%= students[i].gender %>
+                        <select name="gender" id="add-gender">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
                     </td>
                     <td>
-                        <%= students[i].major %>
+                        <select name="major" id="add-major">
+                            <option value="Luật">Luật</option>
+                            <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
+                            <option value="Tiếng Nhật">Tiếng Nhật</option>
+                            <option value="Tiếng Pháp">Tiếng Pháp</option>
+                        </select>
                     </td>
                     <td>
-                        <%= students[i].class_year %>
+                        <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
                     </td>
                     <td>
-                        <%= students[i].program %>
+                        <select name="program" id="add-program">
+                            <option value="Chính quy">Chính quy</option>
+                            <option value="Chất lượng cao">Chất lượng cao</option>
+                            <option value="Tài năng">Tài năng</option>
+                            <option value="Tiên tiến">Tiên tiến</option>
+                        </select>
                     </td>
                     <td>
-                        <%= students[i].address %>
+                        <input type="text" id="add-address" name="address" placeholder="Địa chỉ" size="50">
                     </td>
                     <td>
-                        <%= students[i].email %>
+                        <input type="email" id="add-email" name="email" placeholder="Email" size="20">
                     </td>
                     <td>
-                        <%= students[i].phone_number %>
+                        <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
                     </td>
                     <td>
-                        <%= students[i].status %>
-                    </td>
-                    <td class="remove">
-                        <input type="checkbox" name="remove_student" value="<%= students[i].student_id %>">
+                        <select name="status" id="add-status">
+                            <option value="Đang học">Đang học</option>
+                            <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                            <option value="Đã thôi học">Đã thôi học</option>
+                            <option value="Tạm dừng học">Tạm dừng học</option>
+                        </select>
                     </td>
                 </tr>
-            <% } %>
+                <tr class="edit editable-row">
+                    <td> </td>
+                    <td>
+                        <input type="text" id="edit-student-id" name="student_id" placeholder="MSSV" size="9" readonly>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-name" name="name" placeholder="Họ tên" size="20">
+                    </td>
+                    <td>
+                        <input type="date" id="edit-birthdate" name="birthdate">
+                    </td>
+                    <td>
+                        <select name="gender" id="edit-gender">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="major" id="edit-major">
+                            <option value="Luật">Luật</option>
+                            <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
+                            <option value="Tiếng Nhật">Tiếng Nhật</option>
+                            <option value="Tiếng Pháp">Tiếng Pháp</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
+                    </td>
+                    <td>
+                        <select name="program" id="edit-program">
+                            <option value="Chính quy">Chính quy</option>
+                            <option value="Chất lượng cao">Chất lượng cao</option>
+                            <option value="Tài năng">Tài năng</option>
+                            <option value="Tiên tiến">Tiên tiến</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-address" name="address" placeholder="Địa chỉ" size="50">
+                    </td>
+                    <td>
+                        <input type="email" id="edit-email" name="email" placeholder="Email" size="20">
+                    </td>
+                    <td>
+                        <input type="text" id="edit-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                    </td>
+                    <td>
+                        <select name="status" id="edit-status">
+                            <option value="Đang học">Đang học</option>
+                            <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                            <option value="Đã thôi học">Đã thôi học</option>
+                            <option value="Tạm dừng học">Tạm dừng học</option>
+                        </select>
+                    </td>
+                </tr>
+                <% for (var i=0; i < students.length; i++) { %>
+                    <tr class="student-row" 
+                        data-student-id="<%= students[i].student_id %>" 
+                        onclick="onStudentRowClick(this, '<%= students[i].student_id %>')">
+                        <td>
+                            <div class="remove">
+                                <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
+                                    value="<%= students[i].student_id %>">
+                            </div>
+                            <div class="edit">
+                                <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
+                                    value="<%= students[i].student_id %>"
+                                    onchange="onEditCheckboxChange(this, '<%= students[i].student_id %>')">
+                            </div>
+                        </td>
+                        <td>
+                            <%= students[i].student_id %>
+                        </td>
+                        <td>
+                            <%= students[i].name %>
+                        </td>
+                        <td>
+                            <%= students[i].birthdate %>
+                        </td>
+                        <td>
+                            <%= students[i].gender %>
+                        </td>
+                        <td>
+                            <%= students[i].major %>
+                        </td>
+                        <td>
+                            <%= students[i].class_year %>
+                        </td>
+                        <td>
+                            <%= students[i].program %>
+                        </td>
+                        <td>
+                            <%= students[i].address %>
+                        </td>
+                        <td>
+                            <%= students[i].email %>
+                        </td>
+                        <td>
+                            <%= students[i].phone_number %>
+                        </td>
+                        <td>
+                            <%= students[i].status %>
+                        </td>
+                    </tr>
+                    <% } %>
+            </tbody>
         </table>
     </div>
+
 </body>
 
 </html>

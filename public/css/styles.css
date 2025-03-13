@@ -1,6 +1,6 @@
 :root {
   --light_grey: #ddd;
-  --grey: #f2f2f2af;
+  --grey: #f0f0f0;
   --white: #fff;
   --dark_grey: #333;
   --light_orange: #fcb69c;
@@ -30,8 +30,10 @@ body {
 }
 
 nav {
-  position: sticky;
+  position: fixed;
   top: 0;
+  width: 100%;
+  z-index: 10;
 }
 
 .flex-row {
@@ -93,15 +95,15 @@ li {
 }
 
 .main_container {
-  overflow-x: auto;
   padding: 0;
   margin: 0;
+  position: relative;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
-}
+} 
 
 th, td {
   text-align: left;
@@ -116,13 +118,23 @@ th {
   background-color: var(--green);
   color: var(--white);
   font-weight: bold;
+  position: sticky;
+  top: 78px;
 }
 
 tr:nth-child(even) {
   background-color: var(--table_row_alt);
 }
 
+tr:nth-child(odd) {
+  background-color: var(--table_row);
+}
+
 .add {
+  display: none;
+}
+
+.edit {
   display: none;
 }
 
@@ -135,9 +147,14 @@ tr:nth-child(even) {
 }
 
 .message-panel {
-  display: none;
   padding: 8px;
   text-align: center;
+  min-height: 36px;
+}
+
+.editable-row{
+  position: sticky;
+  top: 116px;
 }
 
 .error{
@@ -174,4 +191,9 @@ tr:nth-child(even) {
 
 .remove {
   display: none;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
 }

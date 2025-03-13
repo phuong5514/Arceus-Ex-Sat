@@ -104,6 +104,40 @@ router.post("/students", async (req, res) => {
     }
 });
 
+router.delete("/students", async (req, res) => {
+    const { student_ids } = req.body; // Extract student_ids array from request body
+
+    try {
+        // Validate input
+        if (!student_ids || !Array.isArray(student_ids) || student_ids.length === 0) {
+            throw new Error("Danh sách mã số sinh viên không hợp lệ hoặc rỗng");
+        }
+
+        // Delete each student by their student_id
+        const deletePromises = student_ids.map(async (student_id) => {
+            // Find the student record by student_id (assuming student_id is a field, not the record ID)
+            const students = await superuserClient.collection("students").getList(1, 1, {
+                filter: `student_id = "${student_id}"`,
+            });
+
+            if (students.items.length === 0) {
+                throw new Error(`Không tìm thấy sinh viên với MSSV: ${student_id}`);
+            }
+
+            // Delete the student record using the PocketBase record ID
+            const recordId = students.items[0].id;
+            return superuserClient.collection("students").delete(recordId);
+        });
+
+        // Wait for all deletions to complete
+        await Promise.all(deletePromises);
+
+        res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
+    } catch (error) {
+        res.status(400).json({ ok: false, error: error.message });
+    }
+});
+
 
 router.get("/view/:id", 
     async (req, res) => {

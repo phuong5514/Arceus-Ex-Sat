@@ -38,9 +38,10 @@
     
     <div class="flex-row">
         <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
+        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận xóa</button>
+        <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
         <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
-        <div id="message" class="message-panel flex-row-item"> 
-        </div>
+        <div id="message" class="message-panel flex-row-item"></div>
     </div>
 
     <div class="main_container">
@@ -111,45 +112,47 @@
                     </select>
                 </td>
             </tr>
-            <% if(students.length > 0){ %>
-                <% for (var i=0; i < students.length; i++) { %>
-                    <tr class="student-row">
-                        <td>
-                            <%= students[i].student_id %>
-                        </td>
-                        <td>
-                            <%= students[i].name %>
-                        </td>
-                        <td>
-                            <%= students[i].birthdate %>
-                        </td>
-                        <td>
-                            <%= students[i].gender %>
-                        </td>
-                        <td>
-                            <%= students[i].major %>
-                        </td>
-                        <td>
-                            <%= students[i].class_year %>
-                        </td>
-                        <td>
-                            <%= students[i].program %>
-                        </td>
-                        <td>
-                            <%= students[i].address %>
-                        </td>
-                        <td>
-                            <%= students[i].email %>
-                        </td>
-                        <td>
-                            <%= students[i].phone_number %>
-                        </td>
-                        <td>
-                            <%= students[i].status %>
-                        </td>
-                    </tr>
-                <% } %>
-            <% } else{ %>  
+            <% for (var i=0; i < students.length; i++) { %>
+                <tr class="student-row">
+                    <td>
+                        <%= students[i].student_id %>
+                    </td>
+                    <td>
+                        <%= students[i].name %>
+                    </td>
+                    <td>
+                        <%= students[i].birthdate %>
+                    </td>
+                    <td>
+                        <%= students[i].gender %>
+                    </td>
+                    <td>
+                        <%= students[i].major %>
+                    </td>
+                    <td>
+                        <%= students[i].class_year %>
+                    </td>
+                    <td>
+                        <%= students[i].program %>
+                    </td>
+                    <td>
+                        <%= students[i].address %>
+                    </td>
+                    <td>
+                        <%= students[i].email %>
+                    </td>
+                    <td>
+                        <%= students[i].phone_number %>
+                    </td>
+                    <td>
+                        <%= students[i].status %>
+                    </td>
+                    <td class="remove" style="display: none;">
+                        <input type="checkbox" name="remove_student" value="<%= students[i].student_id %>">
+                    </td>
+                </tr>
+            <% }
+            else{ %>  
                 <tr>
                     <td colspan="11" style="text-align: center;">Không có sinh viên nào</td>
                 </tr>

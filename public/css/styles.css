@@ -171,3 +171,7 @@ tr:nth-child(even) {
 .bg-light {
   background-color: var(--light_grey);
 }
+
+.remove {
+  display: none;
+}

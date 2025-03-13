@@ -1,7 +1,7 @@
 {
   "name": "arceus-ex-sat",
   "version": "1.0.0",
-  "description": "",
+  "description": "Đảm bảo node và npm đã được cài đặt trên máy tính.",
   "main": "app.js",
   "type": "module",
   "scripts": {

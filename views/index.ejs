@@ -34,9 +34,10 @@
     
     <div class="flex-row">
         <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
+        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận xóa</button>
+        <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
         <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
-        <div id="message" class="message-panel flex-row-item"> 
-        </div>
+        <div id="message" class="message-panel flex-row-item"></div>
     </div>
 
     <div class="main_container">
@@ -141,6 +142,9 @@
                     </td>
                     <td>
                         <%= students[i].status %>
+                    </td>
+                    <td class="remove" style="display: none;">
+                        <input type="checkbox" name="remove_student" value="<%= students[i].student_id %>">
                     </td>
                 </tr>
                 <% } %>

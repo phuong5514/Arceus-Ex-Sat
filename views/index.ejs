@@ -12,14 +12,14 @@
 <body>
     <nav>
         <div class="flex-row">
-            <button class="flex-row-item" onclick="onAddStudentClicked()">Thêm sinh viên</button>
-            <button class="flex-row-item">Xóa sinh viên</button>
-            <button class="flex-row-item">Sửa thông tin sinh viên</button>
+            <button class="flex-row-item clear_button header_button" id = "header_add_student" onclick="onAddStudentClicked()">Thêm sinh viên</button>
+            <button class="flex-row-item clear_button header_button" id = "header_remove_student" onclick="onRemoveStudentClicked()">Xóa sinh viên</button>
+            <button class="flex-row-item clear_button header_button" id = "header_update_student" onclick="onEditStudentClicked()">Sửa thông tin sinh viên</button>
             <div class="flex-row-item"></div>
             <div class="flex-row-item">
                 <form class="flex-row" action="/search" method="POST">
                     <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm...">
-                    <button class="flex-row-item" type="submit">Tìm kiếm</button>
+                    <button class="flex-row-item clear_button" type="submit">Tìm kiếm</button>
                 </form>
             </div>
          </div>

@@ -1,15 +1,29 @@
 mode = "view";
+const DEFAULT_MODE = "view";
+
+function toggleMode(newMode) {
+  if (mode != newMode) {
+    mode = newMode;
+  } else {
+    mode = DEFAULT_MODE;
+  }
+  toggleButtonState();
+}
 
 function onAddStudentClicked(){
-  if (mode != "add") {
-    mode = "add";
-  } else {
-    mode = "view";
-  }
+  toggleMode("add");
   const elements = document.getElementsByClassName("add");
   for (let i = 0; i < elements.length; i++) {
     changeElementDisplay(elements[i], mode === "add");
   }
+}
+
+function onEditStudentClicked(){
+  toggleMode("edit");
+}
+
+function onRemoveStudentClicked(){
+  toggleMode("remove");
 }
 
 function onAddStudentSaved(){
@@ -54,4 +68,47 @@ function changeElementDisplay(element, visible){
     visibleDisplay = "inline";
   }
   element.style.display = visible ? visibleDisplay : "none";
+}
+
+const header_button_ids = ["header_add_student", "header_update_student", "header_remove_student"];
+
+
+function toggleButtonState() {
+  const buttons = header_button_ids.map(id => document.getElementById(id));
+  switch (mode) {
+    case "add":
+      addState(buttons[0], "active");
+      buttons[1].classList.remove("active");  
+      buttons[2].classList.remove("active");
+      break;
+    case "remove":
+      addState(buttons[2], "active");
+      buttons[0].classList.remove("active");  
+      buttons[1].classList.remove("active");
+      break;
+    case "edit":
+      addState(buttons[1], "active");
+      buttons[0].classList.remove("active");
+      buttons[2].classList.remove("active");
+      break;
+    default:
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+      break;
+  }  
+}
+
+function addState(element, state) {
+  if (!element.classList.contains(state)) {
+    element.classList.add(state);
+  }
+}
+
+function toggleState(element, state) {
+  if (element.classList.contains(state)) {
+    element.classList.remove(state);
+  } else {
+    element.classList.add(state);
+  }
 }

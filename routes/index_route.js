@@ -4,13 +4,37 @@ import superuserClient from '../superuser.js';
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-    const students = await superuserClient.collection("students").getFullList();
-    
+function formatStudentData(students) {
     students.forEach(student => {
         student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
     });
+}
 
+const PAGE_SIZE = 20;
+
+router.get("/", async (req, res) => {
+    const students = await superuserClient.collection("students").getFullList();
+    console.log(students);
+    // students.forEach(student => {
+    //     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
+    // });
+    formatStudentData(students);
+    res.render("index", {title : "Student management system", students: students});
+});
+
+router.post("/search", async (req, res) => {
+    const filter = `name ~ "${req.body.search}"`;
+    const query = req.body.search;
+    console.log("searching for students with name: " + query);
+    const json = await superuserClient.collection("students").getList(
+        1,
+        PAGE_SIZE,
+        { filter }
+    );
+    const students = json.items;
+
+    console.log(students);
+    formatStudentData(students);
     res.render("index", {title : "Student management system", students: students});
 });
 

@@ -22,10 +22,10 @@ router.get("/", async (req, res) => {
     res.render("index", {title : "Student management system", students: students});
 });
 
-router.post("/search", async (req, res) => {
-    const filter = `name ~ "${req.body.search}"`;
+router.post("/search", async (req, res) => {  
+    const filter = `${req.body.search_by} ~ "${req.body.search}"`;
     const query = req.body.search;
-    console.log("searching for students with name: " + query);
+    console.log(`searching for students with ${req.body.param_name}: ${query}`);
     const json = await superuserClient.collection("students").getList(
         1,
         PAGE_SIZE,

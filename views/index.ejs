@@ -40,80 +40,81 @@
     
     <div class="flex-row">
         <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
+        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận xóa</button>
+        <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
         <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
-        <div id="message" class="message-panel flex-row-item"> 
-        </div>
+        <div id="message" class="message-panel flex-row-item"></div>
     </div>
 
     <div class="main_container">
         <table>
-            <tr>
-                <th>MSSV</th>
-                <th>Họ tên</th>
-                <th>Ngày sinh</th>
-                <th>Giới tính</th>
-                <th>Khoa</th>
-                <th>Khóa</th>
-                <th>Chương trình</th>
-                <th>Địa chỉ</th>
-                <th>Email</th>
-                <th>SĐT</th>
-                <th>Tình trạng</th>
-            </tr>
-            <tr class="add">
-                <td>
-                    <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
-                </td>
-                <td>
-                    <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
-                </td>
-                <td>
-                    <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
-                </td>
-                <td>
-                    <select name="gender" id="add-gender">
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="major" id="add-major">
-                        <option value="Luật">Luật</option>
-                        <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
-                        <option value="Tiếng Nhật">Tiếng Nhật</option>
-                        <option value="Tiếng Pháp">Tiếng Pháp</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
-                </td>
-                <td>
-                    <select name="program" id="add-program">
-                        <option value="Chính quy">Chính quy</option>
-                        <option value="Chất lượng cao">Chất lượng cao</option>
-                        <option value="Tài năng">Tài năng</option>
-                        <option value="Tiên tiến">Tiên tiến</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" id="add-address" name="address" placeholder="Địa chỉ" size="50">
-                </td>
-                <td>
-                    <input type="email" id="add-email" name="email" placeholder="Email" size="20">
-                </td>
-                <td>
-                    <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
-                </td>
-                <td>
-                    <select name="status" id="add-status">
-                        <option value="Đang học">Đang học</option>
-                        <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
-                        <option value="Đã thôi học">Đã thôi học</option>
-                        <option value="Tạm dừng học">Tạm dừng học</option>
-                    </select>
-                </td>
-            </tr>
-            <% if(students.length > 0){ %>
+            <table>
+                <tr>
+                    <th>MSSV</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Khoa</th>
+                    <th>Khóa</th>
+                    <th>Chương trình</th>
+                    <th>Địa chỉ</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Tình trạng</th>
+                </tr>
+                <tr class="add">
+                    <td>
+                        <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
+                    </td>
+                    <td>
+                        <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
+                    </td>
+                    <td>
+                        <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
+                    </td>
+                    <td>
+                        <select name="gender" id="add-gender">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="major" id="add-major">
+                            <option value="Luật">Luật</option>
+                            <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
+                            <option value="Tiếng Nhật">Tiếng Nhật</option>
+                            <option value="Tiếng Pháp">Tiếng Pháp</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
+                    </td>
+                    <td>
+                        <select name="program" id="add-program">
+                            <option value="Chính quy">Chính quy</option>
+                            <option value="Chất lượng cao">Chất lượng cao</option>
+                            <option value="Tài năng">Tài năng</option>
+                            <option value="Tiên tiến">Tiên tiến</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="add-address" name="address" placeholder="Địa chỉ" size="50">
+                    </td>
+                    <td>
+                        <input type="email" id="add-email" name="email" placeholder="Email" size="20">
+                    </td>
+                    <td>
+                        <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                    </td>
+                    <td>
+                        <select name="status" id="add-status">
+                            <option value="Đang học">Đang học</option>
+                            <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                            <option value="Đã thôi học">Đã thôi học</option>
+                            <option value="Tạm dừng học">Tạm dừng học</option>
+                        </select>
+                    </td>
+                </tr>
                 <% for (var i=0; i < students.length; i++) { %>
                     <tr class="student-row">
                         <td>
@@ -149,13 +150,11 @@
                         <td>
                             <%= students[i].status %>
                         </td>
+                        <td class="remove" style="display: none;">
+                            <input type="checkbox" name="remove_student" value="<%= students[i].student_id %>">
+                        </td>
                     </tr>
-                <% } %>
-            <% } else{ %>  
-                <tr>
-                    <td colspan="11" style="text-align: center;">Không có sinh viên nào</td>
-                </tr>
-            <% } %>
+                    <% } %>
         </table>
     </div>
 </body>

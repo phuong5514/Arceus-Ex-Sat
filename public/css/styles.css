@@ -167,3 +167,13 @@ tr:nth-child(even) {
 .student-row .selected {
   background-color: var(--light_green);
 }
+
+td.edit {
+    width: 50px;
+    text-align: center;
+}
+
+th.edit {
+    width: 50px;
+    text-align: center;
+}

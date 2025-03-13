@@ -1,13 +1,13 @@
-import e from "express";
 import superuserClient from "./superuser.js";
-import dayjs from "dayjs";
 
+superuserClient.collections.truncate("students");
+console.log("Truncated students collection successfully");
 
-const majorList = ["Kinh tế", "Tiếng Anh thương mại", "Luật", "Tiếng Nhật", "Tiếng Pháp"];
+const majorList = ["Tiếng Anh thương mại", "Luật", "Tiếng Nhật", "Tiếng Pháp"];
 const statusList = ["Đang học", "Đã thôi học", "Đã tốt nghiệp", "Tạm dừng học"];
 const genderList = ["Nam", "Nữ"];
 const programList = ["Chính quy", "Chất lượng cao", "Tài năng", "Tiên tiến"];
-const addressList = ["Hà Nội", "Vũng Tàu", "TP.Hồ Chí Minh", "Đà Nẵng", "Hải Phòng"];
+const addressList = ["Hà Nội", "Vũng Tàu", "TP.Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ", "Đồng Nai", "Bình Dương", "Bà Rịa - Vũng Tàu", "Bình Thuận"];
 
 const studentList = [
   {
@@ -57,7 +57,7 @@ const studentList = [
     address: addressList[3],
     gender: genderList[0],
     birthdate: "2003-04-04",
-    major: majorList[3],
+    major: majorList[2],
     class_year: "2025",
     program: programList[3],
     status: statusList[3]
@@ -70,7 +70,7 @@ const studentList = [
     address: addressList[4],
     gender: genderList[1],
     birthdate: "2004-05-05",
-    major: majorList[4],
+    major: majorList[3],
     class_year: "2026",
     program: programList[0],
     status: statusList[0]
@@ -122,7 +122,7 @@ const studentList = [
     address: addressList[3],
     gender: genderList[1],
     birthdate: "2008-09-09",
-    major: majorList[3],
+    major: majorList[2],
     class_year: "2030",
     program: programList[0],
     status: statusList[0]
@@ -135,7 +135,7 @@ const studentList = [
     address: addressList[4],
     gender: genderList[0],
     birthdate: "2009-10-10",
-    major: majorList[4],
+    major: majorList[3],
     class_year: "2031",
     program: programList[1],
     status: statusList[1]
@@ -187,7 +187,7 @@ const studentList = [
     address: addressList[3],
     gender: genderList[0],
     birthdate: "2013-02-14",
-    major: majorList[3],
+    major: majorList[2],
     class_year: "2035",
     program: programList[1],
     status: statusList[1]
@@ -200,7 +200,7 @@ const studentList = [
     address: addressList[4],
     gender: genderList[1],
     birthdate: "2014-03-15",
-    major: majorList[4],
+    major: majorList[3],
     class_year: "2036",
     program: programList[2],
     status: statusList[2]
@@ -217,6 +217,71 @@ const studentList = [
     class_year: "2037",
     program: programList[3],
     status: statusList[3]
+  },
+  {
+    student_id: "22120287",
+    name: "Nguyễn Thị P",
+    email: "nguyenthiep@example.com",
+    phone_number: "0901234583",
+    address: addressList[1],
+    gender: genderList[1],
+    birthdate: "2016-05-17",
+    major: majorList[1],
+    class_year: "2038",
+    program: programList[0],
+    status: statusList[0]
+  },
+  {
+    student_id: "22120288",
+    name: "Trần Văn Q",
+    email: "tranvanq@example.com",
+    phone_number: "0901234584",
+    address: addressList[2],
+    gender: genderList[0],
+    birthdate: "2017-06-18",
+    major: majorList[2],
+    class_year: "2039",
+    program: programList[1],
+    status: statusList[1]
+  },
+  {
+    student_id: "22120289",
+    name: "Lê Thị R",
+    email: "lethir@example.com",
+    phone_number: "0901234585",
+    address: addressList[3],
+    gender: genderList[1],
+    birthdate: "2018-07-19",
+    major: majorList[2],
+    class_year: "2040",
+    program: programList[2],
+    status: statusList[2]
+  },
+  {
+    student_id: "22120290",
+    name: "Phạm Văn S",
+    email: "phamvans@example.com",
+    phone_number: "0901234586",
+    address: addressList[4],
+    gender: genderList[0],
+    birthdate: "2019-08-20",
+    major: majorList[3],
+    class_year: "2041",
+    program: programList[3],
+    status: statusList[3]
+  },
+  {
+    student_id: "22120291",
+    name: "Hoàng Thị T",
+    email: "hoangthit@example.com",
+    phone_number: "0901234587",
+    address: addressList[0],
+    gender: genderList[1],
+    birthdate: "2020-09-21",
+    major: majorList[0],
+    class_year: "2042",
+    program: programList[0],
+    status: statusList[0]
   }
 ];
 

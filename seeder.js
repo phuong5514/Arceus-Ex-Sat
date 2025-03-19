@@ -10,7 +10,7 @@ await connectDB()
 
 try {
   await Student.insertMany([{
-    _id: "221020271",
+    _id: "22120271",
     name: "Hồng Phúc",
     birthdate: "2004-11-08",
     gender: "Nam",
@@ -23,7 +23,7 @@ try {
     major: "TATM"
   },
   {
-    _id: "221020287",
+    _id: "22120287",
     name: "Manh Phương",
     birthdate: "2004-01-01",
     gender: "Nam",
@@ -42,14 +42,14 @@ try {
 
 try{
   await IdentityCard.insertMany([{
-    _id: "221020271",
+    _id: "22120271",
     issue_date: "2021-11-08",
     expiry_date: "2026-11-08",
     issue_location: "TP HCM",
     is_digitized: true
   },
   {
-    _id: "221020287",
+    _id: "22120287",
     issue_date: "2021-01-01",
     expiry_date: "2026-01-01",
     issue_location: "TP HCM",
@@ -62,7 +62,7 @@ try{
 
 try {
   await Passport.insertMany([{
-    _id: "221020271",
+    _id: "22120271",
     type: "Passport",
     country_code: "VN",
     passport_number: "123456789",
@@ -71,7 +71,7 @@ try {
     issue_location: "TP HCM"
   },
   {
-    _id: "221020287",
+    _id: "22120287",
     type: "Passport",
     country_code: "VN",
     passport_number: "987654321",

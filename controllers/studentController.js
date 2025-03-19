@@ -6,6 +6,7 @@ import { populate } from "dotenv";
 import Program from "../models/programModel.js";
 import Status from "../models/statusModel.js";
 import formatStudentsData from "../helpers/studentDataFormatter.js";
+import { paginate } from "mongoose-paginate-v2";
 
 export const getAllStudents = async (req, res) => {
   try {
@@ -210,6 +211,10 @@ export const deleteStudents = async (req, res) => {
 
 export const searchStudents = async (req, res) => {
   try {
+    const searchTerm = req.query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
+
+    let query = {_id : searchTerm};
+
     const options = {
       pagination: false,
       page: 1,
@@ -222,28 +227,8 @@ export const searchStudents = async (req, res) => {
         "status"
       ]
     }
-    console.log("Params: ", res.params);
-    const query = res.params.search
-    const search_by = res.params.search_by
-    // const query = req.body.search;
-    // const search_by = req.body.search_by;
 
-    console.log("Query: ", query);
-    console.log("Search by: ", search_by);
-    if (!query || query.trim() === "") {
-      getAllStudents(req, res);
-      // const results = await Student.paginate({}, options);
-      // // format students data
-      // formatStudentsData(results.docs);
-      // const majors = await Major.find().lean();
-      // const status = await Status.find().lean();
-      // const programs = await Program.find().lean();
-      // return res.render("index", { title: "Student management system", results, majors, status, programs, query: "", search_by: "student_id" });
-    }
-
-
-    // const results = await Student.paginate({}, options);
-    const results = await Student.paginate({ [search_by]: { $regex: query, $options: "i" } },options);
+    const results = await Student.paginate(query, options);
     // format students data
     formatStudentsData(results.docs);
     const majors = await Major.find().lean();

@@ -1,8 +1,9 @@
 import express, { json } from 'express';
 import path from 'path';
-import indexRoute from './routes/index_route.js';
+import indexRoute from './routes/indexRoute.js';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
+import "./models/index.js";
 
 const app = express();
 const port = 3000;

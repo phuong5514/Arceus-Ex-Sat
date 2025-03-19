@@ -123,10 +123,9 @@
                     </td>
                     <td>
                         <select name="major" id="add-major">
-                            <option value="Luật">Luật</option>
-                            <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
-                            <option value="Tiếng Nhật">Tiếng Nhật</option>
-                            <option value="Tiếng Pháp">Tiếng Pháp</option>
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
+                            <% } %>
                         </select>
                     </td>
                     <td>
@@ -134,10 +133,9 @@
                     </td>
                     <td>
                         <select name="program" id="add-program">
-                            <option value="Chính quy">Chính quy</option>
-                            <option value="Chất lượng cao">Chất lượng cao</option>
-                            <option value="Tài năng">Tài năng</option>
-                            <option value="Tiên tiến">Tiên tiến</option>
+                            <% for (var i = 0; i < programs.length; i++) { %>
+                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
+                            <% } %>
                         </select>
                     </td>
                     <td>
@@ -151,10 +149,9 @@
                     </td>
                     <td>
                         <select name="status" id="add-status">
-                            <option value="Đang học">Đang học</option>
-                            <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
-                            <option value="Đã thôi học">Đã thôi học</option>
-                            <option value="Tạm dừng học">Tạm dừng học</option>
+                            <% for (var i = 0; i < status.length; i++) { %>
+                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
+                            <% } %>
                         </select>
                     </td>
                 </tr>
@@ -177,10 +174,9 @@
                     </td>
                     <td>
                         <select name="major" id="edit-major">
-                            <option value="Luật">Luật</option>
-                            <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
-                            <option value="Tiếng Nhật">Tiếng Nhật</option>
-                            <option value="Tiếng Pháp">Tiếng Pháp</option>
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
+                            <% } %>
                         </select>
                     </td>
                     <td>
@@ -188,10 +184,9 @@
                     </td>
                     <td>
                         <select name="program" id="edit-program">
-                            <option value="Chính quy">Chính quy</option>
-                            <option value="Chất lượng cao">Chất lượng cao</option>
-                            <option value="Tài năng">Tài năng</option>
-                            <option value="Tiên tiến">Tiên tiến</option>
+                            <% for (var i = 0; i < programs.length; i++) { %>
+                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
+                            <% } %>
                         </select>
                     </td>
                     <td>
@@ -205,70 +200,68 @@
                     </td>
                     <td>
                         <select name="status" id="edit-status">
-                            <option value="Đang học">Đang học</option>
-                            <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
-                            <option value="Đã thôi học">Đã thôi học</option>
-                            <option value="Tạm dừng học">Tạm dừng học</option>
+                            <% for (var i = 0; i < status.length; i++) { %>
+                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
+                            <% } %>
                         </select>
                     </td>
                 </tr>
-                <% for (var i=0; i < students.length; i++) { %>
+                <% for (var i=0; i < results.docs.length; i++) { %>
                     <tr class="student-row" 
-                        data-student-id="<%= students[i].student_id %>" 
-                        onclick="onStudentRowClick(this, '<%= students[i].student_id %>')">
+                        data-student-id="<%= results.docs[i]._id %>" 
+                        onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
                         <td>
                             <div class="remove">
                                 <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
-                                    value="<%= students[i].student_id %>">
+                                    value="<%= results.docs[i]._id %>">
                             </div>
                             <div class="edit">
                                 <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
-                                    value="<%= students[i].student_id %>"
-                                    onchange="onEditCheckboxChange(this, '<%= students[i].student_id %>')">
+                                    value="<%= results.docs[i]._id %>"
+                                    onchange="onEditCheckboxChange(this, '<%= results.docs[i]._id %>')">
                             </div>
                         </td>
                         <td>
-                            <%= students[i].student_id || students[i]._id %>
+                            <%= results.docs[i]._id %>
                         </td>
                         <td>
-                            <%= students[i].name %>
+                            <%= results.docs[i].name %>
                         </td>
                         <td>
-                            <%= students[i].birthdate %>
+                            <%= results.docs[i].birthdate %>
                         </td>
                         <td>
-                            <%= students[i].gender %>
+                            <%= results.docs[i].gender %>
+                        </td>
+                        <td name="<%=results.docs[i].major._id%>">
+                            <%= results.docs[i].major.major_name %>
                         </td>
                         <td>
-                            <%= students[i].major %>
+                            <%= results.docs[i].class_year %>
+                        </td>
+                        <td name="<%=results.docs[i].program._id%>">
+                            <%= results.docs[i].program.program_name %>
                         </td>
                         <td>
-                            <%= students[i].class_year %>
+                            <%= results.docs[i].address %>
+                        </td>c
+                        <td>
+                            <%= results.docs[i].email %>
                         </td>
                         <td>
-                            <%= students[i].program %>
+                            <%= results.docs[i].phone_number %>
                         </td>
-                        <td>
-                            <%= students[i].address %>
-                        </td>
-                        <td>
-                            <%= students[i].email %>
-                        </td>
-                        <td>
-                            <%= students[i].phone_number %>
-                        </td>
-                        <td>
-                            <%= students[i].status %>
+                        <td name="<%=results.docs[i].status._id%>">
+                            <%= results.docs[i].status.status_name %>
                         </td>
                     </tr>
                     <% } %>
             </tbody>
         </table>
-        <% if (students.length == 0) { %>
+        <% if (results.docs.length == 0) { %>
             <div class="empty-table">(Không có sinh viên)</div>
             <% } %>
     </div>
 
 </body>
-
 </html>

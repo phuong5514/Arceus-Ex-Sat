@@ -46,20 +46,19 @@ function onEditCheckboxChange(checkbox, studentId) {
         const birthdate = cells[3].textContent.trim();
         if (birthdate && birthdate !== 'Invalid Date') {
             const [day, month, year] = birthdate.split('/');
-            console.log(JSON.stringify(cells, null, 2));
             document.getElementById("edit-birthdate").value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         } else {
             document.getElementById("edit-birthdate").value = '';
         }
         
         document.getElementById("edit-gender").value = cells[4].textContent.trim();
-        document.getElementById("edit-major").value = cells[5].textContent.trim();
+        document.getElementById("edit-major").value = cells[5].getAttribute("name");
         document.getElementById("edit-class_year").value = cells[6].textContent.trim();
-        document.getElementById("edit-program").value = cells[7].textContent.trim();
+        document.getElementById("edit-program").value = cells[7].getAttribute("name");
         document.getElementById("edit-address").value = cells[8].textContent.trim();
         document.getElementById("edit-email").value = cells[9].textContent.trim();
         document.getElementById("edit-phone_number").value = cells[10].textContent.trim();
-        document.getElementById("edit-status").value = cells[11].textContent.trim();
+        document.getElementById("edit-status").value = cells[11].getAttribute("name");;
 
         setMessage("info", "Đang chỉnh sửa thông tin sinh viên: " + studentId);
     } else {
@@ -93,7 +92,7 @@ async function onEditStudentSaved() {
     }
 
     var student = {
-        student_id: document.getElementById("edit-student-id").value,
+        _id: document.getElementById("edit-student-id").value,
         name: document.getElementById("edit-name").value,
         email: document.getElementById("edit-email").value,
         phone_number: document.getElementById("edit-phone_number").value,
@@ -138,7 +137,7 @@ async function onEditStudentSaved() {
 
 async function onAddStudentSaved() {
     var student = {
-        student_id: document.getElementById("add-student_id").value,
+        _id: document.getElementById("add-student_id").value,
         name: document.getElementById("add-name").value,
         email: document.getElementById("add-email").value,
         phone_number: document.getElementById("add-phone_number").value,

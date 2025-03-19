@@ -5,6 +5,6 @@ const MajorSchema = mongoose.Schema({
   major_name : String
 });
 
-const Major = mongoose.model("Major", MajorSchema);
+const Major = mongoose.model("Major", MajorSchema, "majors");
 
 export default Major;

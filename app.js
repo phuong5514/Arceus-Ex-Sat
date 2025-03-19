@@ -2,6 +2,7 @@ import express, { json } from 'express';
 import path from 'path';
 import indexRoute from './routes/index_route.js';
 import { fileURLToPath } from 'url';
+import connectDB from './config/db.js';
 
 const app = express();
 const port = 3000;
@@ -16,6 +17,8 @@ app.use('/', indexRoute);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+await connectDB();
+
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`)
+  console.log(`Server running on http://localhost:${port}`);
 });

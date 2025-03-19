@@ -1,14 +1,13 @@
 import express, { query } from 'express';
 import dayjs from 'dayjs';
 import superuserClient from '../superuser.js';
-
+import { getAllStudents } from '../controllers/studentController.js';
 
 const majorList = ["Kinh tế", "Tiếng Anh thương mại", "Luật", "Tiếng Nhật", "Tiếng Pháp"];
 const statusList = ["Đang học", "Đã thôi học", "Đã tốt nghiệp", "Tạm dừng học"];
 const genderList = ["Nam", "Nữ"];
 const programList = ["Chính quy", "Chất lượng cao", "Tài năng", "Tiên tiến"];
 
-    
 const router = express.Router();
 const PAGE_SIZE = 20;
 
@@ -18,11 +17,7 @@ function formatStudentData(students) {
     });
 }
 
-router.get("/", async (req, res) => {
-    const students = await superuserClient.collection("students").getFullList();
-    formatStudentData(students);
-    res.render("index", {title : "Student management system", students: students, query: "", search_by: "student_id"});
-});
+router.get("/", getAllStudents);
 
 router.post("/search", async (req, res) => {  
     const query = req.body.search;

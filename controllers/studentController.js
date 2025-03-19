@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { populate } from "dotenv";
 import Program from "../models/programModel.js";
 import Status from "../models/statusModel.js";
+import formatStudentsData from "../helpers/studentDataFormatter.js";
 
 export const getAllStudents = async (req, res) => {
   try {
@@ -204,5 +205,52 @@ export const deleteStudents = async (req, res) => {
     res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message });
+  }
+}
+
+export const searchStudents = async (req, res) => {
+  try {
+    const options = {
+      pagination: false,
+      page: 1,
+      limit: 100,
+      sort: "_id",
+      lean: true, // convert to POJO
+      populate: [// reference other collections
+        "major",
+        "program",
+        "status"
+      ]
+    }
+    console.log("Params: ", res.params);
+    const query = res.params.search
+    const search_by = res.params.search_by
+    // const query = req.body.search;
+    // const search_by = req.body.search_by;
+
+    console.log("Query: ", query);
+    console.log("Search by: ", search_by);
+    if (!query || query.trim() === "") {
+      getAllStudents(req, res);
+      // const results = await Student.paginate({}, options);
+      // // format students data
+      // formatStudentsData(results.docs);
+      // const majors = await Major.find().lean();
+      // const status = await Status.find().lean();
+      // const programs = await Program.find().lean();
+      // return res.render("index", { title: "Student management system", results, majors, status, programs, query: "", search_by: "student_id" });
+    }
+
+
+    // const results = await Student.paginate({}, options);
+    const results = await Student.paginate({ [search_by]: { $regex: query, $options: "i" } },options);
+    // format students data
+    formatStudentsData(results.docs);
+    const majors = await Major.find().lean();
+    const status = await Status.find().lean();
+    const programs = await Program.find().lean();
+    res.render("index", { title: "Student management system", results, majors, status, programs, query: "", search_by: "student_id" });
+  } catch (error) {
+    console.error("Error getting students: ", error.message);
   }
 }

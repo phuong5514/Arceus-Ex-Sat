@@ -13,11 +13,15 @@ const StudentSchema = mongoose.Schema({
   email: String,
   phone_number: String,
   status: { type: String, ref: "Status" },
-  major: { type: String, ref: "Major" }
+  major: { type: String, ref: "Major" },
+  permanent_address: {type: String, ref: "Address"},
+  temporary_address: {type: String, ref: "Address"},
+  mailing_address: {type: String, ref: "Address"},
+  nationality: String
 });
 
 StudentSchema.plugin(paginate);
-StudentSchema.plugin(aggregatePaginate)
+StudentSchema.plugin(aggregatePaginate);
 
 const Student = mongoose.model("Student", StudentSchema, "students");
 

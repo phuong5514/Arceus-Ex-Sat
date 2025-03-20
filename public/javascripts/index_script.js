@@ -1,6 +1,8 @@
 let mode = "view";
 let dataChanged = false;
 let selectedRow = null;
+let currentEditAddressDiv = null;
+let selectedStudentId = null;
 
 function onAddStudentClicked() {
     changeToMode("add");
@@ -41,7 +43,8 @@ function onEditCheckboxChange(checkbox, studentId) {
         // first cell for marking
         
         document.getElementById("edit-student-id").value = cells[1].textContent.trim();
-        document.getElementById("edit-name").value = cells[2].textContent.trim();
+        const studentName = cells[2].textContent.trim();
+        document.getElementById("edit-name").value = studentName;
         
         const birthdate = cells[3].textContent.trim();
         if (birthdate && birthdate !== 'Invalid Date') {
@@ -55,12 +58,16 @@ function onEditCheckboxChange(checkbox, studentId) {
         document.getElementById("edit-major").value = cells[5].getAttribute("name");
         document.getElementById("edit-class_year").value = cells[6].textContent.trim();
         document.getElementById("edit-program").value = cells[7].getAttribute("name");
-        document.getElementById("edit-address").value = cells[8].textContent.trim();
-        document.getElementById("edit-email").value = cells[9].textContent.trim();
-        document.getElementById("edit-phone_number").value = cells[10].textContent.trim();
-        document.getElementById("edit-status").value = cells[11].getAttribute("name");;
 
-        setMessage("info", "Đang chỉnh sửa thông tin sinh viên: " + studentId);
+        applyAddressEdit(getAddressFromAddressDiv(cells[8].querySelector("div")), document.getElementById("edit-address_permanent"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[9].querySelector("div")), document.getElementById("edit-address_temporary"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[10].querySelector("div")), document.getElementById("edit-address_mailing"));
+
+        document.getElementById("edit-email").value = cells[11].textContent.trim();
+        document.getElementById("edit-phone_number").value = cells[12].textContent.trim();
+        document.getElementById("edit-status").value = cells[13].getAttribute("name");
+
+        setMessage("info", `Đang chỉnh sửa thông tin sinh viên: ${studentId}, ${studentName}, ${birthdate}`);
     } else {
         selectedRow = null;
         selectedStudentId = null;
@@ -73,7 +80,7 @@ function onEditCheckboxChange(checkbox, studentId) {
         document.getElementById("edit-major").value = "";
         document.getElementById("edit-class_year").value = "";
         document.getElementById("edit-program").value = "";
-        document.getElementById("edit-address").value = "";
+        //document.getElementById("edit-address").value = "";
         document.getElementById("edit-email").value = "";
         document.getElementById("edit-phone_number").value = "";
         document.getElementById("edit-status").value = "";
@@ -91,19 +98,27 @@ async function onEditStudentSaved() {
         return;
     }
 
-    var student = {
+    const student = {
         _id: document.getElementById("edit-student-id").value,
         name: document.getElementById("edit-name").value,
         email: document.getElementById("edit-email").value,
         phone_number: document.getElementById("edit-phone_number").value,
-        address: document.getElementById("edit-address").value,
+        address: "",
         gender: document.getElementById("edit-gender").value,
         birthdate: document.getElementById("edit-birthdate").value,
         major: document.getElementById("edit-major").value,
         class_year: document.getElementById("edit-class_year").value,
         program: document.getElementById("edit-program").value,
-        status: document.getElementById("edit-status").value
+        status: document.getElementById("edit-status").value,
+        nationality: "Việt Nam",
+        permanent_address: null,
+        temporary_address: null,
+        mailing_address: null
     };
+
+    student.permanent_address = getAddressFromAddressDiv(document.getElementById("edit-address_permanent"));
+    student.temporary_address = getAddressFromAddressDiv(document.getElementById("edit-address_temporary"));
+    student.mailing_address = getAddressFromAddressDiv(document.getElementById("edit-address_mailing"));
 
     try {
         const response = await fetch(`/students/${selectedStudentId}`, {
@@ -141,14 +156,21 @@ async function onAddStudentSaved() {
         name: document.getElementById("add-name").value,
         email: document.getElementById("add-email").value,
         phone_number: document.getElementById("add-phone_number").value,
-        address: document.getElementById("add-address").value,
+        address: "",
         gender: document.getElementById("add-gender").value,
         birthdate: document.getElementById("add-birthdate").value,
         major: document.getElementById("add-major").value,
         class_year: document.getElementById("add-class_year").value,
         program: document.getElementById("add-program").value,
-        status: document.getElementById("add-status").value
+        status: document.getElementById("add-status").value,
+        permanent_address: null,
+        temporary_address: null,
+        mailing_address: null,
     };
+
+    student.permanent_address = getAddressFromAddressDiv(document.getElementById("add-permanent_address"));
+    student.temporary_address = getAddressFromAddressDiv(document.getElementById("add-temporary_address"));
+    student.mailing_address = getAddressFromAddressDiv(document.getElementById("add-mailing_address"));
 
     const response = await fetch("/students", {
         method: "POST",
@@ -292,4 +314,78 @@ function changeToMode(newMode) {
     mode = newMode;
     setMessage("", "");
     setButtonState();
+}
+
+function onAddressEditClicked(button) {
+    const addressDialog = document.getElementById("address-dialog");
+    addressDialog.showModal();
+    currentEditAddressDiv = button.closest(".address-cell");
+    if (!currentEditAddressDiv) return;
+
+    const addressData = getAddressFromAddressDiv(currentEditAddressDiv);
+    console.log(addressData);
+
+    document.getElementById("address-house_number").value = addressData.house_number;
+    document.getElementById("address-street").value = addressData.street;
+    document.getElementById("address-ward").value = addressData.ward;
+    document.getElementById("address-district").value = addressData.district;
+    document.getElementById("address-city").value = addressData.city;
+    document.getElementById("address-country").value = addressData.country;
+    document.getElementById("address-postal_code").value = addressData.postal_code;
+}
+
+function onAddressDialogSubmitted(event) {
+    event.preventDefault();
+
+    if (!currentEditAddressDiv) return;
+
+    const houseNumber = document.getElementById("address-house_number").value;
+    const street = document.getElementById("address-street").value;
+    const ward = document.getElementById("address-ward").value;
+    const district = document.getElementById("address-district").value;
+    const city = document.getElementById("address-city").value;
+    const country = document.getElementById("address-country").value;
+    const postalCode = document.getElementById("address-postal_code").value;
+
+    applyAddressEdit({
+        house_number : houseNumber,
+        street,
+        ward,
+        district,
+        city,
+        country,
+        postal_code : postalCode
+    }, currentEditAddressDiv);
+
+    const addressDialog = document.getElementById("address-dialog");
+    addressDialog.close();
+
+    currentEditAddressDiv = null;
+}
+
+function applyAddressEdit(addressData, addressCell) {
+    addressCell.querySelector("input[name='house_number']").value = addressData.house_number;
+    addressCell.querySelector("input[name='street']").value = addressData.street;
+    addressCell.querySelector("input[name='ward']").value = addressData.ward;
+    addressCell.querySelector("input[name='district']").value = addressData.district;
+    addressCell.querySelector("input[name='city']").value = addressData.city;
+    addressCell.querySelector("input[name='country']").value = addressData.country;
+    addressCell.querySelector("input[name='postal_code']").value = addressData.postal_code;
+    
+    const addressArray = Object.values(addressData).filter(value => value);
+    const displayAddress = addressArray.join(", ");
+    
+    addressCell.querySelector(".address-text").value = displayAddress;
+}
+
+function getAddressFromAddressDiv(addressDiv){
+    return {
+        house_number: addressDiv.querySelector("input[name='house_number']").value,
+        street: addressDiv.querySelector("input[name='street']").value,
+        ward: addressDiv.querySelector("input[name='ward']").value,
+        district: addressDiv.querySelector("input[name='district']").value,
+        city: addressDiv.querySelector("input[name='city']").value,
+        country: addressDiv.querySelector("input[name='country']").value,
+        postal_code: addressDiv.querySelector("input[name='postal_code']").value
+    }
 }

@@ -5,39 +5,45 @@ import Major from "./models/majorModel.js";
 import IdentityCard from "./models/identityCardModel.js";
 import Program from "./models/programModel.js";
 import Status from "./models/statusModel.js";
+import Address from "./models/addressModel.js";
 
 await connectDB();
 
-try {
-  Student.deleteMany({});
-} catch (error) {
-  console.error("Unabled to truncate students collection");
-}
-try {
-  IdentityCard.deleteMany({});
-} catch (error) {
-  console.error("Unabled to truncate identity cards collection");
-}
-try {
-  Passport.deleteMany({});
-} catch (error) {
-  console.error("Unabled to truncate passports collection");
-}
-try {
-  Major.deleteMany({});
-} catch (error) {
-  console.error("Unabled to truncate majors collection");
-}
-try {
-  Program.deleteMany({});
-} catch (error) {
-  console.error("Unabled to truncate programs collection");
-}
-try {
-  Status.deleteMany({});
-} catch (error) {
-  console.error("Unabled to truncate status collection");
-}
+// try {
+//   Student.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate students collection");
+// }
+// try {
+//   IdentityCard.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate identity cards collection");
+// }
+// try {
+//   Passport.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate passports collection");
+// }
+// try {
+//   Major.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate majors collection");
+// }
+// try {
+//   Program.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate programs collection");
+// }
+// try {
+//   Status.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate status collection");
+// }
+// try {
+//   Address.deleteMany({});
+// } catch (error) {
+//   console.error("Unabled to truncate addresses collection");
+// }
 
 try {
   await Student.insertMany([{
@@ -51,11 +57,15 @@ try {
     email: "phuc21744@gmail.com",
     phone_number: "0325740149",
     status: "TTDH",
-    major: "TATM"
+    major: "TATM",
+    nationality: "Việt Nam",
+    permanent_address: "",
+    temporary_address: "",
+    mailing_address: ""
   },
   {
     _id: "22120287",
-    name: "Manh Phương",
+    name: "Mạnh Phương",
     birthdate: "2004-01-01",
     gender: "Nam",
     class_year: "2022",
@@ -64,7 +74,11 @@ try {
     email: "manhphuong1234@gmail.com",
     phone_number: "0123456789",
     status: "TTDH",
-    major: "LUAT"
+    major: "LUAT",
+    nationality: "Việt Nam",
+    permanent_address: "",
+    temporary_address: "",
+    mailing_address: ""
   }
   ])
 } catch (error) {
@@ -179,6 +193,64 @@ try {
   ])
 } catch (error) {
   console.error("Unabled to seed status");
+}
+try {
+  await Address.insertMany([{
+    house_number: "123",
+    street: "Nguyễn Văn Cừ",
+    ward: "Phường 1",
+    district: "Quận 5",
+    city: "TP HCM",
+    country: "Việt Nam",
+    postal_code: "700000",
+  },
+  {
+    house_number: "456",
+    street: "Nguyễn Trãi",
+    ward: "Phường 2",
+    district: "Quận 5",
+    city: "TP HCM",
+    country: "Việt Nam",
+    postal_code: "700000",
+  },
+  {
+    house_number: "789",
+    street: "Lê Lợi",
+    ward: "Phường 3",
+    district: "Quận 1",
+    city: "TP HCM",
+    country: "Việt Nam",
+    postal_code: "700000",
+  },
+  {
+    house_number: "101",
+    street: "Trần Hưng Đạo",
+    ward: "Phường 4",
+    district: "Quận 1",
+    city: "TP HCM",
+    country: "Việt Nam",
+    postal_code: "700000",
+  },
+  {
+    house_number: "202",
+    street: "Hai Bà Trưng",
+    ward: "Phường 5",
+    district: "Quận 3",
+    city: "TP HCM",
+    country: "Việt Nam",
+    postal_code: "700000",
+  },
+  {
+    house_number: "303",
+    street: "Điện Biên Phủ",
+    ward: "Phường 6",
+    district: "Quận 3",
+    city: "TP HCM",
+    country: "Việt Nam",
+    postal_code: "700000",
+  }]);
+} catch (error) {
+  console.error("Unabled to seed addresses");
 }
 
 

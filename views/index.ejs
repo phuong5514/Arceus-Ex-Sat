@@ -103,36 +103,68 @@
     
     <dialog id="address-dialog">
         <form method="dialog" class="address-dialog-container" onsubmit="onAddressDialogSubmitted(event)">
-            <div class="address-dialog-header"> Nhập địa chỉ: </div>
+            <div class="address-dialog-header"> Thông tin địa chỉ: </div>
             <div class="flex-column">
                 <label for="address-house_number">Số nhà: </label>
                 <input type="text" id="address-house_number" name="house_number" placeholder="Số nhà" size="20">
             </div>
-            <div class="flex-column">
+            <div class="flex-column gap-8">
                 <label for="address-street"> Đường: </label>
                 <input type="text" id="address-street" name="street" placeholder="Đường" size="20">
             </div>
-            <div class="flex-column">
+            <div class="flex-column gap-8">
                 <label for="address-ward"> Phường/Xã: </label>
                 <input type="text" id="address-ward" name="ward" placeholder="Phường/Xã" size="20">
             </div>
-            <div class="flex-column">
+            <div class="flex-column gap-8">
                 <label for="address-district"> Quận/Huyện: </label>
                 <input type="text" id="address-district" name="district" placeholder="Quận/Huyện" size="20">
             </div>
-            <div class="flex-column">
+            <div class="flex-column gap-8">
                 <label for="address-city"> Tỉnh/Thành phố</label>
                 <input type="text" id="address-city" name="city" placeholder="Thành phố" size="20">
             </div>
-            <div class="flex-column">
+            <div class="flex-column gap-8">
                 <label for="address-country"> Quốc gia</label>
                 <input type="text" id="address-country" name="country" placeholder="Quốc gia" size="20">
             </div>
-            <div class="flex-column">
+            <div class="flex-column gap-8">
                 <label for="address-postal_code"> Mã bưu điện</label>
                 <input type="text" id="address-postal_code" name="postal_code" placeholder="Mã bưu điện" size="20">
             </div>
             <button id="submit-address-button" class="address-dialog-submit-button" type="submit">OK</button>
+        </form>
+    </dialog>
+
+    <dialog id="identity-card-dialog">
+        <form method="dialog" class="identity-card-dialog-container" onsubmit="onIdentityCardDialogSubmitted(event)">
+            <div class="identity-card-dialog-header">Thông tin CCCD/CMND:</div>
+            <div class="flex-column gap-8">
+                <label for="identity-card-id">Số CCCD/CMND:</label>
+                <input type="text" id="identity-card-id" name="identity_card_id" placeholder="Số CCCD/CMND" size="20" readonly>
+            </div>
+            <div class="flex-column gap-8">
+                <label for="identity-card-issue-date">Ngày cấp:</label>
+                <input type="date" id="identity-card-issue-date" name="issue_date">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="identity-card-expiry-date">Ngày hết hạn:</label>
+                <input type="date" id="identity-card-expiry-date" name="expiry_date">
+            </div>
+            <div class="flex-column">
+                <label for="identity-card-issue-location">Nơi cấp:</label>
+                <input type="text" id="identity-card-issue-location" name="issue_location" placeholder="Nơi cấp" size="20">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="identity-card-is-digitized">Đã số hóa (là CCCD):</label>
+                <input type="checkbox" id="identity-card-is-digitized" name="is_digitized">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="identity-card-chip-attached">Đã gắn chip (nếu là CCCD):</label>
+                <input type="checkbox" id="identity-card-chip-attached" name="chip_attached">
+            </div>
+
+            <button id="submit-identity-card-button" class="identity-card-dialog-submit-button" type="submit">OK</button>
         </form>
     </dialog>
 
@@ -148,6 +180,7 @@
                     <th>Khoa</th>
                     <th>Khóa</th>
                     <th>Chương trình</th>
+                    <th>CCCD/CMND</th>
                     <th>Địa chỉ thường trú</th>
                     <th>Địa chỉ tạm trú</th>
                     <th>Địa chỉ nhận thư</th>
@@ -195,9 +228,22 @@
                             <% } %>
                         </select>
                     </td>
+                    <td id="add-identity_card">
+                        <div class="editable-cell">
+                            <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
+                            <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="identity_card_id">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                            <input type="hidden" name="is_digitized">
+                            <input type="hidden" name="chip_attached">
+                        </div>
+                    </td>
                     <% addressTypes.forEach(addressType => { %>
                         <td id="add-<%-addressType%>">
-                            <div class="address-cell">
+                            <div class="editable-cell">
                                 <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
                                 <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
                                 <!-- Invisible elements to hold data -->
@@ -255,6 +301,7 @@
                     <td>
                         <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
                     </td>
+                    
                     <td>
                         <select name="program" id="edit-program">
                             <option value="" disabled selected>--Chọn chương trình--</option>
@@ -263,9 +310,22 @@
                             <% } %>
                         </select>
                     </td>
+                    <td id="edit-identity_card">
+                        <div class="editable-cell">
+                            <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
+                            <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="identity_card_id">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                            <input type="hidden" name="is_digitized">
+                            <input type="hidden" name="chip_attached">
+                        </div>
+                    </td>
                     <% addressTypes.forEach(addressType => { %>
                         <td id="edit-<%=addressType%>">
-                            <div class="address-cell">
+                            <div class="editable-cell">
                                 <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
                                 <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
                                 <!-- Invisible elements to hold data -->
@@ -329,7 +389,19 @@
                         <td name="<%=results.docs[i].program._id%>">
                             <%= results.docs[i].program.program_name %>
                         </td>
-                        <td>
+                        <td name="<%=results.docs[i]%>" onclick="onIdentityCardInfoClicked(this)">
+                            <div>
+                                <%= results.docs[i].identity_card?.text || "" %>
+                                <!-- Invisible elements to hold data -->
+                                <input type="hidden" name="identity_card_id" value="<%= results.docs[i].identity_card?._id || '' %>">
+                                <input type="hidden" name="issue_date" value="<%= results.docs[i].identity_card?.issue_date || '' %>">
+                                <input type="hidden" name="expiry_date" value="<%= results.docs[i].identity_card?.expiry_date || '' %>">
+                                <input type="hidden" name="issue_location" value="<%= results.docs[i].identity_card?.issue_location || '' %>">
+                                <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
+                                <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
+                            </div>
+                        </td>
+                        <td onclick="onAddressInfoClicked(this)">
                             <div>
                                 <%= results.docs[i].permanent_address.text %>
                                 <!-- Invisible elements to hold data -->
@@ -342,7 +414,7 @@
                                 <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
                             </div>
                         </td>
-                        <td>
+                        <td onclick="onAddressInfoClicked(this)">
                             <div>
                                 <%= results.docs[i].temporary_address.text %>
                                 <!-- Invisible elements to hold data -->
@@ -355,7 +427,7 @@
                                 <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
                             </div>
                         </td>
-                        <td>
+                        <td onclick="onAddressInfoClicked(this)">
                             <div>
                                 <%= results.docs[i].temporary_address.text %>
                                 <!-- Invisible elements to hold data -->

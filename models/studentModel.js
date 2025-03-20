@@ -17,7 +17,8 @@ const StudentSchema = mongoose.Schema({
   permanent_address: {type: String, ref: "Address"},
   temporary_address: {type: String, ref: "Address"},
   mailing_address: {type: String, ref: "Address"},
-  nationality: String
+  nationality: String,
+  identity_card: {type: String, ref: "IdentityCard"},
 });
 
 StudentSchema.plugin(paginate);

@@ -5,15 +5,116 @@ import dayjs from "dayjs";
 import Program from "../models/programModel.js";
 import Status from "../models/statusModel.js";
 import Address from "../models/addressModel.js";
+import IdentityCard from "../models/identityCardModel.js";
 
-function formatAddress(address){
-  if (!address){
+const fetchAndFormatStudents = async (query = {}, options = {}) => {
+  const defaultOptions = {
+    pagination: false,
+    page: 1,
+    limit: 100,
+    sort: "_id",
+    lean: true, // convert to POJO
+    populate: [ // reference other collections
+      "major",
+      "program",
+      "status",
+      "permanent_address",
+      "temporary_address",
+      "mailing_address",
+      "identity_card"
+    ]
+  };
+
+  const finalOptions = { ...defaultOptions, ...options };
+  const results = await Student.paginate(query, finalOptions);
+
+  // format students data
+  results.docs.forEach(student => {
+    student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
+    if (student.permanent_address) {
+      student.permanent_address.text = formatAddress(student.permanent_address);
+    } else {
+      student.permanent_address = emptyAddress();
+      student.permanent_address.text = "";
+    }
+    if (student.temporary_address) {
+      student.temporary_address.text = formatAddress(student.temporary_address);
+    } else {
+      student.temporary_address = emptyAddress();
+      student.temporary_address.text = "";
+    }
+    if (student.mailing_address) {
+      student.mailing_address.text = formatAddress(student.mailing_address);
+    } else {
+      student.mailing_address = emptyAddress();
+      student.mailing_address.text = "";
+    }
+    if (student.identity_card) {
+      student.identity_card.issue_date = dayjs(student.identity_card.issue_date).format('YYYY-MM-DD');
+      student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date).format('YYYY-MM-DD');  
+      student.identity_card.text = formatIdentityCard(student.identity_card);
+    } else {
+      student.identity_card = null;
+    }
+  });
+
+  return results;
+};
+
+function formatAddress(address) {
+  if (!address) {
     return "";
   }
-  const addressArray = Object.entries(address)
+  return Object.entries(address)
+    .filter(([key, value]) => (key === "city" || key === "country") && typeof value !== "undefined" && value)
+    .map(([key, value]) => value)
+    .join(", ");
+
+  const fieldNames = {
+    house_number: "Số",
+    street: "Đường",
+    ward: "Phường",
+    district: "Quận/Huyện",
+    city: "TP",
+    country: "",
+    postal_code: "Mã bưu điện"
+  };
+
+  return Object.entries(address)
     .filter(([key, value]) => key !== "_id" && typeof value !== "undefined" && value)
-    .map(([key, value]) => value);
-  return addressArray.join(", ");
+    .map(([key, value]) => `${fieldNames[key]} ${value}`)
+    .join(", ");
+}
+
+// TODO: Make formatted text more readable by adding field name before each value
+function formatIdentityCard(identityCard){
+  if (!identityCard){
+    return "";
+  }
+
+  return identityCard._id;
+
+  const fieldNames = {
+    issue_date: "NC",
+    expiry_date: "NHH",
+    issue_location: "NC",
+    is_digitized: "CCCD",
+    chip_attached: "Chip"
+  };
+
+  return Object.entries(identityCard)
+    .filter(([key, value]) => key !== "_id" && typeof value !== "undefined" && value)
+    .map(([key, value]) => {
+      if (key === "issue_date" || key === "expiry_date"){
+        return `${fieldNames[key]}: ${dayjs(value).format('DD/MM/YYYY')}`;
+      }
+      if (key === "is_digitized" || key === "chip_attached"){
+        return `${fieldNames[key]}: ${value ? "Có" : "Không"}`;
+      }
+      return `${fieldNames[key]}: ${value}`;
+    })
+    .join(", ");
+
 }
 
 function emptyAddress(){
@@ -30,44 +131,7 @@ function emptyAddress(){
 
 export const getAllStudents = async (req, res) => {
   try {
-    const options = {
-      pagination: false,
-      page: 1,
-      limit: 100,
-      sort: "_id",
-      lean: true, // convert to POJO
-      populate: [// reference other collections
-        "major",
-        "program",
-        "status",
-        "permanent_address",
-        "temporary_address",
-        "mailing_address"
-      ]
-    }
-    const results = await Student.paginate({}, options);
-    // format students data
-    results.docs.forEach(student => {
-      student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-      if (student.permanent_address){
-        student.permanent_address.text = formatAddress(student.permanent_address);
-      } else {
-        student.permanent_address = emptyAddress();
-        student.permanent_address.text = ""; 
-      }
-      if (student.temporary_address){
-        student.temporary_address.text = formatAddress(student.temporary_address);
-      } else {
-        student.temporary_address = emptyAddress();
-        student.temporary_address.text = "";
-      }
-      if (student.mailing_address){
-        student.mailing_address.text = formatAddress(student.mailing_address);
-      } else {
-        student.mailing_address = emptyAddress();
-        student.mailing_address.text = "";
-      }
-    });
+    const results = await fetchAndFormatStudents();
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
@@ -205,6 +269,26 @@ export const addStudent = async (req, res) => {
       student.mailing_address = "";
     }
 
+    if (student.identity_card){
+      // check if identity card existed
+      const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
+      if (identityCard){
+        identityCard.issue_date = student.identity_card.issue_date;
+        identityCard.expiry_date = student.identity_card.expiry_date;
+        identityCard.issue_location = student.identity_card.issue_location;
+        identityCard.is_digitized = student.identity_card.is_digitized;
+        identityCard.chip_attached = student.identity_card.chip_attached;
+        console.log("Updating existing identity card: ", identityCard);
+        await identityCard.save();
+      } else {
+        console.log("Inserting new identity card: ", student.identity_card);
+        await IdentityCard.insertOne(student.identity_card);
+      }
+    }
+    else {
+      student.identity_card = "";
+    }
+
     await Student.insertOne(student);
 
     console.log("Student added successfully");
@@ -286,7 +370,6 @@ export const updateStudent = async (req, res) => {
     studentToUpdate.birthdate = student.birthdate;
     studentToUpdate.gender = student.gender;
     
-    console.log(JSON.stringify(student, null, 2));
     // addresses are objects that need to be added to the Address collection
     if (student.permanent_address) {
       const addressId = student._id + "ADDRPMNT";
@@ -356,10 +439,31 @@ export const updateStudent = async (req, res) => {
     } else {
       student.mailing_address = "";
     }
+    
+    if (student.identity_card) {
+      // check if identity card existed
+      const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
+      if (identityCard) {
+        identityCard.issue_date = student.identity_card.issue_date;
+        identityCard.expiry_date = student.identity_card.expiry_date;
+        identityCard.issue_location = student.identity_card.issue_location;
+        identityCard.is_digitized = student.identity_card.is_digitized;
+        identityCard.chip_attached = student.identity_card.chip_attached;
+        console.log("Updating existing identity card: ", identityCard);
+        await identityCard.save();
+      } else {
+        console.log("Inserting new identity card: ", student.identity_card);
+        await IdentityCard.insertOne(student.identity_card);
+      }
+      student.identity_card = student.identity_card._id;
+    } else {
+      student.identity_card = "";
+    }
 
     studentToUpdate.permanent_address = student.permanent_address;
     studentToUpdate.temporary_address = student.temporary_address;
     studentToUpdate.mailing_address = student.mailing_address;
+    studentToUpdate.identity_card = student.identity_card;
 
     await studentToUpdate.save();
 
@@ -397,52 +501,29 @@ export const searchStudents = async (req, res) => {
     const searchTerm = queryData.search || "";
     const searchBy = queryData.search_by || "_id";
     const searchByMajor = queryData.search_by_major || "";
-    let queryString = "";
-
-    const populateMap = {
-      major: {path: "major"},
-      program: {path: "program"},
-      status: {path: "status"},
-    }
-    
-    const options = {
-      pagination: false,
-      page: 1,
-      limit: 100,
-      sort: "_id",
-      lean: true, // convert to POJO
-      populate: Object.values(populateMap) // reference other collections
-    }
-
+    const queryString = new URLSearchParams(queryData); 
     let query = {};
     console.log(`Searching for ${searchTerm} by ${searchBy}`);
-
-    if (searchTerm !== "" && searchBy !== ""){
-      queryString = new URLSearchParams(queryData); 
-
-      if (searchByMajor){
+    if (searchByMajor){
+      if (!searchTerm){
+        query = {major : searchByMajor};
+      } else {
         query = {$and: [
           {major : searchByMajor},
           {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")}
         ]};
-      } else {
-        query = {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")};
       }
+    } else if (searchTerm){
+      query = {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")};
     }
 
-    const results = await Student.paginate(query, options);
-
-    // format students data
-    results.docs.forEach(student => {
-      student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-    });
-
+    console.log("Search completed!")
+    const results = await fetchAndFormatStudents(query);
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
-    
-    res.render("index", { title: "Student management system", results, majors, status, programs, queryString, queryData});
+    res.render("index", { title: "Student management system", results, majors, status, programs, queryString: req.query.search, queryData: req.query });
   } catch (error) {
-    console.error("Error searching for students: ", error.message);
+    res.status(400).json({ ok: false, error: error.message });
   }
-}
+};

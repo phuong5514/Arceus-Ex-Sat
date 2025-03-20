@@ -87,18 +87,20 @@ try {
 
 try {
   await IdentityCard.insertMany([{
-    _id: "22120271",
+    _id: "3795026804",
     issue_date: "2021-11-08",
     expiry_date: "2026-11-08",
     issue_location: "TP HCM",
-    is_digitized: true
+    is_digitized: true,
+    chip_attached: false
   },
   {
-    _id: "22120287",
+    _id: "2974950634",
     issue_date: "2021-01-01",
     expiry_date: "2026-01-01",
     issue_location: "TP HCM",
-    is_digitized: true
+    is_digitized: true,
+    chip_attached: true
   }
   ])
 } catch (error) {
@@ -107,7 +109,7 @@ try {
 
 try {
   await Passport.insertMany([{
-    _id: "22120271",
+    _id: "123467890",
     type: "Passport",
     country_code: "VN",
     passport_number: "123456789",
@@ -116,7 +118,7 @@ try {
     issue_location: "TP HCM"
   },
   {
-    _id: "22120287",
+    _id: "849603782",
     type: "Passport",
     country_code: "VN",
     passport_number: "987654321",

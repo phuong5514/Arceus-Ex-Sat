@@ -59,13 +59,15 @@ function onEditCheckboxChange(checkbox, studentId) {
         document.getElementById("edit-class_year").value = cells[6].textContent.trim();
         document.getElementById("edit-program").value = cells[7].getAttribute("name");
 
-        applyAddressEdit(getAddressFromAddressDiv(cells[8].querySelector("div")), document.getElementById("edit-address_permanent"));
-        applyAddressEdit(getAddressFromAddressDiv(cells[9].querySelector("div")), document.getElementById("edit-address_temporary"));
-        applyAddressEdit(getAddressFromAddressDiv(cells[10].querySelector("div")), document.getElementById("edit-address_mailing"));
+        applyIdentityCardEdit(getIdentityCardFromDiv(cells[8].querySelector("div")), document.getElementById("edit-identity_card"));
 
-        document.getElementById("edit-email").value = cells[11].textContent.trim();
-        document.getElementById("edit-phone_number").value = cells[12].textContent.trim();
-        document.getElementById("edit-status").value = cells[13].getAttribute("name");
+        applyAddressEdit(getAddressFromAddressDiv(cells[9].querySelector("div")), document.getElementById("edit-address_permanent"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[10].querySelector("div")), document.getElementById("edit-address_temporary"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[11].querySelector("div")), document.getElementById("edit-address_mailing"));
+
+        document.getElementById("edit-email").value = cells[12].textContent.trim();
+        document.getElementById("edit-phone_number").value = cells[13].textContent.trim();
+        document.getElementById("edit-status").value = cells[14].getAttribute("name");
 
         setMessage("info", `Đang chỉnh sửa thông tin sinh viên: ${studentId}, ${studentName}, ${birthdate}`);
     } else {
@@ -113,12 +115,15 @@ async function onEditStudentSaved() {
         nationality: "Việt Nam",
         permanent_address: null,
         temporary_address: null,
-        mailing_address: null
+        mailing_address: null,
+        identity_card: null
     };
 
     student.permanent_address = getAddressFromAddressDiv(document.getElementById("edit-address_permanent"));
     student.temporary_address = getAddressFromAddressDiv(document.getElementById("edit-address_temporary"));
     student.mailing_address = getAddressFromAddressDiv(document.getElementById("edit-address_mailing"));
+
+    student.identity_card = getIdentityCardFromDiv(document.getElementById("edit-identity_card"));
 
     try {
         const response = await fetch(`/students/${selectedStudentId}`, {
@@ -159,18 +164,21 @@ async function onAddStudentSaved() {
         address: "",
         gender: document.getElementById("add-gender").value,
         birthdate: document.getElementById("add-birthdate").value,
-        major: document.getElementById("add-major").value,
+        major: document.getElementById("add-major").value, 
         class_year: document.getElementById("add-class_year").value,
         program: document.getElementById("add-program").value,
         status: document.getElementById("add-status").value,
         permanent_address: null,
         temporary_address: null,
         mailing_address: null,
+        identity_card: null
     };
 
-    student.permanent_address = getAddressFromAddressDiv(document.getElementById("add-permanent_address"));
-    student.temporary_address = getAddressFromAddressDiv(document.getElementById("add-temporary_address"));
-    student.mailing_address = getAddressFromAddressDiv(document.getElementById("add-mailing_address"));
+    student.permanent_address = getAddressFromAddressDiv(document.getElementById("add-address_permanent"));
+    student.temporary_address = getAddressFromAddressDiv(document.getElementById("add-address_temporary"));
+    student.mailing_address = getAddressFromAddressDiv(document.getElementById("add-address_mailing"));
+
+    student.identity_card = getIdentityCardFromDiv(document.getElementById("add-identity_card"));
 
     const response = await fetch("/students", {
         method: "POST",
@@ -332,11 +340,18 @@ function onSearchOptionsButtonClicked(){
 function onAddressEditClicked(button) {
     const addressDialog = document.getElementById("address-dialog");
     addressDialog.showModal();
-    currentEditAddressDiv = button.closest(".address-cell");
+    currentEditAddressDiv = button.closest("div");
     if (!currentEditAddressDiv) return;
 
     const addressData = getAddressFromAddressDiv(currentEditAddressDiv);
-    console.log(addressData);
+
+    document.getElementById("address-house_number").readOnly = false;
+    document.getElementById("address-street").readOnly = false;
+    document.getElementById("address-ward").readOnly = false;
+    document.getElementById("address-district").readOnly = false;
+    document.getElementById("address-city").readOnly = false;
+    document.getElementById("address-country").readOnly = false;
+    document.getElementById("address-postal_code").readOnly = false;
 
     document.getElementById("address-house_number").value = addressData.house_number;
     document.getElementById("address-street").value = addressData.street;
@@ -349,8 +364,12 @@ function onAddressEditClicked(button) {
 
 function onAddressDialogSubmitted(event) {
     event.preventDefault();
+    const addressDialog = document.getElementById("address-dialog");
 
-    if (!currentEditAddressDiv) return;
+    if (!currentEditAddressDiv) {
+        addressDialog.close();
+        return;
+    }
 
     const houseNumber = document.getElementById("address-house_number").value;
     const street = document.getElementById("address-street").value;
@@ -370,7 +389,6 @@ function onAddressDialogSubmitted(event) {
         postal_code : postalCode
     }, currentEditAddressDiv);
 
-    const addressDialog = document.getElementById("address-dialog");
     addressDialog.close();
 
     currentEditAddressDiv = null;
@@ -401,4 +419,131 @@ function getAddressFromAddressDiv(addressDiv){
         country: addressDiv.querySelector("input[name='country']").value,
         postal_code: addressDiv.querySelector("input[name='postal_code']").value
     }
+}
+
+let currentEditIdentityCardDiv = null;
+
+function onIdentityCardEditClicked(button) {
+    const identityCardDialog = document.getElementById("identity-card-dialog");
+    identityCardDialog.showModal();
+    currentEditIdentityCardDiv = button.closest("div");
+    if (!currentEditIdentityCardDiv) return;
+
+    const identityCardData = getIdentityCardFromDiv(currentEditIdentityCardDiv);
+
+    document.getElementById("identity-card-id").readOnly = false;
+    document.getElementById("identity-card-issue-date").readOnly = false;
+    document.getElementById("identity-card-expiry-date").readOnly = false;
+    document.getElementById("identity-card-issue-location").readOnly = false;
+    document.getElementById("identity-card-is-digitized").readOnly = false;
+    document.getElementById("identity-card-chip-attached").readOnly = false;
+
+    document.getElementById("identity-card-id").value = identityCardData._id;
+    document.getElementById("identity-card-issue-date").value = identityCardData.issue_date;
+    document.getElementById("identity-card-expiry-date").value = identityCardData.expiry_date;
+    document.getElementById("identity-card-issue-location").value = identityCardData.issue_location;
+    document.getElementById("identity-card-is-digitized").checked = identityCardData.is_digitized;
+    document.getElementById("identity-card-chip-attached").checked = identityCardData.chip_attached;
+}
+
+function onIdentityCardDialogSubmitted(event) {
+    event.preventDefault();
+    const identityCardDialog = document.getElementById("identity-card-dialog");
+
+    if (!currentEditIdentityCardDiv) {
+        identityCardDialog.close();
+        return;
+    }
+
+    const identityCardId = document.getElementById("identity-card-id").value;
+    const issueDate = document.getElementById("identity-card-issue-date").value;
+    const expiryDate = document.getElementById("identity-card-expiry-date").value;
+    const issueLocation = document.getElementById("identity-card-issue-location").value;
+    const isDigitized = document.getElementById("identity-card-is-digitized").checked;
+    const chipAttached = document.getElementById("identity-card-chip-attached").checked;
+
+    applyIdentityCardEdit({
+        _id: identityCardId,
+        issue_date: issueDate,
+        expiry_date: expiryDate,
+        issue_location: issueLocation,
+        is_digitized: isDigitized,
+        chip_attached: chipAttached
+    }, currentEditIdentityCardDiv);
+
+    identityCardDialog.close();
+
+    currentEditIdentityCardDiv = null;
+}
+
+function applyIdentityCardEdit(identityCardData, identityCardCell) {
+    identityCardCell.querySelector("input[name='identity_card_id']").value = identityCardData._id;
+    identityCardCell.querySelector("input[name='issue_date']").value = identityCardData.issue_date;
+    identityCardCell.querySelector("input[name='expiry_date']").value = identityCardData.expiry_date;
+    identityCardCell.querySelector("input[name='issue_location']").value = identityCardData.issue_location;
+    identityCardCell.querySelector("input[name='is_digitized']").checked = identityCardData.is_digitized;
+    identityCardCell.querySelector("input[name='chip_attached']").checked = identityCardData.chip_attached;
+
+    const displayIdentityCard = `${identityCardData._id}`;
+    identityCardCell.querySelector(".identity_card-text").value = displayIdentityCard;
+}
+
+function getIdentityCardFromDiv(identityCardDiv) {
+    return {
+        _id: identityCardDiv.querySelector("input[name='identity_card_id']").value,
+        issue_date: identityCardDiv.querySelector("input[name='issue_date']").value,
+        expiry_date: identityCardDiv.querySelector("input[name='expiry_date']").value,
+        issue_location: identityCardDiv.querySelector("input[name='issue_location']").value,
+        is_digitized: identityCardDiv.querySelector("input[name='is_digitized']").checked,
+        chip_attached: identityCardDiv.querySelector("input[name='chip_attached']").checked
+    }
+}
+
+function onIdentityCardInfoClicked(button){
+    const identityCardDialog = document.getElementById("identity-card-dialog");
+    const currentDiv = button.querySelector("div");
+    if (!currentDiv) return;
+    const identityCardData = getIdentityCardFromDiv(currentDiv);
+    if (!identityCardData._id) return;
+    document.getElementById("identity-card-id").value = identityCardData._id;
+    document.getElementById("identity-card-issue-date").value = identityCardData.issue_date;
+    document.getElementById("identity-card-expiry-date").value = identityCardData.expiry_date;
+    document.getElementById("identity-card-issue-location").value = identityCardData.issue_location;
+    document.getElementById("identity-card-is-digitized").checked = identityCardData.is_digitized;
+    document.getElementById("identity-card-chip-attached").checked = identityCardData.chip_attached;
+
+    // set all of them readonly
+    document.getElementById("identity-card-id").readOnly = true;
+    document.getElementById("identity-card-issue-date").readOnly = true;
+    document.getElementById("identity-card-expiry-date").readOnly = true;
+    document.getElementById("identity-card-issue-location").readOnly = true;
+    document.getElementById("identity-card-is-digitized").readOnly = true;
+    document.getElementById("identity-card-chip-attached").readOnly = true;
+
+    identityCardDialog.showModal();
+}
+
+function onAddressInfoClicked(button) {
+    const addressDialog = document.getElementById("address-dialog");
+    const currentDiv = button.querySelector("div");
+    if (!currentDiv) return;
+    const addressData = getAddressFromAddressDiv(currentDiv);
+    if (Object.values(addressData).every(x => x === '')) return;
+    addressDialog.showModal();
+    
+    document.getElementById("address-house_number").value = addressData.house_number;
+    document.getElementById("address-street").value = addressData.street;
+    document.getElementById("address-ward").value = addressData.ward;
+    document.getElementById("address-district").value = addressData.district;
+    document.getElementById("address-city").value = addressData.city;
+    document.getElementById("address-country").value = addressData.country;
+    document.getElementById("address-postal_code").value = addressData.postal_code;
+
+    document.getElementById("address-house_number").readOnly = true;
+    document.getElementById("address-street").readOnly = true;
+    document.getElementById("address-ward").readOnly = true;
+    document.getElementById("address-district").readOnly = true;
+    document.getElementById("address-city").readOnly = true;
+    document.getElementById("address-country").readOnly = true;
+    document.getElementById("address-postal_code").readOnly = true;
 }

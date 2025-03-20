@@ -277,8 +277,30 @@ tr:nth-child(odd) {
   padding: 8px 6px;
 }
 
-.address-cell{
+.editable-cell{
   display: flex;
   justify-content: space-between;
+  gap: 8px;
+}
+
+.identity-card-dialog-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 28px;
+}
+
+.identity-card-dialog-header {
+  color: var(--green);
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+  grid-column: 1 / span 2;
+}
+
+.identity-card-dialog-submit-button {
+  grid-column: 1 / span 2;
+}
+
+.gap-8 {
   gap: 8px;
 }

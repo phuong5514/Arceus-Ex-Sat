@@ -1,6 +1,7 @@
 let mode = "view";
 let dataChanged = false;
 let selectedRow = null;
+let searchOptionsExpanded = false;
 let currentEditAddressDiv = null;
 let selectedStudentId = null;
 
@@ -314,6 +315,19 @@ function changeToMode(newMode) {
     mode = newMode;
     setMessage("", "");
     setButtonState();
+}
+
+function onSearchOptionsButtonClicked(){
+    const optionsPanel = document.getElementById("more-search-options");
+    searchOptionsExpanded = optionsPanel.style.display != "none";
+    searchOptionsExpanded = !searchOptionsExpanded;
+    const button = document.getElementById("more-search-options-button");
+    if (searchOptionsExpanded){
+        button.style.transform = "scale(-1,1)";
+    } else {
+        button.style.transform = "scale(1,1)";
+    }
+    optionsPanel.style.display = searchOptionsExpanded ? "inline" : "none";
 }
 
 function onAddressEditClicked(button) {

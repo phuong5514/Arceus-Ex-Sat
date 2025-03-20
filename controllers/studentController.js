@@ -396,6 +396,7 @@ export const searchStudents = async (req, res) => {
     const queryData = req.query;
     const searchTerm = queryData.search || "";
     const searchBy = queryData.search_by || "_id";
+    const searchByMajor = queryData.search_by_major || "";
     let queryString = "";
 
     const populateMap = {
@@ -413,22 +414,19 @@ export const searchStudents = async (req, res) => {
       populate: Object.values(populateMap) // reference other collections
     }
 
-
     let query = {};
     console.log(`Searching for ${searchTerm} by ${searchBy}`);
 
     if (searchTerm !== "" && searchBy !== ""){
       queryString = new URLSearchParams(queryData); 
 
-      switch (searchBy) {
-        case "major":
-          const matchedMajors = await Major.find({"major_name": new RegExp(`.*${searchTerm}.*`, "i")});
-          const matchedMajorIds = matchedMajors.map(major => major._id);
-          query = {major : {$in: matchedMajorIds}};
-          break;
-        default:
-          query = { [searchBy] : {$regex: searchTerm, $options: "i"}};
-          break;
+      if (searchByMajor){
+        query = {$and: [
+          {major : searchByMajor},
+          {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")}
+        ]};
+      } else {
+        query = {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")};
       }
     }
 

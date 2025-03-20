@@ -229,6 +229,8 @@ export const searchStudents = async (req, res) => {
     }
 
     let query = {};
+    console.log(`Searching for ${searchTerm} by ${searchBy}`);
+
     if (searchTerm !== "" && searchBy !== ""){
       queryString = new URLSearchParams(queryData); 
 

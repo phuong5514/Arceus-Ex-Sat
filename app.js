@@ -23,3 +23,6 @@ await connectDB();
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+import manageDropdownRoutes from "./routes/manageDropdownRoutes.js";
+app.use("/manage-dropdowns", manageDropdownRoutes);

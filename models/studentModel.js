@@ -2,6 +2,29 @@ import mongoose, { SchemaTypes } from "mongoose";
 import paginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 
+// const StudentSchema = mongoose.Schema({
+//   _id: String,
+//   name: String,
+//   birthdate: Date,
+//   gender: String,
+//   class_year: Number,
+//   program: { type: String, ref: "Program" },
+//   address: String,
+//   email: String,
+//   phone_number: String,
+//   status: { type: String, ref: "Status" },
+//   major: { type: String, ref: "Major" }
+// });
+
+//Minh Phuong modified the Student structure according to the new requirements for addresses and PersonInfo
+const AddressSchema = mongoose.Schema({
+    house_number_street: String,
+    ward_commune: String,
+    district: String,
+    province_city: String,
+    country: String,
+});
+
 const StudentSchema = mongoose.Schema({
   _id: String,
   name: String,
@@ -26,5 +49,5 @@ StudentSchema.plugin(paginate);
 StudentSchema.plugin(aggregatePaginate);
 
 const Student = mongoose.model("Student", StudentSchema, "students");
-
 export default Student;
+

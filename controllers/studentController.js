@@ -53,7 +53,7 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
     }
     if (student.identity_card) {
       student.identity_card.issue_date = dayjs(student.identity_card.issue_date).format('YYYY-MM-DD');
-      student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date).format('YYYY-MM-DD');  
+      student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date).format('YYYY-MM-DD');
       student.identity_card.text = formatIdentityCard(student.identity_card);
     } else {
       student.identity_card = null;
@@ -115,186 +115,199 @@ export const getAllStudents = async (req, res) => {
     const programs = await Program.find().lean();
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
-    console.error("Error getting students: ", error.message);
+      console.error("Error getting students:", error.message);
+      res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
   }
 };
-
 
 export const addStudent = async (req, res) => {
   const student = req.body;
 
   try {
-    const majorList = await Major.distinct("_id");
-    const statusList = await Status.distinct("_id");
-    const programList = await Program.distinct("_id");
-    const genderList = ["Nam", "Nữ"]
-
-    // all fields are required
-    if (!student._id || student._id.trim() === "") {
-      throw new Error("MSSV không được để trống");
-    } else if (!student._id.match(/^[0-9]{8}$/)) {
-      throw new Error("MSSV phải là 8 chữ số");
-    }
-    if (!student.name || student.name.trim() === "") {
-      throw new Error("Tên không được để trống");
-    }
-    if (!student.email || student.email.trim() === "") {
-      throw new Error("Email không được để trống");
-    } else if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-      throw new Error("Email không hợp lệ");
-    }
-    if (!student.phone_number || student.phone_number.trim() === "") {
-      throw new Error("Số điện thoại không được để trống");
-    } else if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
-      throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
-    }
-    if (!student.major || student.major.trim() === "") {
-      throw new Error("Ngành học không được để trống");
-    } else if (!majorList.includes(student.major)) {
-      throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
-    }
-    if (!student.class_year || student.class_year.trim() === "") {
-      throw new Error("Năm học không được để trống");
-    } else if (!student.class_year.match(/^[0-9]{4}$/)) {
-      throw new Error("Năm học phải là 4 chữ số");
-    }
-    if (!student.program || student.program.trim() === "") {
-      throw new Error("Chương trình học không được để trống");
-    } else if (!programList.includes(student.program)) {
-      throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
-    }
-    if (!student.status || student.status.trim() === "") {
-      throw new Error("Trạng thái không được để trống");
-    } else if (!statusList.includes(student.status)) {
-      throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
-    }
-    if (!student.gender || student.gender.trim() === "") {
-      throw new Error("Giới tính không được để trống");
-    } else if (!genderList.includes(student.gender)) {
-      throw new Error("Giới tính phải là Nam hoặc Nữ");
-    }
-    if (!student.birthdate || student.birthdate.trim() === "") {
-      throw new Error("Ngày sinh không được để trống");
-    }
-
-    // addresses are objects that need to be added to the Address collection
-    if (student.permanent_address){
-      const addressId = student._id + "ADDRPMNT";
-      // check if address existed
-      const address = await Address.findOne({ _id: addressId });
-      if (address){
-        address.house_number = student.permanent_address.house_number;
-        address.street = student.permanent_address.street;
-        address.ward = student.permanent_address.ward;
-        address.district = student.permanent_address.district;
-        address.city = student.permanent_address.city;
-        address.country = student.permanent_address.country;
-        address.postal_code = student.permanent_address.postal_code;
-        await address.save();
-      } else {
-        const newAddress = student.permanent_address;
-        newAddress._id = addressId;
-        await Address.insertOne(newAddress);
-      }
-      student.permanent_address = addressId;
-    } else {
-      student.permanent_address = "";
-    }
-    if (student.temporary_address){
-      const addressId = student._id + "ADDRTMP";
-      // check if address existed
-      const address = await Address.findOne({ _id: addressId });
-      if (address){
-        address.house_number = student.temporary_address.house_number;
-        address.street = student.temporary_address.street;
-        address.ward = student.temporary_address.ward;
-        address.district = student.temporary_address.district;
-        address.city = student.temporary_address.city;
-        address.country = student.temporary_address.country;
-        address.postal_code = student.temporary_address.postal_code;
-        await address.save();
-      }
-      else {
-        const newAddress = student.temporary_address;
-        newAddress._id = addressId;
-        await Address.insertOne(newAddress);
-      }
-      student.temporary_address = addressId;
-    } else {
-      student.temporary_address = "";
-    }
-    if (student.mailing_address){
-      const addressId = student._id + "ADDRMAIL";
-      // check if address existed
-      const address = await Address.findOne({ _id: addressId });
-      if (address){
-        address.house_number = student.mailing_address.house_number;
-        address.street = student.mailing_address.street;
-        address.ward = student.mailing_address.ward;
-        address.district = student.mailing_address.district;
-        address.city = student.mailing_address.city;
-        address.country = student.mailing_address.country;
-        address.postal_code = student.mailing_address.postal_code;
-        await address.save();
-      }
-      else {
-        const newAddress = student.mailing_address;
-        newAddress._id = addressId;
-        await Address.insertOne(newAddress);
-      }
-      student.mailing_address = addressId;
-    } else {
-      student.mailing_address = "";
-    }
-
-    if (student.identity_card){
-      // check if identity card existed
-      const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
-      if (identityCard){
-        identityCard.issue_date = student.identity_card.issue_date;
-        identityCard.expiry_date = student.identity_card.expiry_date;
-        identityCard.issue_location = student.identity_card.issue_location;
-        identityCard.is_digitized = student.identity_card.is_digitized;
-        identityCard.chip_attached = student.identity_card.chip_attached;
-        console.log("Updating existing identity card: ", identityCard);
-        await identityCard.save();
-      } else {
-        console.log("Inserting new identity card: ", student.identity_card);
-        await IdentityCard.insertOne(student.identity_card);
-      }
-    }
-    else {
-      student.identity_card = "";
-    }
-    if (student.passport) {
-      // check if passport existed
-      const passport = await Passport.findOne({ _id: student.passport._id });
-      if (passport) {
-        passport.type = student.passport.type;
-        passport.country_code = student.passport.country_code;
-        passport.issue_date = student.passport.issue_date;
-        passport.expiry_date = student.passport.expiry_date;
-        passport.issue_location = student.passport.issue_location;
-        console.log("Updating existing passport: ", passport);
-        await passport.save();
-      } else {
-        console.log("Inserting new passport: ", student.passport);
-        await Passport.insertOne(student.passport);
-      }
-      student.passport = student.passport._id;
-    } else {
-      student.passport = "";
-    }
+    const newStudent = await preprocessStudent(student);
 
     await Student.insertOne(student);
 
     console.log("Student added successfully");
     res.status(200).json({ ok: true, message: "Thêm sinh viên thành công" });
   } catch (error) {
-    console.error("Error adding students: ", error.message);
-    res.status(400).json({ ok: false, error: error.message });
+      console.error("Error adding student:", error.message);
+      res.status(400).json({ ok: false, error: error.message });
   }
-}
+};
+
+async function preprocessStudent(student) {
+  const majorList = await Major.distinct("_id");
+  const statusList = await Status.distinct("_id");
+  const programList = await Program.distinct("_id");
+  const genderList = ["Nam", "Nữ"]
+
+  // all fields are required
+  if (!student.name || student.name.trim() === "") {
+    throw new Error("Tên không được để trống");
+  }
+  if (!student.email || student.email.trim() === "") {
+    throw new Error("Email không được để trống");
+  } else if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+    throw new Error("Email không hợp lệ");
+  }
+  if (!student.phone_number || student.phone_number.trim() === "") {
+    throw new Error("Số điện thoại không được để trống");
+  } else if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
+    throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
+  }
+  // if (!student.address || student.address.trim() === "") {
+  //   throw new Error("Địa chỉ không được để trống");
+  // }
+  if (!student.major || student.major.trim() === "") {
+    throw new Error("Ngành học không được để trống");
+  } else if (!majorList.includes(student.major)) {
+    throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
+  }
+  if (!student.class_year || student.class_year.trim() === "") {
+    throw new Error("Năm học không được để trống");
+  } else if (!student.class_year.match(/^[0-9]{4}$/)) {
+    throw new Error("Năm học phải là 4 chữ số");
+  }
+  if (!student.program || student.program.trim() === "") {
+    throw new Error("Chương trình học không được để trống");
+  } else if (!programList.includes(student.program)) {
+    throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
+  }
+  if (!student.status || student.status.trim() === "") {
+    throw new Error("Trạng thái không được để trống");
+  } else if (!statusList.includes(student.status)) {
+    throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
+  }
+  if (!student.gender || student.gender.trim() === "") {
+    throw new Error("Giới tính không được để trống");
+  } else if (!genderList.includes(student.gender)) {
+    throw new Error("Giới tính phải là Nam hoặc Nữ");
+  }
+  if (!student.birthdate || student.birthdate.trim() === "") {
+    throw new Error("Ngày sinh không được để trống");
+  }
+  // addresses are objects that need to be added to the Address collection
+  if (student.permanent_address) {
+    const addressId = student._id + "ADDRPMNT";
+    // check if address existed
+    const address = await Address.findOne({ _id: addressId });
+    if (address) {
+      address.house_number = student.permanent_address.house_number;
+      address.street = student.permanent_address.street;
+      address.ward = student.permanent_address.ward;
+      address.district = student.permanent_address.district;
+      address.city = student.permanent_address.city;
+      address.country = student.permanent_address.country;
+      address.postal_code = student.permanent_address.postal_code;
+      await address.save();
+    } else {
+      const newAddress = student.permanent_address;
+      newAddress._id = addressId;
+      await Address.insertOne(newAddress);
+    }
+    student.permanent_address = addressId;
+  } else {
+    student.permanent_address = "";
+  }
+  if (student.temporary_address) {
+    const addressId = student._id + "ADDRTMP";
+    // check if address existed
+    const address = await Address.findOne({ _id: addressId });
+    if (address) {
+      address.house_number = student.temporary_address.house_number;
+      address.street = student.temporary_address.street;
+      address.ward = student.temporary_address.ward;
+      address.district = student.temporary_address.district;
+      address.city = student.temporary_address.city;
+      address.country = student.temporary_address.country;
+      address.postal_code = student.temporary_address.postal_code;
+      await address.save();
+    }
+    else {
+      const newAddress = student.temporary_address;
+      newAddress._id = addressId;
+      await Address.insertOne(newAddress);
+    }
+    student.temporary_address = addressId;
+  } else {
+    student.temporary_address = "";
+  }
+  if (student.mailing_address) {
+    const addressId = student._id + "ADDRMAIL";
+    // check if address existed
+    const address = await Address.findOne({ _id: addressId });
+    if (address) {
+      address.house_number = student.mailing_address.house_number;
+      address.street = student.mailing_address.street;
+      address.ward = student.mailing_address.ward;
+      address.district = student.mailing_address.district;
+      address.city = student.mailing_address.city;
+      address.country = student.mailing_address.country;
+      address.postal_code = student.mailing_address.postal_code;
+      await address.save();
+    }
+    else {
+      const newAddress = student.mailing_address;
+      newAddress._id = addressId;
+      await Address.insertOne(newAddress);
+    }
+    student.mailing_address = addressId;
+  } else {
+    student.mailing_address = "";
+  }
+  if (student.identity_card) {
+    // check if identity card existed
+    const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
+    if (identityCard) {
+      identityCard.issue_date = student.identity_card.issue_date;
+      if (!dayjs(identityCard.issue_date).isValid()) {
+        throw new Error("Ngày cấp CCCD/CMND không hợp lệ");
+      }
+      identityCard.expiry_date = student.identity_card.expiry_date;
+      if (!dayjs(identityCard.expiry_date).isValid()) {
+        throw new Error("Ngày hết hạn CCCD/CMND không hợp lệ");
+      }
+      identityCard.issue_location = student.identity_card.issue_location;
+      identityCard.is_digitized = student.identity_card.is_digitized;
+      identityCard.chip_attached = student.identity_card.chip_attached;
+      console.log("Updating existing identity card: ", identityCard);
+      await identityCard.save();
+    } else {
+      console.log("Inserting new identity card: ", student.identity_card);
+      await IdentityCard.insertOne(student.identity_card);
+    }
+    student.identity_card = student.identity_card._id;
+  } else {
+    student.identity_card = "";
+  }
+  if (student.passport) {
+    // check if passport existed
+    const passport = await Passport.findOne({ _id: student.passport._id });
+    if (passport) {
+      passport.type = student.passport.type;
+      passport.country_code = student.passport.country_code;
+      passport.issue_date = student.passport.issue_date;
+      if (!dayjs(passport.issue_date).isValid()) {
+        throw new Error("Ngày cấp hộ chiếu không hợp lệ");
+      }
+      passport.expiry_date = student.passport.expiry_date;
+      if (!dayjs(passport.expiry_date).isValid()) {
+        throw new Error("Ngày hết hạn hộ chiếu không hợp lệ");
+      }
+      passport.issue_location = student.passport.issue_location;
+      console.log("Updating existing passport: ", passport);
+      await passport.save();
+    } else {
+      console.log("Inserting new passport: ", student.passport);
+      await Passport.insertOne(student.passport);
+    }
+    student.passport = student.passport._id;
+  } else {
+    student.passport = "";
+  }
+  return student;
+};
 
 export const updateStudent = async (req, res) => {
   const studentId = req.params.student_id;
@@ -305,193 +318,31 @@ export const updateStudent = async (req, res) => {
     if (!studentToUpdate) {
       throw new Error("Không tìm thấy sinh viên cần cập nhật");
     }
-    const majorList = await Major.distinct("_id");
-    const statusList = await Status.distinct("_id");
-    const programList = await Program.distinct("_id");
-    const genderList = ["Nam", "Nữ"]
-
-    // all fields are required
-    if (!student.name || student.name.trim() === "") {
-      throw new Error("Tên không được để trống");
-    }
-    if (!student.email || student.email.trim() === "") {
-      throw new Error("Email không được để trống");
-    } else if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-      throw new Error("Email không hợp lệ");
-    }
-    if (!student.phone_number || student.phone_number.trim() === "") {
-      throw new Error("Số điện thoại không được để trống");
-    } else if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
-      throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
-    }
-    // if (!student.address || student.address.trim() === "") {
-    //   throw new Error("Địa chỉ không được để trống");
-    // }
-    if (!student.major || student.major.trim() === "") {
-      throw new Error("Ngành học không được để trống");
-    } else if (!majorList.includes(student.major)) {
-      throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
-    }
-    if (!student.class_year || student.class_year.trim() === "") {
-      throw new Error("Năm học không được để trống");
-    } else if (!student.class_year.match(/^[0-9]{4}$/)) {
-      throw new Error("Năm học phải là 4 chữ số");
-    }
-    if (!student.program || student.program.trim() === "") {
-      throw new Error("Chương trình học không được để trống");
-    } else if (!programList.includes(student.program)) {
-      throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
-    }
-    if (!student.status || student.status.trim() === "") {
-      throw new Error("Trạng thái không được để trống");
-    } else if (!statusList.includes(student.status)) {
-      throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
-    }
-    if (!student.gender || student.gender.trim() === "") {
-      throw new Error("Giới tính không được để trống");
-    } else if (!genderList.includes(student.gender)) {
-      throw new Error("Giới tính phải là Nam hoặc Nữ");
-    }
-    if (!student.birthdate || student.birthdate.trim() === "") {
-      throw new Error("Ngày sinh không được để trống");
-    }
-
-    studentToUpdate.name = student.name;
-    studentToUpdate.email = student.email;
-    studentToUpdate.phone_number = student.phone_number;
-    studentToUpdate.address = student.address;
-    studentToUpdate.major = student.major;
-    studentToUpdate.class_year = student.class_year;
-    studentToUpdate.program = student.program;
-    studentToUpdate.status = student.status;
-    studentToUpdate.birthdate = student.birthdate;
-    studentToUpdate.gender = student.gender;
+    const processedStudent = await preprocessStudent(student);
     
-    // addresses are objects that need to be added to the Address collection
-    if (student.permanent_address) {
-      const addressId = student._id + "ADDRPMNT";
-      // check if address existed
-      const address = await Address.findOne({ _id: addressId });
-      if (address) {
-        address.house_number = student.permanent_address.house_number;
-        address.street = student.permanent_address.street;
-        address.ward = student.permanent_address.ward;
-        address.district = student.permanent_address.district;
-        address.city = student.permanent_address.city;
-        address.country = student.permanent_address.country;
-        address.postal_code = student.permanent_address.postal_code;
-        await address.save();
-      } else {
-        const newAddress = student.permanent_address;
-        newAddress._id = addressId;
-        await Address.insertOne(newAddress);
-      }
-      student.permanent_address = addressId;
-    } else {
-      student.permanent_address = "";
-    }
-    if (student.temporary_address) {
-      const addressId = student._id + "ADDRTMP";
-      // check if address existed
-      const address = await Address.findOne({ _id: addressId });
-      if (address) {
-        address.house_number = student.temporary_address.house_number;
-        address.street = student.temporary_address.street;
-        address.ward = student.temporary_address.ward;
-        address.district = student.temporary_address.district;
-        address.city = student.temporary_address.city;
-        address.country = student.temporary_address.country;
-        address.postal_code = student.temporary_address.postal_code;
-        await address.save();
-      }
-      else {
-        const newAddress = student.temporary_address;
-        newAddress._id = addressId;
-        await Address.insertOne(newAddress);
-      }
-      student.temporary_address = addressId;
-    } else {
-      student.temporary_address = "";
-    }
-    if (student.mailing_address) {
-      const addressId = student._id + "ADDRMAIL";
-      // check if address existed
-      const address = await Address.findOne({ _id: addressId });
-      if (address) {
-        address.house_number = student.mailing_address.house_number;
-        address.street = student.mailing_address.street;
-        address.ward = student.mailing_address.ward;
-        address.district = student.mailing_address.district;
-        address.city = student.mailing_address.city;
-        address.country = student.mailing_address.country;
-        address.postal_code = student.mailing_address.postal_code;
-        await address.save();
-      }
-      else {
-        const newAddress = student.mailing_address;
-        newAddress._id = addressId;
-        await Address.insertOne(newAddress);
-      }
-      student.mailing_address = addressId;
-    } else {
-      student.mailing_address = "";
-    }
-    
-    if (student.identity_card) {
-      // check if identity card existed
-      const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
-      if (identityCard) {
-        identityCard.issue_date = student.identity_card.issue_date;
-        identityCard.expiry_date = student.identity_card.expiry_date;
-        identityCard.issue_location = student.identity_card.issue_location;
-        identityCard.is_digitized = student.identity_card.is_digitized;
-        identityCard.chip_attached = student.identity_card.chip_attached;
-        console.log("Updating existing identity card: ", identityCard);
-        await identityCard.save();
-      } else {
-        console.log("Inserting new identity card: ", student.identity_card);
-        await IdentityCard.insertOne(student.identity_card);
-      }
-      student.identity_card = student.identity_card._id;
-    } else {
-      student.identity_card = "";
-    }
-
-    if (student.passport) {
-      // check if passport existed
-      const passport = await Passport.findOne({ _id: student.passport._id });
-      if (passport) {
-        passport.type = student.passport.type;
-        passport.country_code = student.passport.country_code;
-        passport.issue_date = student.passport.issue_date;
-        passport.expiry_date = student.passport.expiry_date;
-        passport.issue_location = student.passport.issue_location;
-        console.log("Updating existing passport: ", passport);
-        await passport.save();
-      } else {
-        console.log("Inserting new passport: ", student.passport);
-        await Passport.insertOne(student.passport);
-      }
-      student.passport = student.passport._id;
-    } else {
-      student.passport = "";
-    }
-
-    studentToUpdate.permanent_address = student.permanent_address;
-    studentToUpdate.temporary_address = student.temporary_address;
-    studentToUpdate.mailing_address = student.mailing_address;
-    studentToUpdate.identity_card = student.identity_card;
-    studentToUpdate.passport = student.passport;
+    studentToUpdate.name = processedStudent.name;
+    studentToUpdate.email = processedStudent.email;
+    studentToUpdate.phone_number = processedStudent.phone_number;
+    studentToUpdate.address = processedStudent.address;
+    studentToUpdate.major = processedStudent.major;
+    studentToUpdate.class_year = processedStudent.class_year;
+    studentToUpdate.program = processedStudent.program;
+    studentToUpdate.status = processedStudent.status;
+    studentToUpdate.birthdate = processedStudent.birthdate;
+    studentToUpdate.gender = processedStudent.gender;
+    studentToUpdate.permanent_address = processedStudent.permanent_address;
+    studentToUpdate.temporary_address = processedStudent.temporary_address;
+    studentToUpdate.mailing_address = processedStudent.mailing_address;
+    studentToUpdate.identity_card = processedStudent.identity_card;
+    studentToUpdate.passport = processedStudent.passport;
     
     await studentToUpdate.save();
-
-    console.log("Student updated successfully");
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
-    console.error("Error updating students: ", error.message);
+    console.error("❌ Error updating student:", error.message);
     res.status(400).json({ ok: false, error: error.message });
   }
-}
+};
 
 export const deleteStudents = async (req, res) => {
   const studentIds = req.body.student_ids;

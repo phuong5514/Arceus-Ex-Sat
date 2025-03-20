@@ -19,6 +19,9 @@
                     viên</button>
                 <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
                     viên</button>
+                <button class="flex-row-item" onclick="window.location.href='/manage-dropdowns'">
+                        Quản lý danh mục
+                </button>
 
                 <div class="flex-row-item" style="max-width: 128px;">
                     <a class="reload-button" href="/">
@@ -415,6 +418,7 @@
                     <tr class="student-row" 
                         data-student-id="<%= results.docs[i]._id %>" 
                         onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
+                        
                         <td>
                             <div class="remove">
                                 <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
@@ -426,26 +430,16 @@
                                     onchange="onEditCheckboxChange(this, '<%= results.docs[i]._id %>')">
                             </div>
                         </td>
-                        <td>
-                            <%= results.docs[i]._id %>
+                        <td><%= results.docs[i]._id %></td>
+                        <td><%= results.docs[i].name || "Chưa có" %></td>
+                        <td><%= results.docs[i].birthdate || "Chưa có" %></td>
+                        <td><%= results.docs[i].gender || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].major?._id || ''%>">
+                            <%= results.docs[i].major?.major_name || "Chưa có" %>
                         </td>
-                        <td>
-                            <%= results.docs[i].name %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].birthdate %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].gender %>
-                        </td>
-                        <td name="<%=results.docs[i].major._id%>">
-                            <%= results.docs[i].major.major_name %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].class_year %>
-                        </td>
-                        <td name="<%=results.docs[i].program._id%>">
-                            <%= results.docs[i].program.program_name %>
+                        <td><%= results.docs[i].class_year || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].program?._id || ""%>">
+                            <%= results.docs[i].program?.program_name || "Chưa có" %>
                         </td>
                         <td >
                             <div class="flex-row-space-between">
@@ -545,18 +539,16 @@
                                 </i>
                             </div>
                         </td>
-                        <td>
-                            <%= results.docs[i].email %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].phone_number %>
-                        </td>
-                        <td name="<%=results.docs[i].status._id%>">
-                            <%= results.docs[i].status.status_name %>
+                        <td><%= results.docs[i].email || "Chưa có" %></td>
+                        <td><%= results.docs[i].phone_number || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].status?._id || ""%>">
+                            <%= results.docs[i].status?.status_name || "Chưa có" %>
                         </td>
                     </tr>
-                    <% } %>
+                <% } %>
             </tbody>
+            
+    
         </table>
         <% if (results.docs.length == 0) { %>
             <div class="empty-table">(Không có sinh viên)</div>

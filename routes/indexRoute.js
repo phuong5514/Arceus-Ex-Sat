@@ -2,11 +2,6 @@ import express, { query } from 'express';
 import dayjs from 'dayjs';
 import { addStudent, deleteStudents, getAllStudents, updateStudent, searchStudents } from '../controllers/studentController.js';
 
-const majorList = ["Kinh tế", "Tiếng Anh thương mại", "Luật", "Tiếng Nhật", "Tiếng Pháp"];
-const statusList = ["Đang học", "Đã thôi học", "Đã tốt nghiệp", "Tạm dừng học"];
-const genderList = ["Nam", "Nữ"];
-const programList = ["Chính quy", "Chất lượng cao", "Tài năng", "Tiên tiến"];
-
 const router = express.Router();
 const PAGE_SIZE = 20;
 

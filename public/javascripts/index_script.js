@@ -95,6 +95,95 @@ function onRemoveStudentClicked() {
     changeToMode("remove");
 }
 
+// async function onEditStudentSaved() {
+//     if (!selectedStudentId) {
+//         setMessage("error", "Vui lòng chọn sinh viên cần sửa");
+//         return;
+//     }
+
+//     var student = {
+//         _id: document.getElementById("edit-student-id").value,
+//         name: document.getElementById("edit-name").value,
+//         email: document.getElementById("edit-email").value,
+//         phone_number: document.getElementById("edit-phone_number").value,
+//         address: document.getElementById("edit-address").value,
+//         gender: document.getElementById("edit-gender").value,
+//         birthdate: document.getElementById("edit-birthdate").value,
+//         major: document.getElementById("edit-major").value,
+//         class_year: document.getElementById("edit-class_year").value,
+//         program: document.getElementById("edit-program").value,
+//         status: document.getElementById("edit-status").value
+//     };
+
+//     try {
+//         const response = await fetch(`/students/${selectedStudentId}`, {
+//             method: "PUT",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify(student),
+//         });
+
+//         if (response.ok) {
+//             const result = await response.json();
+//             if (result.ok) {
+//                 markDataChanged();
+//                 changeToMode("view");
+//                 setMessage("success", "Cập nhật thông tin sinh viên thành công!");
+//                 setTimeout(() => {
+//                     window.location.reload();
+//                 }, 1000);
+//             } else {
+//                 setMessage("error", result.error || "Cập nhật thất bại");
+//             }
+//         } else {
+//             const error = await response.json();
+//             setMessage("error", error.error || "Cập nhật thất bại");
+//         }
+//     } catch (error) {
+//         setMessage("error", "Lỗi kết nối: " + error.message);
+//     }
+// }
+
+// async function onAddStudentSaved() {
+//     var student = {
+//         _id: document.getElementById("add-student_id").value,
+//         name: document.getElementById("add-name").value,
+//         email: document.getElementById("add-email").value,
+//         phone_number: document.getElementById("add-phone_number").value,
+//         address: document.getElementById("add-address").value,
+//         gender: document.getElementById("add-gender").value,
+//         birthdate: document.getElementById("add-birthdate").value,
+//         major: document.getElementById("add-major").value,
+//         class_year: document.getElementById("add-class_year").value,
+//         program: document.getElementById("add-program").value,
+//         status: document.getElementById("add-status").value
+//     };
+
+//     const response = await fetch("/students", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(student),
+//     });
+//     if (response.ok) {
+//         const result = await response.json();
+//         markDataChanged();
+//         changeToMode("view");
+//         setMessage("success", "Thêm sinh viên thành công!");
+//         setTimeout(() => {
+//             window.location.reload();
+//         }, 1000);
+//     } else {
+//         const result = await response.json();
+//         setMessage("error", result.error);
+//     }
+// }
+
+
+//Minh Phuong: Modify to add students
+
 async function onEditStudentSaved() {
     if (!selectedStudentId) {
         setMessage("error", "Vui lòng chọn sinh viên cần sửa");
@@ -137,24 +226,15 @@ async function onEditStudentSaved() {
     try {
         const response = await fetch(`/students/${selectedStudentId}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(student),
         });
 
         if (response.ok) {
-            const result = await response.json();
-            if (result.ok) {
-                markDataChanged();
-                changeToMode("view");
-                setMessage("success", "Cập nhật thông tin sinh viên thành công!");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-            } else {
-                setMessage("error", result.error || "Cập nhật thất bại");
-            }
+            markDataChanged();
+            changeToMode("view");
+            setMessage("success", "Cập nhật thông tin sinh viên thành công!");
+            setTimeout(() => window.location.reload(), 1000);
         } else {
             const error = await response.json();
             setMessage("error", error.error || "Cập nhật thất bại");
@@ -165,6 +245,8 @@ async function onEditStudentSaved() {
 }
 
 async function onAddStudentSaved() {
+    // const identificationType = document.getElementById("add-identification-type").value;
+
     var student = {
         _id: document.getElementById("add-student_id").value,
         name: document.getElementById("add-name").value,
@@ -192,24 +274,20 @@ async function onAddStudentSaved() {
 
     const response = await fetch("/students", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
     });
+
+    const result = await response.json();
     if (response.ok) {
-        const result = await response.json();
-        markDataChanged();
-        changeToMode("view");
-        setMessage("success", "Thêm sinh viên thành công!");
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+        window.location.reload();
     } else {
-        const result = await response.json();
-        setMessage("error", result.error);
+        alert(result.error);
     }
 }
+
+
+
 
 // MPhuong: Delete students
 async function onRemoveStudentsSaved() {
@@ -493,7 +571,7 @@ function applyIdentityCardEdit(identityCardData, identityCardCell) {
     identityCardCell.querySelector("input[name='issue_location']").value = identityCardData.issue_location;
     identityCardCell.querySelector("input[name='is_digitized']").checked = identityCardData.is_digitized;
     identityCardCell.querySelector("input[name='chip_attached']").checked = identityCardData.chip_attached;
-
+    
     const displayIdentityCard = `${identityCardData._id}`;
     identityCardCell.querySelector(".identity_card-text").value = displayIdentityCard;
 }

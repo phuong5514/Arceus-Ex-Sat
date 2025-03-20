@@ -13,7 +13,6 @@ function onEditStudentClicked() {
     changeToMode("edit");
 }
 
-
 function onStudentRowClick(row, studentId) {
     if (mode !== "edit") return;
     const checkbox = row.querySelector('.edit-checkbox');

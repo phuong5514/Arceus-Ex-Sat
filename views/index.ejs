@@ -11,93 +11,95 @@
 </head>
 
 <body>
-    <nav class="bg-light">
-        <div class="flex-row">
-            <button class="flex-row-item" id="add-student-btn" onclick="onAddStudentClicked()">Thêm sinh viên</button>
-            <button class="flex-row-item" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh
-                viên</button>
-            <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
-                viên</button>
+    <nav>
+        <div class="toolbar flex-column">
+            <div class="flex-column-item flex-row">
+                <button class="flex-row-item" id="add-student-btn" onclick="onAddStudentClicked()">Thêm sinh viên</button>
+                <button class="flex-row-item" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh
+                    viên</button>
+                <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
+                    viên</button>
 
-            <div class="flex-row-item" style="max-width: 128px;">
-                <a class="reload-button" href="/">
-                    <svg width="24px" height="24px" xmlns:dc="http://purl.org/dc/elements/1.1/"
-                        xmlns:cc="http://creativecommons.org/ns#"
-                        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-                        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 30 30" version="1.1"
-                        id="svg822" inkscape:version="0.92.4 (f8dce91, 2019-08-02)" sodipodi:docname="reload.svg"
-                        fill="#000000">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <defs id="defs816"></defs>
-                            <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0"
-                                inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="17.833333"
-                                inkscape:cx="20.567048" inkscape:cy="12.77705" inkscape:document-units="px"
-                                inkscape:current-layer="layer1" showgrid="true" units="px" inkscape:window-width="1366"
-                                inkscape:window-height="713" inkscape:window-x="0" inkscape:window-y="0"
-                                inkscape:window-maximized="1" showguides="false">
-                                <inkscape:grid type="xygrid" id="grid816"></inkscape:grid>
-                            </sodipodi:namedview>
-                            <metadata id="metadata819">
-                                <rdf:rdf>
-                                    <cc:work rdf:about="">
-                                        <dc:format>image/svg+xml</dc:format>
-                                        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
-                                        <dc:title> </dc:title>
-                                    </cc:work>
-                                </rdf:rdf>
-                            </metadata>
-                            <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1"
-                                transform="translate(0,-289.0625)">
-                                <path
-                                    style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
-                                    d="M 15 6 C 10.041282 6 6 10.04128 6 15 C 6 19.95872 10.041282 24 15 24 C 16.586491 24 18.07668 23.58246 19.373047 22.857422 L 17.888672 21.375 C 17.00816 21.772814 16.032235 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 11.12216 11.122162 8 15 8 C 18.877838 8 22 11.12216 22 15 L 19 15 L 23 20 L 27 15 L 24 15 C 24 10.04128 19.958718 6 15 6 z "
-                                    id="path819" transform="translate(0,289.0625)"></path>
+                <div class="flex-row-item" style="max-width: 128px;">
+                    <a class="reload-button" href="/">
+                        <svg width="24px" height="24px" xmlns:dc="http://purl.org/dc/elements/1.1/"
+                            xmlns:cc="http://creativecommons.org/ns#"
+                            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+                            xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 30 30" version="1.1"
+                            id="svg822" inkscape:version="0.92.4 (f8dce91, 2019-08-02)" sodipodi:docname="reload.svg"
+                            fill="#000000">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <defs id="defs816"></defs>
+                                <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0"
+                                    inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="17.833333"
+                                    inkscape:cx="20.567048" inkscape:cy="12.77705" inkscape:document-units="px"
+                                    inkscape:current-layer="layer1" showgrid="true" units="px" inkscape:window-width="1366"
+                                    inkscape:window-height="713" inkscape:window-x="0" inkscape:window-y="0"
+                                    inkscape:window-maximized="1" showguides="false">
+                                    <inkscape:grid type="xygrid" id="grid816"></inkscape:grid>
+                                </sodipodi:namedview>
+                                <metadata id="metadata819">
+                                    <rdf:rdf>
+                                        <cc:work rdf:about="">
+                                            <dc:format>image/svg+xml</dc:format>
+                                            <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+                                            <dc:title> </dc:title>
+                                        </cc:work>
+                                    </rdf:rdf>
+                                </metadata>
+                                <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1"
+                                    transform="translate(0,-289.0625)">
+                                    <path
+                                        style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+                                        d="M 15 6 C 10.041282 6 6 10.04128 6 15 C 6 19.95872 10.041282 24 15 24 C 16.586491 24 18.07668 23.58246 19.373047 22.857422 L 17.888672 21.375 C 17.00816 21.772814 16.032235 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 11.12216 11.122162 8 15 8 C 18.877838 8 22 11.12216 22 15 L 19 15 L 23 20 L 27 15 L 24 15 C 24 10.04128 19.958718 6 15 6 z "
+                                        id="path819" transform="translate(0,289.0625)"></path>
+                                </g>
                             </g>
-                        </g>
-                    </svg>
-                </a>
-            </div>
-            <div class="flex-row-item">
-                <form class="flex-row" onsubmit="onSearchSubmitted(event)" id = "search-form">
-                    <input id="search-term" class="flex-row-item" type="text" class="input" placeholder="Tìm kiếm..."
-                        value="<%= queryData ? queryData.search : '' %>">
-                    <select id="search-by" class="flex-row-item">
-                        <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
-                        <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
-                    </select>
-                    
-                    <div id="more-search-options" class="more-search-options" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
-                        <label for="search-by-major" class="search-label">Khoa:</label>
-                        <select id="search-by-major" class="flex-row-item">
-                            <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>--Tất cả--</option>
-                            <% for (var i = 0; i < majors.length; i++) { %>
-                                <option value="<%= majors[i]._id %>" <%= queryData && queryData.search_by_major === majors[i]._id ? "selected" : "" %>><%= majors[i].major_name %></option>
-                            <% } %>
+                        </svg>
+                    </a>
+                </div>
+                <div class="flex-row-item">
+                    <form class="flex-row" onsubmit="onSearchSubmitted(event)" id = "search-form">
+                        <input id="search-term" class="flex-row-item" type="text" class="input" placeholder="Tìm kiếm..."
+                            value="<%= queryData ? queryData.search : '' %>">
+                        <select id="search-by" class="flex-row-item">
+                            <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
+                            <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
                         </select>
-                    </div>
+                        
+                        <div id="more-search-options" class="more-search-options" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
+                            <label for="search-by-major" class="search-label">Khoa:</label>
+                            <select id="search-by-major" class="flex-row-item">
+                                <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>--Tất cả--</option>
+                                <% for (var i = 0; i < majors.length; i++) { %>
+                                    <option value="<%= majors[i]._id %>" <%= queryData && queryData.search_by_major === majors[i]._id ? "selected" : "" %>><%= majors[i].major_name %></option>
+                                <% } %>
+                            </select>
+                        </div>
 
-                    <div id="more-search-options-button" class="button more-search-options-button" onclick="onSearchOptionsButtonClicked()">
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#33363F"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 6L15 12L9 18" stroke="#33363F" stroke-width="2"></path> </g></svg>
-                    </div>
-                </form>
+                        <div id="more-search-options-button" class="button more-search-options-button" onclick="onSearchOptionsButtonClicked()">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#33363F"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 6L15 12L9 18" stroke="#33363F" stroke-width="2"></path> </g></svg>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="flex-row">
-            <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
-            <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận
-                xóa</button>
-            <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
-            <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
-            <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()">Lưu</button>
-            <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
-            <div id="message" class="message-panel flex-row-item"></div>
+            <div class="flex-column-item flex-row">
+                <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
+                <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận
+                    xóa</button>
+                <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
+                <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
+                <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()">Lưu</button>
+                <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
+                <div id="message" class="message-panel flex-row-item"></div>
+            </div>
         </div>
     </nav>
-    <div style="height: 80px;"></div>
+    <div class="toolbar-fill-empty"></div>
     
     <dialog id="address-dialog">
         <form method="dialog" class="address-dialog-container" onsubmit="onAddressDialogSubmitted(event)">

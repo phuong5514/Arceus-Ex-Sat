@@ -16,6 +16,7 @@
   --active: var(--orange);
   --table_row: var(--white);
   --table_row_alt: var(--grey);
+  --toolbar-height: 78px;
 }
 
 * {
@@ -29,11 +30,16 @@ body {
   padding: 0;
 }
 
-nav {
+.toolbar {
   position: fixed;
   top: 0;
   width: 100%;
+  height: var(--toolbar-height);
   z-index: 10;
+}
+
+.toolbar-fill-empty{
+  height: var(--toolbar-height);
 }
 
 .flex-row {
@@ -45,12 +51,17 @@ nav {
 .flex-column {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0px;
 }
 
 .flex-row-item {
   flex-grow: 1;
 }
+
+.flex-column-item {
+  flex-grow: 1;
+}
+
 .save-button {
   background-color: var(--green);
   padding: 8px 32px;
@@ -137,7 +148,7 @@ th {
   color: var(--white);
   font-weight: bold;
   position: sticky;
-  top: 78px;
+  top: var(--toolbar-height);
 }
 
 tr:nth-child(even) {

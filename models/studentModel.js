@@ -35,9 +35,21 @@ const StudentSchema = mongoose.Schema({
     permanent_address: AddressSchema, // Địa chỉ thường trú
     temporary_address: AddressSchema, // Địa chỉ tạm trú (optional)
     mailing_address: AddressSchema, // Địa chỉ nhận thư (optional)
+    // identification: {
+    //     type: { type: String, enum: ['IdentityCard', 'Passport'], required: true },
+    //     id: { type: String, refPath: 'identification.type' } // Dynamic reference to IdentityCard or Passport
+    // },
     identification: {
-        type: { type: String, enum: ['IdentityCard', 'Passport'], required: true },
-        id: { type: String, refPath: 'identification.type' } // Dynamic reference to IdentityCard or Passport
+        type: {
+            type: String, 
+            enum: ['IdentityCard', 'Passport'], 
+            required: true
+        },
+        id: { type: String, required: true },
+        issue_date: { type: Date, required: true },
+        expiry_date: { type: Date, required: true },
+        issue_location: { type: String, required: true },
+        is_digitized: { type: Boolean, default: false } // Only for CCCD
     },
     nationality: { type: String, required: true }, // new field of nationality
     email: { type: String, required: true },

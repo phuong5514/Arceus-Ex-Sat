@@ -15,12 +15,13 @@ import mongoose from "mongoose";
 // Minh Phuong modified to use for CMND with CCCD.
 const IdentityCardSchema = mongoose.Schema({
     _id: String,
-    type: { type: String, enum: ['CMND', 'CCCD'], required: true }, // Distinguish between CMND and CCCD
-    number: { type: String, required: true }, // Số CMND/CCCD
+    type: { type: String, enum: ['CMND', 'CCCD'], required: true }, // CMND or CCCD
+    number: { type: String, required: true }, // Identity number
     issue_date: { type: Date, required: true },
     expiry_date: { type: Date, required: true },
     issue_location: { type: String, required: true },
-    is_digitized: { type: Boolean, default: false } // Chỉ áp dụng cho CCCD (có chip hay không)
+    is_digitized: { type: Boolean, default: false } // Only for CCCD
 });
+
 const IdentityCard = mongoose.model("IdentityCard", IdentityCardSchema, "identity_cards");
 export default IdentityCard;

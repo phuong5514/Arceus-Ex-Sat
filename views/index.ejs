@@ -111,13 +111,17 @@
                     <th>Khoa</th>
                     <th>Khóa</th>
                     <th>Chương trình</th>
-                    <th>Địa chỉ</th>
+                    <th>Địa chỉ thường trú</th>
+                    <th>Địa chỉ tạm trú</th>
+                    <th>Địa chỉ nhận thư</th>
+                    <th>Giấy tờ tùy thân</th>
+                    <th>Quốc tịch</th>
                     <th>Email</th>
                     <th>SĐT</th>
                     <th>Tình trạng</th>
                 </tr>
             </thead>
-            <tbody>
+            <!-- <tbody>
                 <tr class="add editable-row">
                     <td> </td>
                     <td>
@@ -270,7 +274,304 @@
                         </td>
                     </tr>
                     <% } %>
+            </tbody> -->
+        
+            <tbody>
+                <tr class="add editable-row">
+                    <td> </td>
+                    <td>
+                        <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
+                    </td>
+                    <td>
+                        <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
+                    </td>
+                    <td>
+                        <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
+                    </td>
+                    <td>
+                        <select name="gender" id="add-gender">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="major" id="add-major">
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
+                    </td>
+                    <td>
+                        <select name="program" id="add-program">
+                            <% for (var i = 0; i < programs.length; i++) { %>
+                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <!-- <input type="text" id="add-permanent_address" name="permanent_address" placeholder="Địa chỉ thường trú" size="50"> -->
+                        <input type="text" id="add-permanent-house" placeholder="Số nhà, đường">
+                        <input type="text" id="add-permanent-ward" placeholder="Phường/Xã">
+                        <input type="text" id="add-permanent-district" placeholder="Quận/Huyện">
+                        <input type="text" id="add-permanent-province" placeholder="Tỉnh/Thành phố">
+                        <input type="text" id="add-permanent-country" placeholder="Quốc gia">
+
+                    </td>
+
+                    <td>
+                        <!-- Temporary Address -->
+                        <input type="text" id="add-temporary-house" placeholder="Số nhà, đường (Tạm trú)">
+                        <input type="text" id="add-temporary-ward" placeholder="Phường/Xã (Tạm trú)">
+                        <input type="text" id="add-temporary-district" placeholder="Quận/Huyện (Tạm trú)">
+                        <input type="text" id="add-temporary-province" placeholder="Tỉnh/Thành phố (Tạm trú)">
+                        <input type="text" id="add-temporary-country" placeholder="Quốc gia (Tạm trú)">
+                    </td>
+                    <td>
+                        <!-- <input type="text" id="add-mailing_address" name="mailing_address" placeholder="Địa chỉ nhận thư (nếu có)" size="50"> -->
+                        
+
+                        <!-- Mailing Address -->
+                        <input type="text" id="add-mailing-house" placeholder="Số nhà, đường (Nhận thư)">
+                        <input type="text" id="add-mailing-ward" placeholder="Phường/Xã (Nhận thư)">
+                        <input type="text" id="add-mailing-district" placeholder="Quận/Huyện (Nhận thư)">
+                        <input type="text" id="add-mailing-province" placeholder="Tỉnh/Thành phố (Nhận thư)">
+                        <input type="text" id="add-mailing-country" placeholder="Quốc gia (Nhận thư)">
+                    </td>
+                    <td>
+                        <select id="add-identification-type" name="identification_type" onchange="onIdentificationTypeChange()">
+                            <option value="">Chọn loại giấy tờ</option>
+                            <option value="CMND">CMND</option>
+                            <option value="CCCD">CCCD</option>
+                            <option value="Passport">Hộ chiếu</option>
+                        </select>
+                    
+                        <!-- Dynamic fields based on selection -->
+                        <div id="identification-fields">
+                            <input type="text" id="add-identification-number" name="identification_number" placeholder="Số giấy tờ" size="20">
+                            <input type="date" id="add-identification-issue-date" name="identification_issue_date" placeholder="Ngày cấp">
+                            <input type="date" id="add-identification-expiry-date" name="identification_expiry_date" placeholder="Ngày hết hạn">
+                            <input type="text" id="add-identification-issue-location" name="identification_issue_location" placeholder="Nơi cấp" size="30">
+                            
+                            <!-- Extra fields for Passport -->
+                            <input type="text" id="add-passport-country" name="passport_country" placeholder="Quốc gia cấp" size="20" style="display: none;">
+                            <input type="text" id="add-passport-notes" name="passport_notes" placeholder="Ghi chú (nếu có)" size="30" style="display: none;">
+                    
+                            <!-- CCCD Chip Checkbox -->
+                            <label id="cccd-chip-label" for="add-cccd-chip" style="display: none;">Có chip?</label>
+                            <input type="checkbox" id="add-cccd-chip" name="cccd_chip" style="display: none;">
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <input type="nationality" id="add-nationality" name="nationality" placeholder="Quốc tịch" size="20">
+                    </td>
+                    <td>
+                        <input type="email" id="add-email" name="email" placeholder="Email" size="20">
+                    </td>
+                    <td>
+                        <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                    </td>
+                    <td>
+                        <select name="status" id="add-status">
+                            <% for (var i = 0; i < status.length; i++) { %>
+                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="edit editable-row">
+                    <td> </td>
+                    <td>
+                        <input type="text" id="edit-student-id" name="student_id" placeholder="MSSV" size="9" readonly>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-name" name="name" placeholder="Họ tên" size="20">
+                    </td>
+                    <td>
+                        <input type="date" id="edit-birthdate" name="birthdate">
+                    </td>
+                    <td>
+                        <select name="gender" id="edit-gender">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="major" id="edit-major">
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
+                    </td>
+                    <td>
+                        <select name="program" id="edit-program">
+                            <% for (var i = 0; i < programs.length; i++) { %>
+                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <!-- Địa chỉ thường trú -->
+                    <td>
+                        <input type="text" id="edit-permanent-house" name="permanent-house" placeholder="Số nhà, tên đường" size="30">
+                        <input type="text" id="edit-permanent-ward" name="permanent-ward" placeholder="Phường/Xã" size="20">
+                        <input type="text" id="edit-permanent-district" name="permanent-district" placeholder="Quận/Huyện" size="20">
+                        <input type="text" id="edit-permanent-province" name="permanent-province" placeholder="Tỉnh/Thành phố" size="20">
+                        <input type="text" id="edit-permanent-country" name="permanent-country" placeholder="Quốc gia" size="20">
+                    </td>
+
+                    <!-- Địa chỉ tạm trú -->
+                    <td>
+                        <input type="text" id="edit-temporary-house" name="temporary-house" placeholder="Số nhà, tên đường" size="30">
+                        <input type="text" id="edit-temporary-ward" name="temporary-ward" placeholder="Phường/Xã" size="20">
+                        <input type="text" id="edit-temporary-district" name="temporary-district" placeholder="Quận/Huyện" size="20">
+                        <input type="text" id="edit-temporary-province" name="temporary-province" placeholder="Tỉnh/Thành phố" size="20">
+                        <input type="text" id="edit-temporary-country" name="temporary-country" placeholder="Quốc gia" size="20">
+                    </td>
+
+                    <!-- Địa chỉ nhận thư -->
+                    <td>
+                        <input type="text" id="edit-mailing-house" name="mailing-house" placeholder="Số nhà, tên đường" size="30">
+                        <input type="text" id="edit-mailing-ward" name="mailing-ward" placeholder="Phường/Xã" size="20">
+                        <input type="text" id="edit-mailing-district" name="mailing-district" placeholder="Quận/Huyện" size="20">
+                        <input type="text" id="edit-mailing-province" name="mailing-province" placeholder="Tỉnh/Thành phố" size="20">
+                        <input type="text" id="edit-mailing-country" name="mailing-country" placeholder="Quốc gia" size="20">
+                    </td>
+
+                    <td>
+                        <select id="add-identification-type" name="identification_type" onchange="onIdentificationTypeChange()">
+                            <option value="">Chọn loại giấy tờ</option>
+                            <option value="CMND">CMND</option>
+                            <option value="CCCD">CCCD</option>
+                            <option value="Passport">Hộ chiếu</option>
+                        </select>
+                    
+                        <!-- Dynamic fields based on selection -->
+                        <div id="identification-fields">
+                            <input type="text" id="add-identification-number" name="identification_number" placeholder="Số giấy tờ" size="20">
+                            <input type="date" id="add-identification-issue-date" name="identification_issue_date" placeholder="Ngày cấp">
+                            <input type="date" id="add-identification-expiry-date" name="identification_expiry_date" placeholder="Ngày hết hạn">
+                            <input type="text" id="add-identification-issue-location" name="identification_issue_location" placeholder="Nơi cấp" size="30">
+                            
+                            <!-- Extra fields for Passport -->
+                            <input type="text" id="add-passport-country" name="passport_country" placeholder="Quốc gia cấp" size="20" style="display: none;">
+                            <input type="text" id="add-passport-notes" name="passport_notes" placeholder="Ghi chú (nếu có)" size="30" style="display: none;">
+                    
+                            <!-- CCCD Chip Checkbox -->
+                            <label id="cccd-chip-label" for="add-cccd-chip" style="display: none;">Có chip?</label>
+                            <input type="checkbox" id="add-cccd-chip" name="cccd_chip" style="display: none;">
+                        </div>
+                    </td>
+
+                    <!-- Quốc tịch -->
+        <td>
+            <input type="text" id="edit-nationality" name="nationality" placeholder="Quốc tịch" size="20">
+        </td>
+                    <td>
+                        <input type="email" id="edit-email" name="email" placeholder="Email" size="20">
+                    </td>
+                    <td>
+                        <input type="text" id="edit-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                    </td>
+                    <td>
+                        <select name="status" id="edit-status">
+                            <% for (var i = 0; i < status.length; i++) { %>
+                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                </tr>
+                <% for (var i=0; i < results.docs.length; i++) { %>
+                    <tr class="student-row" 
+                        data-student-id="<%= results.docs[i]._id %>" 
+                        onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
+                        
+                        <td>
+                            <div class="remove">
+                                <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
+                                    value="<%= results.docs[i]._id %>">
+                            </div>
+                            <div class="edit">
+                                <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
+                                    value="<%= results.docs[i]._id %>"
+                                    onchange="onEditCheckboxChange(this, '<%= results.docs[i]._id %>')">
+                            </div>
+                        </td>
+                        <td><%= results.docs[i]._id %></td>
+                        <td><%= results.docs[i].name || "Chưa có" %></td>
+                        <td><%= results.docs[i].birthdate || "Chưa có" %></td>
+                        <td><%= results.docs[i].gender || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].major._id%>">
+                            <%= results.docs[i].major?.major_name || "Chưa có" %>
+                        </td>
+                        <td><%= results.docs[i].class_year || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].program._id%>">
+                            <%= results.docs[i].program?.program_name || "Chưa có" %>
+                        </td>
+                        
+                        <!-- Địa chỉ thường trú -->
+                        <td>
+                            <%= results.docs[i].permanent_address 
+                                ? `${results.docs[i].permanent_address.house_number_street}, ${results.docs[i].permanent_address.ward_commune}, ${results.docs[i].permanent_address.district}, ${results.docs[i].permanent_address.province_city}, ${results.docs[i].permanent_address.country}`
+                                : "Chưa có" 
+                            %>
+                        </td>
+
+                        <!-- Địa chỉ tạm trú -->
+            <td>
+                <%= results.docs[i].temporary_address 
+                    ? `${results.docs[i].temporary_address.house_number_street}, ${results.docs[i].temporary_address.ward_commune}, ${results.docs[i].temporary_address.district}, ${results.docs[i].temporary_address.province_city}, ${results.docs[i].temporary_address.country}`
+                    : "Không có" 
+                %>
+            </td>
+
+            <!-- Địa chỉ nhận thư -->
+            <td>
+                <%= results.docs[i].mailing_address 
+                    ? `${results.docs[i].mailing_address.house_number_street}, ${results.docs[i].mailing_address.ward_commune}, ${results.docs[i].mailing_address.district}, ${results.docs[i].mailing_address.province_city}, ${results.docs[i].mailing_address.country}`
+                    : "Không có" 
+                %>
+            </td>
+            
+                        <!-- Giấy tờ tùy thân -->
+                        <td>
+                            <% if (results.docs[i].identification) { %>
+                                <% if (results.docs[i].identification.type === "IdentityCard") { %>
+                                    CMND (9 số)/CCCD (12 số): <%= results.docs[i].identification.id || "Chưa có" %>, 
+                                    Ngày cấp: <%= results.docs[i].identification.issue_date || "Chưa có" %>, 
+                                    Nơi cấp: <%= results.docs[i].identification.issue_location || "Chưa có" %>, 
+                                    Ngày hết hạn: <%= results.docs[i].identification.expiry_date || "Chưa có" %>, 
+                                    Gắn chip: <%= results.docs[i].identification.is_digitized ? "Có" : "Không" %>
+                                <% } else if (results.docs[i].identification.type === "Passport") { %>
+                                    Hộ chiếu: <%= results.docs[i].identification.id || "Chưa có" %>, 
+                                    Ngày cấp: <%= results.docs[i].identification.issue_date || "Chưa có" %>, 
+                                    Nơi cấp: <%= results.docs[i].identification.issue_location || "Chưa có" %>, 
+                                    Quốc gia cấp: <%= results.docs[i].identification.issue_location || "Chưa có" %>, 
+                                    Ngày hết hạn: <%= results.docs[i].identification.expiry_date || "Chưa có" %>
+                                <% } %>
+                            <% } else { %>
+                                Chưa có
+                            <% } %>
+                        </td>
+            
+                        <!-- Quốc tịch -->
+                        <td><%= results.docs[i].nationality || "Chưa có" %></td>
+            
+                        <td><%= results.docs[i].email || "Chưa có" %></td>
+                        <td><%= results.docs[i].phone_number || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].status._id%>">
+                            <%= results.docs[i].status?.status_name || "Chưa có" %>
+                        </td>
+                    </tr>
+                <% } %>
             </tbody>
+            
+    
         </table>
         <% if (results.docs.length == 0) { %>
             <div class="empty-table">(Không có sinh viên)</div>

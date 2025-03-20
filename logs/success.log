@@ -1,0 +1,8 @@
+[2025-03-20T12:22:18.193Z] GET / - 200
+[2025-03-20T12:22:18.492Z] GET /css/styles.css - 200
+[2025-03-20T12:22:18.496Z] GET /javascripts/index_script.js - 200
+[2025-03-20T12:22:18.497Z] GET /javascripts/event_script.js - 200
+[2025-03-20T12:25:00.012Z] GET / - 200
+[2025-03-20T12:25:00.277Z] GET /css/styles.css - 200
+[2025-03-20T12:25:00.281Z] GET /javascripts/index_script.js - 200
+[2025-03-20T12:25:00.284Z] GET /javascripts/event_script.js - 200

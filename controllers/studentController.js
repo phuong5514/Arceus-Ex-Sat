@@ -6,6 +6,7 @@ import Program from "../models/programModel.js";
 import Status from "../models/statusModel.js";
 import Address from "../models/addressModel.js";
 import IdentityCard from "../models/identityCardModel.js";
+import Passport from "../models/passportModel.js";
 
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
@@ -21,7 +22,8 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
       "permanent_address",
       "temporary_address",
       "mailing_address",
-      "identity_card"
+      "identity_card",
+      "passport"
     ]
   };
 
@@ -56,6 +58,13 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
     } else {
       student.identity_card = null;
     }
+    if (student.passport) {
+      student.passport.issue_date = dayjs(student.passport.issue_date).format('YYYY-MM-DD');
+      student.passport.expiry_date = dayjs(student.passport.expiry_date).format('YYYY-MM-DD');
+      student.passport.text = formatPassport(student.passport);
+    } else {
+      student.passport = null;
+    }
   });
 
   return results;
@@ -69,52 +78,21 @@ function formatAddress(address) {
     .filter(([key, value]) => (key === "city" || key === "country") && typeof value !== "undefined" && value)
     .map(([key, value]) => value)
     .join(", ");
-
-  const fieldNames = {
-    house_number: "Số",
-    street: "Đường",
-    ward: "Phường",
-    district: "Quận/Huyện",
-    city: "TP",
-    country: "",
-    postal_code: "Mã bưu điện"
-  };
-
-  return Object.entries(address)
-    .filter(([key, value]) => key !== "_id" && typeof value !== "undefined" && value)
-    .map(([key, value]) => `${fieldNames[key]} ${value}`)
-    .join(", ");
 }
 
-// TODO: Make formatted text more readable by adding field name before each value
 function formatIdentityCard(identityCard){
   if (!identityCard){
     return "";
   }
 
   return identityCard._id;
+}
 
-  const fieldNames = {
-    issue_date: "NC",
-    expiry_date: "NHH",
-    issue_location: "NC",
-    is_digitized: "CCCD",
-    chip_attached: "Chip"
-  };
-
-  return Object.entries(identityCard)
-    .filter(([key, value]) => key !== "_id" && typeof value !== "undefined" && value)
-    .map(([key, value]) => {
-      if (key === "issue_date" || key === "expiry_date"){
-        return `${fieldNames[key]}: ${dayjs(value).format('DD/MM/YYYY')}`;
-      }
-      if (key === "is_digitized" || key === "chip_attached"){
-        return `${fieldNames[key]}: ${value ? "Có" : "Không"}`;
-      }
-      return `${fieldNames[key]}: ${value}`;
-    })
-    .join(", ");
-
+function formatPassport(passport){
+  if (!passport){
+    return "";
+  }
+  return passport._id;
 }
 
 function emptyAddress(){
@@ -288,6 +266,25 @@ export const addStudent = async (req, res) => {
     else {
       student.identity_card = "";
     }
+    if (student.passport) {
+      // check if passport existed
+      const passport = await Passport.findOne({ _id: student.passport._id });
+      if (passport) {
+        passport.type = student.passport.type;
+        passport.country_code = student.passport.country_code;
+        passport.issue_date = student.passport.issue_date;
+        passport.expiry_date = student.passport.expiry_date;
+        passport.issue_location = student.passport.issue_location;
+        console.log("Updating existing passport: ", passport);
+        await passport.save();
+      } else {
+        console.log("Inserting new passport: ", student.passport);
+        await Passport.insertOne(student.passport);
+      }
+      student.passport = student.passport._id;
+    } else {
+      student.passport = "";
+    }
 
     await Student.insertOne(student);
 
@@ -460,11 +457,32 @@ export const updateStudent = async (req, res) => {
       student.identity_card = "";
     }
 
+    if (student.passport) {
+      // check if passport existed
+      const passport = await Passport.findOne({ _id: student.passport._id });
+      if (passport) {
+        passport.type = student.passport.type;
+        passport.country_code = student.passport.country_code;
+        passport.issue_date = student.passport.issue_date;
+        passport.expiry_date = student.passport.expiry_date;
+        passport.issue_location = student.passport.issue_location;
+        console.log("Updating existing passport: ", passport);
+        await passport.save();
+      } else {
+        console.log("Inserting new passport: ", student.passport);
+        await Passport.insertOne(student.passport);
+      }
+      student.passport = student.passport._id;
+    } else {
+      student.passport = "";
+    }
+
     studentToUpdate.permanent_address = student.permanent_address;
     studentToUpdate.temporary_address = student.temporary_address;
     studentToUpdate.mailing_address = student.mailing_address;
     studentToUpdate.identity_card = student.identity_card;
-
+    studentToUpdate.passport = student.passport;
+    
     await studentToUpdate.save();
 
     console.log("Student updated successfully");

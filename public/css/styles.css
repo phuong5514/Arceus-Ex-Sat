@@ -277,9 +277,10 @@ tr:nth-child(odd) {
   padding: 8px 6px;
 }
 
-.editable-cell{
+.flex-row-space-between{
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 8px;
 }
 
@@ -300,6 +301,26 @@ tr:nth-child(odd) {
 .identity-card-dialog-submit-button {
   grid-column: 1 / span 2;
 }
+
+
+.passport-dialog-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 28px;
+}
+
+.passport-dialog-header {
+  color: var(--green);
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+  grid-column: 1 / span 2;
+}
+
+.passport-dialog-submit-button {
+  grid-column: 1 / span 2;
+}
+
 
 .gap-8 {
   gap: 8px;

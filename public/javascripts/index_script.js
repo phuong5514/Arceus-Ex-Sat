@@ -60,14 +60,15 @@ function onEditCheckboxChange(checkbox, studentId) {
         document.getElementById("edit-program").value = cells[7].getAttribute("name");
 
         applyIdentityCardEdit(getIdentityCardFromDiv(cells[8].querySelector("div")), document.getElementById("edit-identity_card"));
+        applyPassportEdit(getPassportFromDiv(cells[9].querySelector("div")), document.getElementById("edit-passport"));
 
-        applyAddressEdit(getAddressFromAddressDiv(cells[9].querySelector("div")), document.getElementById("edit-address_permanent"));
-        applyAddressEdit(getAddressFromAddressDiv(cells[10].querySelector("div")), document.getElementById("edit-address_temporary"));
-        applyAddressEdit(getAddressFromAddressDiv(cells[11].querySelector("div")), document.getElementById("edit-address_mailing"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[10].querySelector("div")), document.getElementById("edit-address_permanent"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[11].querySelector("div")), document.getElementById("edit-address_temporary"));
+        applyAddressEdit(getAddressFromAddressDiv(cells[12].querySelector("div")), document.getElementById("edit-address_mailing"));
 
-        document.getElementById("edit-email").value = cells[12].textContent.trim();
-        document.getElementById("edit-phone_number").value = cells[13].textContent.trim();
-        document.getElementById("edit-status").value = cells[14].getAttribute("name");
+        document.getElementById("edit-email").value = cells[13].textContent.trim();
+        document.getElementById("edit-phone_number").value = cells[14].textContent.trim();
+        document.getElementById("edit-status").value = cells[15].getAttribute("name");
 
         setMessage("info", `Đang chỉnh sửa thông tin sinh viên: ${studentId}, ${studentName}, ${birthdate}`);
     } else {
@@ -124,6 +125,14 @@ async function onEditStudentSaved() {
     student.mailing_address = getAddressFromAddressDiv(document.getElementById("edit-address_mailing"));
 
     student.identity_card = getIdentityCardFromDiv(document.getElementById("edit-identity_card"));
+    student.passport = getPassportFromDiv(document.getElementById("edit-passport"));
+
+    if (student.identity_card._id === "") {
+        student.identity_card = null;
+    }
+    if (student.passport._id === "") {
+        student.passport = null;
+    }
 
     try {
         const response = await fetch(`/students/${selectedStudentId}`, {
@@ -179,6 +188,7 @@ async function onAddStudentSaved() {
     student.mailing_address = getAddressFromAddressDiv(document.getElementById("add-address_mailing"));
 
     student.identity_card = getIdentityCardFromDiv(document.getElementById("add-identity_card"));
+    student.passport = getPassportFromDiv(document.getElementById("add-passport"));
 
     const response = await fetch("/students", {
         method: "POST",
@@ -501,7 +511,7 @@ function getIdentityCardFromDiv(identityCardDiv) {
 
 function onIdentityCardInfoClicked(button){
     const identityCardDialog = document.getElementById("identity-card-dialog");
-    const currentDiv = button.querySelector("div");
+    const currentDiv = button.closest("div");
     if (!currentDiv) return;
     const identityCardData = getIdentityCardFromDiv(currentDiv);
     if (!identityCardData._id) return;
@@ -525,7 +535,7 @@ function onIdentityCardInfoClicked(button){
 
 function onAddressInfoClicked(button) {
     const addressDialog = document.getElementById("address-dialog");
-    const currentDiv = button.querySelector("div");
+    const currentDiv = button.closest("div");
     if (!currentDiv) return;
     const addressData = getAddressFromAddressDiv(currentDiv);
     if (Object.values(addressData).every(x => x === '')) return;
@@ -546,4 +556,106 @@ function onAddressInfoClicked(button) {
     document.getElementById("address-city").readOnly = true;
     document.getElementById("address-country").readOnly = true;
     document.getElementById("address-postal_code").readOnly = true;
+}
+
+let currentEditPassportDiv = null;
+
+function onPassportEditClicked(button) {
+    const passportDialog = document.getElementById("passport-dialog");
+    passportDialog.showModal();
+    currentEditPassportDiv = button.closest("div");
+    if (!currentEditPassportDiv) return;
+
+    const passportData = getPassportFromDiv(currentEditPassportDiv);
+
+    document.getElementById("passport-id").readOnly = false;
+    document.getElementById("passport-type").readOnly = false;
+    document.getElementById("passport-country-code").readOnly = false;
+    document.getElementById("passport-issue-date").readOnly = false;
+    document.getElementById("passport-expiry-date").readOnly = false;
+    document.getElementById("passport-issue-location").readOnly = false;
+
+    document.getElementById("passport-id").value = passportData._id;
+    document.getElementById("passport-type").value = passportData.type;
+    document.getElementById("passport-country-code").value = passportData.country_code;
+    document.getElementById("passport-issue-date").value = passportData.issue_date;
+    document.getElementById("passport-expiry-date").value = passportData.expiry_date;
+    document.getElementById("passport-issue-location").value = passportData.issue_location;
+}
+
+function onPassportDialogSubmitted(event) {
+    event.preventDefault();
+    const passportDialog = document.getElementById("passport-dialog");
+
+    if (!currentEditPassportDiv) {
+        passportDialog.close();
+        return;
+    }
+
+    const passportId = document.getElementById("passport-id").value;
+    const type = document.getElementById("passport-type").value;
+    const countryCode = document.getElementById("passport-country-code").value;
+    const issueDate = document.getElementById("passport-issue-date").value;
+    const expiryDate = document.getElementById("passport-expiry-date").value;
+    const issueLocation = document.getElementById("passport-issue-location").value;
+
+    applyPassportEdit({
+        _id: passportId,
+        type,
+        country_code: countryCode,
+        issue_date: issueDate,
+        expiry_date: expiryDate,
+        issue_location: issueLocation
+    }, currentEditPassportDiv);
+
+    passportDialog.close();
+
+    currentEditPassportDiv = null;
+}
+
+function applyPassportEdit(passportData, passportCell) {
+    passportCell.querySelector("input[name='passport_id']").value = passportData._id;
+    passportCell.querySelector("input[name='type']").value = passportData.type;
+    passportCell.querySelector("input[name='country_code']").value = passportData.country_code;
+    passportCell.querySelector("input[name='issue_date']").value = passportData.issue_date;
+    passportCell.querySelector("input[name='expiry_date']").value = passportData.expiry_date;
+    passportCell.querySelector("input[name='issue_location']").value = passportData.issue_location;
+
+    const displayPassport = `${passportData._id}`;
+    passportCell.querySelector(".passport-text").value = displayPassport;
+}
+
+function getPassportFromDiv(passportDiv) {
+    return {
+        _id: passportDiv.querySelector("input[name='passport_id']").value,
+        type: passportDiv.querySelector("input[name='type']").value,
+        country_code: passportDiv.querySelector("input[name='country_code']").value,
+        issue_date: passportDiv.querySelector("input[name='issue_date']").value,
+        expiry_date: passportDiv.querySelector("input[name='expiry_date']").value,
+        issue_location: passportDiv.querySelector("input[name='issue_location']").value
+    }
+}
+
+function onPassportInfoClicked(button) {
+    const passportDialog = document.getElementById("passport-dialog");
+    const currentDiv = button.closest("div");
+    if (!currentDiv) return;
+    const passportData = getPassportFromDiv(currentDiv);
+    if (!passportData._id) return;
+    document.getElementById("passport-id").value = passportData._id;
+    document.getElementById("passport-type").value = passportData.type;
+    document.getElementById("passport-country-code").value = passportData.country_code;
+    document.getElementById("passport-issue-date").value = passportData.issue_date;
+    document.getElementById("passport-expiry-date").value = passportData.expiry_date;
+    document.getElementById("passport-issue-location").value = passportData.issue_location;
+
+    // set all of them readonly
+    document.getElementById("passport-id").readOnly = true;
+    document.getElementById("passport-type").readOnly = true;
+    document.getElementById("passport-country-code").readOnly = true;
+    document.getElementById("passport-issue-date").readOnly = true;
+    document.getElementById("passport-expiry-date").readOnly = true;
+    document.getElementById("passport-issue-location").readOnly = true;
+
+    passportDialog.showModal();
 }

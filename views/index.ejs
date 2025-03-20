@@ -168,6 +168,37 @@
         </form>
     </dialog>
 
+    <dialog id="passport-dialog">
+        <form method="dialog" class="passport-dialog-container" onsubmit="onPassportDialogSubmitted(event)">
+            <div class="passport-dialog-header">Thông tin hộ chiếu:</div>
+            <div class="flex-column gap-8">
+                <label for="passport-id">Số hộ chiếu:</label>
+                <input type="text" id="passport-id" name="passport_id" placeholder="Số hộ chiếu" size="20" readonly>
+            </div>
+            <div class="flex-column gap-8">
+                <label for="passport-type">Loại:</label>
+                <input type="text" id="passport-type" name="type" placeholder="Loại" size="20">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="passport-country-code">Mã quốc gia:</label>
+                <input type="text" id="passport-country-code" name="country_code" placeholder="Mã quốc gia" size="20">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="passport-issue-date">Ngày cấp:</label>
+                <input type="date" id="passport-issue-date" name="issue_date">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="passport-expiry-date">Ngày hết hạn:</label>
+                <input type="date" id="passport-expiry-date" name="expiry_date">
+            </div>
+            <div class="flex-column gap-8">
+                <label for="passport-issue-location">Nơi cấp:</label>
+                <input type="text" id="passport-issue-location" name="issue_location" placeholder="Nơi cấp" size="20">
+            </div>
+            <button id="submit-passport-button" class="passport-dialog-submit-button" type="submit">OK</button>
+        </form>
+    </dialog>
+
     <div class="main_container">
         <table>
             <thead>
@@ -181,6 +212,7 @@
                     <th>Khóa</th>
                     <th>Chương trình</th>
                     <th>CCCD/CMND</th>
+                    <th>Hộ chiếu</th>
                     <th>Địa chỉ thường trú</th>
                     <th>Địa chỉ tạm trú</th>
                     <th>Địa chỉ nhận thư</th>
@@ -229,7 +261,7 @@
                         </select>
                     </td>
                     <td id="add-identity_card">
-                        <div class="editable-cell">
+                        <div class="flex-row-space-between">
                             <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
                             <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
                             <!-- Invisible elements to hold data -->
@@ -241,9 +273,22 @@
                             <input type="hidden" name="chip_attached">
                         </div>
                     </td>
+                    <td id="add-passport">
+                        <div class="flex-row-space-between">
+                            <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
+                            <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="passport_id">
+                            <input type="hidden" name="type">
+                            <input type="hidden" name="country_code">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                        </div>
+                    </td>
                     <% addressTypes.forEach(addressType => { %>
                         <td id="add-<%-addressType%>">
-                            <div class="editable-cell">
+                            <div class="flex-row-space-between">
                                 <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
                                 <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
                                 <!-- Invisible elements to hold data -->
@@ -311,7 +356,7 @@
                         </select>
                     </td>
                     <td id="edit-identity_card">
-                        <div class="editable-cell">
+                        <div class="flex-row-space-between">
                             <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
                             <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
                             <!-- Invisible elements to hold data -->
@@ -323,9 +368,22 @@
                             <input type="hidden" name="chip_attached">
                         </div>
                     </td>
+                    <td id="edit-passport">
+                        <div class="flex-row-space-between">
+                            <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
+                            <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="passport_id">
+                            <input type="hidden" name="type">
+                            <input type="hidden" name="country_code">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                        </div>
+                    </td>
                     <% addressTypes.forEach(addressType => { %>
                         <td id="edit-<%=addressType%>">
-                            <div class="editable-cell">
+                            <div class="flex-row-space-between">
                                 <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
                                 <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
                                 <!-- Invisible elements to hold data -->
@@ -389,55 +447,102 @@
                         <td name="<%=results.docs[i].program._id%>">
                             <%= results.docs[i].program.program_name %>
                         </td>
-                        <td name="<%=results.docs[i]%>" onclick="onIdentityCardInfoClicked(this)">
-                            <div>
-                                <%= results.docs[i].identity_card?.text || "" %>
-                                <!-- Invisible elements to hold data -->
-                                <input type="hidden" name="identity_card_id" value="<%= results.docs[i].identity_card?._id || '' %>">
-                                <input type="hidden" name="issue_date" value="<%= results.docs[i].identity_card?.issue_date || '' %>">
-                                <input type="hidden" name="expiry_date" value="<%= results.docs[i].identity_card?.expiry_date || '' %>">
-                                <input type="hidden" name="issue_location" value="<%= results.docs[i].identity_card?.issue_location || '' %>">
-                                <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
-                                <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
+                        <td >
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <div>
+                                        <%= results.docs[i].identity_card?.text || "" %>
+                                    </div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="identity_card_id" value="<%= results.docs[i].identity_card?._id || '' %>">
+                                    <input type="hidden" name="issue_date" value="<%= results.docs[i].identity_card?.issue_date || '' %>">
+                                    <input type="hidden" name="expiry_date" value="<%= results.docs[i].identity_card?.expiry_date || '' %>">
+                                    <input type="hidden" name="issue_location" value="<%= results.docs[i].identity_card?.issue_location || '' %>">
+                                    <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
+                                    <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
+                                </div>
+                                <i onclick="onIdentityCardInfoClicked(this)">
+                                    ...
+                                </i>
                             </div>
                         </td>
-                        <td onclick="onAddressInfoClicked(this)">
-                            <div>
-                                <%= results.docs[i].permanent_address.text %>
-                                <!-- Invisible elements to hold data -->
-                                <input type="hidden" name="house_number" value="<%= results.docs[i].permanent_address.house_number %>">
-                                <input type="hidden" name="street" value="<%= results.docs[i].permanent_address.street %>">
-                                <input type="hidden" name="ward" value="<%= results.docs[i].permanent_address.ward %>">
-                                <input type="hidden" name="district" value="<%= results.docs[i].permanent_address.district %>">
-                                <input type="hidden" name="city" value="<%= results.docs[i].permanent_address.city %>">
-                                <input type="hidden" name="country" value="<%= results.docs[i].permanent_address.country %>">
-                                <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].passport?.text || "" %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="passport_id" value="<%= results.docs[i].passport?._id || "" %>">
+                                    <input type="hidden" name="type" value="<%= results.docs[i].passport?.type || "" %>">
+                                    <input type="hidden" name="country_code" value="<%= results.docs[i].passport?.country_code || "" %>">
+                                    <input type="hidden" name="issue_date" value="<%= results.docs[i].passport?.issue_date || "" %>">
+                                    <input type="hidden" name="expiry_date" value="<%= results.docs[i].passport?.expiry_date || "" %>">
+                                    <input type="hidden" name="issue_location" value="<%= results.docs[i].passport?.issue_location || "" %>">
+                                </div>                                
+                                <i onclick="onPassportInfoClicked(this)">
+                                    ...
+                                </i>
                             </div>
                         </td>
-                        <td onclick="onAddressInfoClicked(this)">
-                            <div>
-                                <%= results.docs[i].temporary_address.text %>
-                                <!-- Invisible elements to hold data -->
-                                <input type="hidden" name="house_number" value="<%= results.docs[i].temporary_address.house_number %>">
-                                <input type="hidden" name="street" value="<%= results.docs[i].temporary_address.street %>">
-                                <input type="hidden" name="ward" value="<%= results.docs[i].temporary_address.ward %>">
-                                <input type="hidden" name="district" value="<%= results.docs[i].temporary_address.district %>">
-                                <input type="hidden" name="city" value="<%= results.docs[i].temporary_address.city %>">
-                                <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
-                                <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].permanent_address.text %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="house_number" value="<%= results.docs[i].permanent_address.house_number %>">
+                                    <input type="hidden" name="street" value="<%= results.docs[i].permanent_address.street %>">
+                                    <input type="hidden" name="ward" value="<%= results.docs[i].permanent_address.ward %>">
+                                    <input type="hidden" name="district" value="<%= results.docs[i].permanent_address.district %>">
+                                    <input type="hidden" name="city" value="<%= results.docs[i].permanent_address.city %>">
+                                    <input type="hidden" name="country" value="<%= results.docs[i].permanent_address.country %>">
+                                    <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
+                                </div>
+                                <i  onclick="onAddressInfoClicked(this)">
+                                    ...
+                                </i>
                             </div>
                         </td>
-                        <td onclick="onAddressInfoClicked(this)">
-                            <div>
-                                <%= results.docs[i].temporary_address.text %>
-                                <!-- Invisible elements to hold data -->
-                                <input type="hidden" name="house_number" value="<%= results.docs[i].temporary_address.house_number%>">
-                                <input type="hidden" name="street" value="<%= results.docs[i].temporary_address.street %>">
-                                <input type="hidden" name="ward" value="<%= results.docs[i].temporary_address.ward %>">
-                                <input type="hidden" name="district" value="<%= results.docs[i].temporary_address.district %>">
-                                <input type="hidden" name="city" value="<%= results.docs[i].temporary_address.city %>">
-                                <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
-                                <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].temporary_address.text %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="house_number" value="<%= results.docs[i].temporary_address.house_number %>">
+                                    <input type="hidden" name="street" value="<%= results.docs[i].temporary_address.street %>">
+                                    <input type="hidden" name="ward" value="<%= results.docs[i].temporary_address.ward %>">
+                                    <input type="hidden" name="district" value="<%= results.docs[i].temporary_address.district %>">
+                                    <input type="hidden" name="city" value="<%= results.docs[i].temporary_address.city %>">
+                                    <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
+                                    <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
+                                </div>
+                                <i onclick="onAddressInfoClicked(this)">
+                                    ...
+                                </i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].mailing_address.text %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="house_number" value="<%= results.docs[i].mailing_address.house_number%>">
+                                    <input type="hidden" name="street" value="<%= results.docs[i].mailing_address.street %>">
+                                    <input type="hidden" name="ward" value="<%= results.docs[i].mailing_address.ward %>">
+                                    <input type="hidden" name="district" value="<%= results.docs[i].mailing_address.district %>">
+                                    <input type="hidden" name="city" value="<%= results.docs[i].mailing_address.city %>">
+                                    <input type="hidden" name="country" value="<%= results.docs[i].mailing_address.country %>">
+                                    <input type="hidden" name="postal_code" value="<%= results.docs[i].mailing_address.postal_code %>">
+                                </div>
+                                <i  onclick="onAddressInfoClicked(this)">
+                                    ...
+                                </i>
                             </div>
                         </td>
                         <td>

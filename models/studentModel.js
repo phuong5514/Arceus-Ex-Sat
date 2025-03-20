@@ -19,6 +19,7 @@ const StudentSchema = mongoose.Schema({
   mailing_address: {type: String, ref: "Address"},
   nationality: String,
   identity_card: {type: String, ref: "IdentityCard"},
+  passport: {type: String, ref: "Passport"}, 
 });
 
 StudentSchema.plugin(paginate);

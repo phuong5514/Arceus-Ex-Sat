@@ -69,9 +69,21 @@
                     <select id="search-by" class="flex-row-item">
                         <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
                         <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
-                        <option value="major" <%= queryData && queryData.search_by === "major" ? "selected" : "" %>>Khoa</option>
                     </select>
-                    <button class="flex-row-item clear_button" type="submit">Tìm kiếm</button>
+                    
+                    <div id="more-search-options" class="more-search-options" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
+                        <label for="search-by-major" class="search-label">Khoa:</label>
+                        <select id="search-by-major" class="flex-row-item">
+                            <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>--Tất cả--</option>
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>" <%= queryData && queryData.search_by_major === majors[i]._id ? "selected" : "" %>><%= majors[i].major_name %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div id="more-search-options-button" class="button more-search-options-button" onclick="onSearchOptionsButtonClicked()">
+                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#33363F"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 6L15 12L9 18" stroke="#33363F" stroke-width="2"></path> </g></svg>
+                    </div>
                 </form>
             </div>
         </div>

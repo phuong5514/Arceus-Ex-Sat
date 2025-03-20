@@ -27,7 +27,6 @@ export const getAllStudents = async (req, res) => {
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
-    console.log(JSON.stringify(results, null, 2));
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
     console.error("Error getting students: ", error.message);
@@ -211,6 +210,7 @@ export const searchStudents = async (req, res) => {
     const queryData = req.query;
     const searchTerm = queryData.search || "";
     const searchBy = queryData.search_by || "_id";
+    const searchByMajor = queryData.search_by_major || "";
     let queryString = "";
 
     const populateMap = {
@@ -228,26 +228,22 @@ export const searchStudents = async (req, res) => {
       populate: Object.values(populateMap) // reference other collections
     }
 
-
     let query = {};
     if (searchTerm !== "" && searchBy !== ""){
       queryString = new URLSearchParams(queryData); 
 
-      switch (searchBy) {
-        case "major":
-          const matchedMajors = await Major.find({"major_name": new RegExp(`.*${searchTerm}.*`, "i")});
-          const matchedMajorIds = matchedMajors.map(major => major._id);
-          query = {major : {$in: matchedMajorIds}};
-          break;
-        default:
-          query = {_id : {$regex: searchTerm, $options: "i"}};
-          break;
+      if (searchByMajor){
+        query = {$and: [
+          {major : searchByMajor},
+          {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")}
+        ]};
+      } else {
+        query = {[searchBy] : new RegExp(`.*${searchTerm}.*`, "i")};
       }
     }
 
     const results = await Student.paginate(query, options);
 
-    console.log(results);
     // format students data
     results.docs.forEach(student => {
       student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');

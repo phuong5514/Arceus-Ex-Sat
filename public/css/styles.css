@@ -90,6 +90,19 @@ button {
   font-size: inherit;
 }
 
+.button {
+  border: none;
+  background-color: var(--green);
+  color: var(--white);
+  cursor: pointer;
+  align-self: stretch;
+  font-weight: bold;
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+}
+
+
 li {
   list-style-type: none;
 }
@@ -202,4 +215,15 @@ tr:nth-child(odd) {
   text-align: center;
   padding: 16px;
   font-weight: bold;
+}
+
+.more-search-options-button{
+  background-color: var(--grey);
+  padding: 4px 8px;
+}
+
+.search-label{
+  text-align: center;
+  padding-left: 16px;
+  padding-right: 2px;
 }

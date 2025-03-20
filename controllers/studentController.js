@@ -230,6 +230,8 @@ export const searchStudents = async (req, res) => {
 
 
     let query = {};
+    console.log(`Searching for ${searchTerm} by ${searchBy}`);
+
     if (searchTerm !== "" && searchBy !== ""){
       queryString = new URLSearchParams(queryData); 
 
@@ -240,7 +242,7 @@ export const searchStudents = async (req, res) => {
           query = {major : {$in: matchedMajorIds}};
           break;
         default:
-          query = {_id : {$regex: searchTerm, $options: "i"}};
+          query = { [searchBy] : {$regex: searchTerm, $options: "i"}};
           break;
       }
     }

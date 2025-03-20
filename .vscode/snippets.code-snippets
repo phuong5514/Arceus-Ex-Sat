@@ -16,7 +16,7 @@
 	// 	"description": "Log output to console"
 	// }
 	"Log object as JSON string": {
-		"prefix": "print json string",
+		"prefix": "log json string",
 		"body": [
 			"console.log(JSON.stringify($1, null, 2));"
 		]

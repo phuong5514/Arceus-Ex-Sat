@@ -2,11 +2,8 @@ import mongoose from "mongoose";
 import Student from "../models/studentModel.js";
 import Major from "../models/majorModel.js";
 import dayjs from "dayjs";
-import { populate } from "dotenv";
 import Program from "../models/programModel.js";
 import Status from "../models/statusModel.js";
-import formatStudentsData from "../helpers/studentDataFormatter.js";
-import { paginate } from "mongoose-paginate-v2";
 
 export const getAllStudents = async (req, res) => {
   try {
@@ -30,7 +27,8 @@ export const getAllStudents = async (req, res) => {
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
-    res.render("index", { title: "Student management system", results, majors, status, programs, query: "", search_by: "student_id" });
+    console.log(JSON.stringify(results, null, 2));
+    res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
     console.error("Error getting students: ", error.message);
   }
@@ -190,7 +188,6 @@ export const updateStudent = async (req, res) => {
 
 export const deleteStudents = async (req, res) => {
   const studentIds = req.body.student_ids;
-  console.log(JSON.stringify(studentIds, null, 2));
   try {
     // Validate input
     if (!studentIds || !Array.isArray(studentIds) || studentIds.length === 0) {
@@ -211,31 +208,57 @@ export const deleteStudents = async (req, res) => {
 
 export const searchStudents = async (req, res) => {
   try {
-    const searchTerm = req.query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
+    const queryData = req.query;
+    const searchTerm = queryData.search || "";
+    const searchBy = queryData.search_by || "_id";
+    let queryString = "";
 
-    let query = {_id : searchTerm};
-
+    const populateMap = {
+      major: {path: "major"},
+      program: {path: "program"},
+      status: {path: "status"},
+    }
+    
     const options = {
       pagination: false,
       page: 1,
       limit: 100,
       sort: "_id",
       lean: true, // convert to POJO
-      populate: [// reference other collections
-        "major",
-        "program",
-        "status"
-      ]
+      populate: Object.values(populateMap) // reference other collections
+    }
+
+
+    let query = {};
+    if (searchTerm !== "" && searchBy !== ""){
+      queryString = new URLSearchParams(queryData); 
+
+      switch (searchBy) {
+        case "major":
+          const matchedMajors = await Major.find({"major_name": new RegExp(`.*${searchTerm}.*`, "i")});
+          const matchedMajorIds = matchedMajors.map(major => major._id);
+          query = {major : {$in: matchedMajorIds}};
+          break;
+        default:
+          query = {_id : {$regex: searchTerm, $options: "i"}};
+          break;
+      }
     }
 
     const results = await Student.paginate(query, options);
+
+    console.log(results);
     // format students data
-    formatStudentsData(results.docs);
+    results.docs.forEach(student => {
+      student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
+    });
+
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
-    res.render("index", { title: "Student management system", results, majors, status, programs, query: "", search_by: "student_id" });
+    
+    res.render("index", { title: "Student management system", results, majors, status, programs, queryString, queryData});
   } catch (error) {
-    console.error("Error getting students: ", error.message);
+    console.error("Error searching for students: ", error.message);
   }
 }

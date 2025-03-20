@@ -21,7 +21,7 @@
 
             <div class="flex-row-item" style="max-width: 128px;">
                 <a class="reload-button" href="/">
-                    <svg width="24px" heigh="24px" xmlns:dc="http://purl.org/dc/elements/1.1/"
+                    <svg width="24px" height="24px" xmlns:dc="http://purl.org/dc/elements/1.1/"
                         xmlns:cc="http://creativecommons.org/ns#"
                         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
                         xmlns="http://www.w3.org/2000/svg"
@@ -63,12 +63,13 @@
             </div>
 
             <div class="flex-row-item">
-                <form class="flex-row" onsubmit="submitForm(event)" id = "search-form">
-                    <input class="flex-row-item" type="text" name="search" class="input" placeholder="Tìm kiếm..."
-                        value="<%= query %>">
-                    <select class="flex-row-item" name="search_by">
-                        <option value="_id" <%=search_by==="_id" ? "selected" : "" %>>MSSV</option>
-                        <option value="name" <%=search_by==="name" ? "selected" : "" %>>Họ tên</option>
+                <form class="flex-row" onsubmit="onSearchSubmitted(event)" id = "search-form">
+                    <input id="search-term" class="flex-row-item" type="text" class="input" placeholder="Tìm kiếm..."
+                        value="<%= queryData ? queryData.search : '' %>">
+                    <select id="search-by" class="flex-row-item">
+                        <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
+                        <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
+                        <option value="major" <%= queryData && queryData.search_by === "major" ? "selected" : "" %>>Khoa</option>
                     </select>
                     <button class="flex-row-item clear_button" type="submit">Tìm kiếm</button>
                 </form>
@@ -245,7 +246,7 @@
                         </td>
                         <td>
                             <%= results.docs[i].address %>
-                        </td>c
+                        </td>
                         <td>
                             <%= results.docs[i].email %>
                         </td>

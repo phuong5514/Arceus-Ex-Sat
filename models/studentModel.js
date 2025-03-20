@@ -1,5 +1,6 @@
 import mongoose, { SchemaTypes } from "mongoose";
 import paginate from 'mongoose-paginate-v2';
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 
 const StudentSchema = mongoose.Schema({
   _id: String,
@@ -16,6 +17,7 @@ const StudentSchema = mongoose.Schema({
 });
 
 StudentSchema.plugin(paginate);
+StudentSchema.plugin(aggregatePaginate)
 
 const Student = mongoose.model("Student", StudentSchema, "students");
 

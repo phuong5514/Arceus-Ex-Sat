@@ -6,7 +6,38 @@ import IdentityCard from "./models/identityCardModel.js";
 import Program from "./models/programModel.js";
 import Status from "./models/statusModel.js";
 
-await connectDB()
+await connectDB();
+
+try {
+  Student.deleteMany({});
+} catch (error) {
+  console.error("Unabled to truncate students collection");
+}
+try {
+  IdentityCard.deleteMany({});
+} catch (error) {
+  console.error("Unabled to truncate identity cards collection");
+}
+try {
+  Passport.deleteMany({});
+} catch (error) {
+  console.error("Unabled to truncate passports collection");
+}
+try {
+  Major.deleteMany({});
+} catch (error) {
+  console.error("Unabled to truncate majors collection");
+}
+try {
+  Program.deleteMany({});
+} catch (error) {
+  console.error("Unabled to truncate programs collection");
+}
+try {
+  Status.deleteMany({});
+} catch (error) {
+  console.error("Unabled to truncate status collection");
+}
 
 try {
   await Student.insertMany([{
@@ -36,11 +67,11 @@ try {
     major: "LUAT"
   }
   ])
-} catch(error){
+} catch (error) {
   console.error("Unabled to seed students");
 }
 
-try{
+try {
   await IdentityCard.insertMany([{
     _id: "22120271",
     issue_date: "2021-11-08",
@@ -56,7 +87,7 @@ try{
     is_digitized: true
   }
   ])
-} catch (error){
+} catch (error) {
   console.error("Unabled to seed identity cards");
 }
 
@@ -80,7 +111,7 @@ try {
     issue_location: "TP HCM"
   }
   ])
-} catch (error){
+} catch (error) {
   console.error("Unabled to seed passports");
 }
 
@@ -102,7 +133,7 @@ try {
     major_name: "Tiếng Pháp"
   }
   ])
-} catch (error){
+} catch (error) {
   console.error("Unabled to seed majors");
 }
 
@@ -124,7 +155,7 @@ try {
     program_name: "Chất lượng cao"
   }
   ])
-} catch (error){
+} catch (error) {
   console.error("Unabled to seed programs");
 }
 
@@ -146,7 +177,7 @@ try {
     status_name: "Tạm ngừng học"
   }
   ])
-} catch (error){
+} catch (error) {
   console.error("Unabled to seed status");
 }
 

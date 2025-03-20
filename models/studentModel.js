@@ -17,13 +17,13 @@ import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 // });
 
 //Minh Phuong modified the Student structure according to the new requirements for addresses and PersonInfo
-const AddressSchema = mongoose.Schema({
-    house_number_street: String,
-    ward_commune: String,
-    district: String,
-    province_city: String,
-    country: String,
-});
+// const AddressSchema = mongoose.Schema({
+//     house_number_street: String,
+//     ward_commune: String,
+//     district: String,
+//     province_city: String,
+//     country: String,
+// });
 
 const StudentSchema = mongoose.Schema({
   _id: String,
@@ -41,7 +41,7 @@ const StudentSchema = mongoose.Schema({
   temporary_address: {type: String, ref: "Address"},
   mailing_address: {type: String, ref: "Address"},
   nationality: String,
-  identity_card: {type: String, ref: "IdentityCard"},
+  identity_card: {type: String, ref: "IdentityCard"}, 
   passport: {type: String, ref: "Passport"}, 
 });
 

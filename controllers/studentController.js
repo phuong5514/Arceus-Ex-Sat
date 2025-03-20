@@ -106,6 +106,65 @@ import Status from "../models/statusModel.js";
 
 
 //MinhPhuong: modify to get all new infor of students in Ex02
+// export const getAllStudents = async (req, res) => {
+//   try {
+//       const options = {
+//           pagination: false,
+//           page: 1,
+//           limit: 100,
+//           sort: "_id",
+//           lean: true, // Convert to plain JavaScript objects
+//           populate: ["major", "program", "status"] // Ensure references are populated
+//       };
+
+//       const results = await Student.paginate({}, options);
+
+//       // ✅ Format data properly before sending to frontend
+//       results.docs.forEach(student => {
+//           student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
+
+//           if (!student.identification || !student.identification.type) {
+//               student.identification = {
+//                   type: "Chưa có",
+//                   id: "Chưa có",
+//                   issue_date: "Chưa có",
+//                   expiry_date: "Chưa có",
+//                   issue_location: "Chưa có",
+//                   is_digitized: false,
+//                   country_code: "Chưa có",
+//                   notes: "Không có ghi chú"
+//               };
+//           } else {
+//               student.identification.issue_date = student.identification.issue_date
+//                   ? dayjs(student.identification.issue_date).format('DD/MM/YYYY')
+//                   : "Chưa có";
+
+//               student.identification.expiry_date = student.identification.expiry_date
+//                   ? dayjs(student.identification.expiry_date).format('DD/MM/YYYY')
+//                   : "Chưa có";
+//           }
+//       });
+
+//       const majors = await Major.find().lean();
+//       const status = await Status.find().lean();
+//       const programs = await Program.find().lean();
+
+//       res.render("index", {
+//           title: "Student management system",
+//           results,
+//           majors,
+//           status,
+//           programs,
+//           queryString: "",
+//           queryData: null
+//       });
+
+//   } catch (error) {
+//       console.error("❌ Error getting students:", error.message);
+//       res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
+//   }
+// };
+
 export const getAllStudents = async (req, res) => {
   try {
       const options = {
@@ -113,28 +172,49 @@ export const getAllStudents = async (req, res) => {
           page: 1,
           limit: 100,
           sort: "_id",
-          lean: true, // Convert to plain JavaScript objects
-          populate: ["major", "program", "status"] // Ensure references are populated
+          lean: true, 
+          populate: ["major", "program", "status"]
       };
 
       const results = await Student.paginate({}, options);
 
-      // ✅ Format data properly before sending to frontend
       results.docs.forEach(student => {
           student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
 
-          if (!student.identification || !student.identification.type) {
-              student.identification = {
-                  type: "Chưa có",
-                  id: "Chưa có",
-                  issue_date: "Chưa có",
-                  expiry_date: "Chưa có",
-                  issue_location: "Chưa có",
-                  is_digitized: false,
-                  country_code: "Chưa có",
-                  notes: "Không có ghi chú"
+          if (!student.nationality) {
+              student.nationality = "Chưa có";
+          }
+
+          if (!student.permanent_address) {
+              student.permanent_address = {
+                  house_number_street: "Chưa có",
+                  ward_commune: "Chưa có",
+                  district: "Chưa có",
+                  province_city: "Chưa có",
+                  country: "Chưa có"
               };
-          } else {
+          }
+
+          if (!student.temporary_address) {
+              student.temporary_address = {
+                  house_number_street: "Không có",
+                  ward_commune: "Không có",
+                  district: "Không có",
+                  province_city: "Không có",
+                  country: "Không có"
+              };
+          }
+
+          if (!student.mailing_address) {
+              student.mailing_address = {
+                  house_number_street: "Không có",
+                  ward_commune: "Không có",
+                  district: "Không có",
+                  province_city: "Không có",
+                  country: "Không có"
+              };
+          }
+          if (student.identification && student.identification.type) {
               student.identification.issue_date = student.identification.issue_date
                   ? dayjs(student.identification.issue_date).format('DD/MM/YYYY')
                   : "Chưa có";
@@ -142,6 +222,15 @@ export const getAllStudents = async (req, res) => {
               student.identification.expiry_date = student.identification.expiry_date
                   ? dayjs(student.identification.expiry_date).format('DD/MM/YYYY')
                   : "Chưa có";
+          } else {
+              student.identification = {
+                  type: "Chưa có",
+                  id: "Chưa có",
+                  issue_date: "Chưa có",
+                  expiry_date: "Chưa có",
+                  issue_location: "Chưa có",
+                  is_digitized: false
+              };
           }
       });
 
@@ -160,7 +249,7 @@ export const getAllStudents = async (req, res) => {
       });
 
   } catch (error) {
-      console.error("❌ Error getting students:", error.message);
+      console.error("Error getting students:", error.message);
       res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
   }
 };
@@ -371,6 +460,51 @@ export const addStudent = async (req, res) => {
 };
 
 
+// export const updateStudent = async (req, res) => {
+//   const studentId = req.params.student_id;
+//   const student = req.body;
+
+//   try {
+//     const studentToUpdate = await Student.findOne({ _id: studentId });
+//     if (!studentToUpdate) {
+//       throw new Error("Không tìm thấy sinh viên cần cập nhật");
+//     }
+
+//     studentToUpdate.name = student.name;
+//     studentToUpdate.email = student.email;
+//     studentToUpdate.phone_number = student.phone_number;
+//     studentToUpdate.permanent_address = student.permanent_address || studentToUpdate.permanent_address;
+//     studentToUpdate.temporary_address = student.temporary_address || studentToUpdate.temporary_address;
+//     studentToUpdate.mailing_address = student.mailing_address || studentToUpdate.mailing_address;
+//     studentToUpdate.gender = student.gender;
+//     studentToUpdate.birthdate = student.birthdate;
+//     studentToUpdate.major = student.major;
+//     studentToUpdate.class_year = student.class_year;
+//     studentToUpdate.program = student.program;
+//     studentToUpdate.status = student.status;
+//     studentToUpdate.nationality = student.nationality;
+
+//     // Handle Identification
+//     if (student.identification_type) {
+//       studentToUpdate.identification = {
+//         type: student.identification_type,
+//         id: student.identification_number,
+//         issue_date: student.identification_issue_date,
+//         expiry_date: student.identification_expiry_date,
+//         issue_location: student.identification_issue_location,
+//       };
+//       if (student.identification_type === "CCCD") {
+//         studentToUpdate.identification.is_digitized = student.cccd_chip === "on";
+//       }
+//     }
+
+//     await studentToUpdate.save();
+//     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
+//   } catch (error) {
+//     console.error("Error updating student:", error.message);
+//     res.status(400).json({ ok: false, error: error.message });
+//   }
+// };
 export const updateStudent = async (req, res) => {
   const studentId = req.params.student_id;
   const student = req.body;
@@ -381,41 +515,53 @@ export const updateStudent = async (req, res) => {
       throw new Error("Không tìm thấy sinh viên cần cập nhật");
     }
 
-    studentToUpdate.name = student.name;
-    studentToUpdate.email = student.email;
-    studentToUpdate.phone_number = student.phone_number;
+    // ✅ Keep old values if fields are missing
+    studentToUpdate.name = student.name || studentToUpdate.name;
+    studentToUpdate.email = student.email || studentToUpdate.email;
+    studentToUpdate.phone_number = student.phone_number || studentToUpdate.phone_number;
     studentToUpdate.permanent_address = student.permanent_address || studentToUpdate.permanent_address;
     studentToUpdate.temporary_address = student.temporary_address || studentToUpdate.temporary_address;
     studentToUpdate.mailing_address = student.mailing_address || studentToUpdate.mailing_address;
-    studentToUpdate.gender = student.gender;
-    studentToUpdate.birthdate = student.birthdate;
-    studentToUpdate.major = student.major;
-    studentToUpdate.class_year = student.class_year;
-    studentToUpdate.program = student.program;
-    studentToUpdate.status = student.status;
-    studentToUpdate.nationality = student.nationality;
+    studentToUpdate.gender = student.gender || studentToUpdate.gender;
+    studentToUpdate.birthdate = student.birthdate || studentToUpdate.birthdate;
+    studentToUpdate.major = student.major || studentToUpdate.major;
+    studentToUpdate.class_year = student.class_year || studentToUpdate.class_year;
+    studentToUpdate.program = student.program || studentToUpdate.program;
+    studentToUpdate.status = student.status || studentToUpdate.status;
+    studentToUpdate.nationality = student.nationality || studentToUpdate.nationality;
 
-    // Handle Identification
+    // ✅ Handle Identification Update Correctly
     if (student.identification_type) {
-      studentToUpdate.identification = {
-        type: student.identification_type,
-        id: student.identification_number,
-        issue_date: student.identification_issue_date,
-        expiry_date: student.identification_expiry_date,
-        issue_location: student.identification_issue_location,
-      };
+      if (!studentToUpdate.identification) {
+        studentToUpdate.identification = {};
+      }
+
+      studentToUpdate.identification.type = student.identification_type || studentToUpdate.identification.type;
+      studentToUpdate.identification.id = student.identification_number || studentToUpdate.identification.id;
+      studentToUpdate.identification.issue_date = student.identification_issue_date || studentToUpdate.identification.issue_date;
+      studentToUpdate.identification.expiry_date = student.identification_expiry_date || studentToUpdate.identification.expiry_date;
+      studentToUpdate.identification.issue_location = student.identification_issue_location || studentToUpdate.identification.issue_location;
+
       if (student.identification_type === "CCCD") {
-        studentToUpdate.identification.is_digitized = student.cccd_chip === "on";
+        studentToUpdate.identification.is_digitized = student.cccd_chip === "on" || studentToUpdate.identification.is_digitized || false;
+      } else {
+        delete studentToUpdate.identification.is_digitized;
       }
     }
+
+    // 🔥 LOG THE UPDATED DATA BEFORE SAVING
+    console.log("Updated student data before saving:", JSON.stringify(studentToUpdate, null, 2));
 
     await studentToUpdate.save();
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
-    console.error("Error updating student:", error.message);
+    console.error("❌ Error updating student:", error.message);
     res.status(400).json({ ok: false, error: error.message });
   }
 };
+
+
+
 
 export const deleteStudents = async (req, res) => {
   const studentIds = req.body.student_ids;

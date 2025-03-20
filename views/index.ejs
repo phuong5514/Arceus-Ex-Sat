@@ -18,7 +18,10 @@
                 viên</button>
             <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
                 viên</button>
-
+            <button class="flex-row-item" onclick="window.location.href='/manage-dropdowns'">
+                    Quản lý danh mục
+            </button>
+                
             <div class="flex-row-item" style="max-width: 128px;">
                 <a class="reload-button" href="/">
                     <svg width="24px" height="24px" xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -121,161 +124,6 @@
                     <th>Tình trạng</th>
                 </tr>
             </thead>
-            <!-- <tbody>
-                <tr class="add editable-row">
-                    <td> </td>
-                    <td>
-                        <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
-                    </td>
-                    <td>
-                        <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
-                    </td>
-                    <td>
-                        <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
-                    </td>
-                    <td>
-                        <select name="gender" id="add-gender">
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="major" id="add-major">
-                            <% for (var i = 0; i < majors.length; i++) { %>
-                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
-                    </td>
-                    <td>
-                        <select name="program" id="add-program">
-                            <% for (var i = 0; i < programs.length; i++) { %>
-                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" id="add-address" name="address" placeholder="Địa chỉ" size="50">
-                    </td>
-                    <td>
-                        <input type="email" id="add-email" name="email" placeholder="Email" size="20">
-                    </td>
-                    <td>
-                        <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
-                    </td>
-                    <td>
-                        <select name="status" id="add-status">
-                            <% for (var i = 0; i < status.length; i++) { %>
-                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                </tr>
-                <tr class="edit editable-row">
-                    <td> </td>
-                    <td>
-                        <input type="text" id="edit-student-id" name="student_id" placeholder="MSSV" size="9" readonly>
-                    </td>
-                    <td>
-                        <input type="text" id="edit-name" name="name" placeholder="Họ tên" size="20">
-                    </td>
-                    <td>
-                        <input type="date" id="edit-birthdate" name="birthdate">
-                    </td>
-                    <td>
-                        <select name="gender" id="edit-gender">
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="major" id="edit-major">
-                            <% for (var i = 0; i < majors.length; i++) { %>
-                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
-                    </td>
-                    <td>
-                        <select name="program" id="edit-program">
-                            <% for (var i = 0; i < programs.length; i++) { %>
-                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" id="edit-address" name="address" placeholder="Địa chỉ" size="50">
-                    </td>
-                    <td>
-                        <input type="email" id="edit-email" name="email" placeholder="Email" size="20">
-                    </td>
-                    <td>
-                        <input type="text" id="edit-phone_number" name="phone_number" placeholder="SĐT" size="12">
-                    </td>
-                    <td>
-                        <select name="status" id="edit-status">
-                            <% for (var i = 0; i < status.length; i++) { %>
-                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                </tr>
-                <% for (var i=0; i < results.docs.length; i++) { %>
-                    <tr class="student-row" 
-                        data-student-id="<%= results.docs[i]._id %>" 
-                        onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
-                        <td>
-                            <div class="remove">
-                                <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
-                                    value="<%= results.docs[i]._id %>">
-                            </div>
-                            <div class="edit">
-                                <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
-                                    value="<%= results.docs[i]._id %>"
-                                    onchange="onEditCheckboxChange(this, '<%= results.docs[i]._id %>')">
-                            </div>
-                        </td>
-                        <td>
-                            <%= results.docs[i]._id %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].name %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].birthdate %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].gender %>
-                        </td>
-                        <td name="<%=results.docs[i].major._id%>">
-                            <%= results.docs[i].major.major_name %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].class_year %>
-                        </td>
-                        <td name="<%=results.docs[i].program._id%>">
-                            <%= results.docs[i].program.program_name %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].address %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].email %>
-                        </td>
-                        <td>
-                            <%= results.docs[i].phone_number %>
-                        </td>
-                        <td name="<%=results.docs[i].status._id%>">
-                            <%= results.docs[i].status.status_name %>
-                        </td>
-                    </tr>
-                    <% } %>
-            </tbody> -->
-        
             <tbody>
                 <tr class="add editable-row">
                     <td> </td>

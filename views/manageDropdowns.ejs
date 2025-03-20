@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Danh mục</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/javascripts/manageDropdowns.js" defer></script>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        nav {
+            width: 100%;
+            padding: 15px;
+            background-color: green;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #0056b3;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .nav-button:hover {
+            background-color: #003d82;
+        }
+
+        /* 3 areas for editing infor of dropdowns */
+        .dropdown-container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            gap: 20px;
+        }
+        .dropdown-box {
+            width: 30%;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 5px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 5px;
+            font-size: 16px;
+        }
+        .input-group button {
+            padding: 5px 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+        }
+        .delete-button:hover {
+            background-color: #a71d2a;
+        }
+        .add-button {
+            background-color: #28a745;
+            color: white;
+        }
+        .add-button:hover {
+            background-color: #1d6f32;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <button class="nav-button" onclick="window.location.href='/'">Trở về trang chính</button>
+    </nav>
+
+    <div class="container">
+        <h1>Quản lý Danh mục</h1>
+        
+        <div class="dropdown-container">
+            <!-- Quản lý Khoa -->
+            <div class="dropdown-box">
+                <h2>Khoa</h2>
+                <ul id="major-list">
+                    <% majors.forEach(major => { %>
+                        <li class="input-group">
+                            <input type="text" value="<%= major.major_name %>" data-id="<%= major._id %>" onchange="renameMajor(this)">
+                            <button class="delete-button" onclick="deleteMajor('<%= major._id %>')">🗑</button>
+                        </li>
+                    <% }) %>
+                </ul>
+                <div class="input-group">
+                    <input type="text" id="new-major" placeholder="Nhập tên Khoa mới">
+                    <button class="add-button" onclick="addMajor()">➕</button>
+                </div>
+            </div>
+
+            <!-- Quản lý Tình trạng SV -->
+            <div class="dropdown-box">
+                <h2>Tình trạng Sinh viên</h2>
+                <ul id="status-list">
+                    <% status.forEach(s => { %>
+                        <li class="input-group">
+                            <input type="text" value="<%= s.status_name %>" data-id="<%= s._id %>" onchange="renameStatus(this)">
+                            <button class="delete-button" onclick="deleteStatus('<%= s._id %>')">🗑</button>
+                        </li>
+                    <% }) %>
+                </ul>
+                <div class="input-group">
+                    <input type="text" id="new-status" placeholder="Nhập tình trạng mới">
+                    <button class="add-button" onclick="addStatus()">➕</button>
+                </div>
+            </div>
+
+            <!-- Quản lý Chương trình -->
+            <div class="dropdown-box">
+                <h2>Chương trình</h2>
+                <ul id="program-list">
+                    <% programs.forEach(p => { %>
+                        <li class="input-group">
+                            <input type="text" value="<%= p.program_name %>" data-id="<%= p._id %>" onchange="renameProgram(this)">
+                            <button class="delete-button" onclick="deleteProgram('<%= p._id %>')">🗑</button>
+                        </li>
+                    <% }) %>
+                </ul>
+                <div class="input-group">
+                    <input type="text" id="new-program" placeholder="Nhập chương trình mới">
+                    <button class="add-button" onclick="addProgram()">➕</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

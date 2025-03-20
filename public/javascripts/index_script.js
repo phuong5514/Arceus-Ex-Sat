@@ -1,5 +1,7 @@
 let mode = "view";
 let dataChanged = false;
+let mode = "view";
+let dataChanged = false;
 
 function onAddStudentClicked() {
     changeToMode("add");
@@ -32,6 +34,22 @@ async function onAddStudentSaved() {
         status: document.getElementById("add-status").value
     };
 
+    const response = await fetch("/students", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(student),
+    });
+    if (response.ok) {
+        const result = await response.json();
+        markDataChanged();
+        changeToMode("view");
+        setMessage("success", "Thêm sinh viên thành công!");
+    } else {
+        const result = await response.json();
+        setMessage("error", result.error);
+    }
     const response = await fetch("/students", {
         method: "POST",
         headers: {
@@ -140,6 +158,31 @@ function setButtonState() {
             }
             break;
     }
+    const buttonIds = ["add-student-btn", "edit-student-btn", "remove-student-btn"];
+    const buttons = buttonIds.map(id => document.getElementById(id));
+    buttons.forEach(button => console.log(button.id));
+    switch (mode) {
+        case "add":
+            addState(buttons[0], "active");
+            buttons[1].classList.remove("active");
+            buttons[2].classList.remove("active");
+            break;
+        case "remove":
+            addState(buttons[2], "active");
+            buttons[0].classList.remove("active");
+            buttons[1].classList.remove("active");
+            break;
+        case "edit":
+            addState(buttons[1], "active");
+            buttons[0].classList.remove("active");
+            buttons[2].classList.remove("active");
+            break;
+        default:
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+            break;
+    }
 }
 
 function addState(element, state) {
@@ -161,6 +204,16 @@ function markDataChanged() {
     reloadButton.style.display = "inline";
 }
 
+function setMessage(tag, messageText) {
+    const message = document.getElementById("message");
+    if (messageText === "") {
+        message.style.display = "none";
+        return;
+    }
+    message.style.display = "block";
+    message.classList.remove("info", "error", "warning", "success");
+    message.classList.add(tag);
+    message.innerHTML = messageText;
 function setMessage(tag, messageText) {
     const message = document.getElementById("message");
     if (messageText === "") {

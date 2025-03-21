@@ -1,0 +1,5 @@
+[2025-03-21T08:23:38.985Z] GET / - 200 - 691ms
+[2025-03-21T08:23:39.702Z] GET /css/styles.css - 304 - 2ms
+[2025-03-21T08:23:39.710Z] GET /javascripts/index_script.js - 304 - 1ms
+[2025-03-21T08:23:39.711Z] GET /javascripts/event_script.js - 304 - 2ms
+[2025-03-21T08:23:41.064Z] GET /import - 200 - 3ms

@@ -24,7 +24,7 @@ const PassportSchema = mongoose.Schema({
     issue_date: Date,
     expiry_date: Date,
     issue_location: String,
-    notes: { type: String } // Optional notes field, not in use yet
+    notes: { type: String }
 });
 const Passport = mongoose.model("Passport", PassportSchema, "passports");
 export default Passport;

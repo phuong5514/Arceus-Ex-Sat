@@ -66,6 +66,8 @@ function onStudentRowClick(row, studentId) {
         document.getElementById("edit-phone_number").value = cells[14].textContent.trim();
         document.getElementById("edit-status").value = cells[15].getAttribute("name");
 
+        document.getElementById("edit-nationality").value = cells[16].textContent.trim();
+
         setMessage("info", `Đang chỉnh sửa thông tin sinh viên: ${studentId}, ${studentName}, ${birthdate}`);
     } else {
         selectedRow = null;
@@ -197,11 +199,11 @@ async function onEditStudentSaved() {
         class_year: document.getElementById("edit-class_year").value,
         program: document.getElementById("edit-program").value,
         status: document.getElementById("edit-status").value,
-        nationality: "Việt Nam",
         permanent_address: null,
         temporary_address: null,
         mailing_address: null,
-        identity_card: null
+        identity_card: null,
+        nationality: document.getElementById("edit-nationality").value
     };
 
     student.permanent_address = getAddressFromAddressDiv(document.getElementById("edit-address_permanent"));
@@ -217,7 +219,7 @@ async function onEditStudentSaved() {
     if (student.passport._id === "") {
         student.passport = null;
     }
-
+    
     try {
         const response = await fetch(`/students/${selectedStudentId}`, {
             method: "PUT",
@@ -257,7 +259,8 @@ async function onAddStudentSaved() {
         permanent_address: null,
         temporary_address: null,
         mailing_address: null,
-        identity_card: null
+        identity_card: null,
+        nationality: document.getElementById("add-nationality").value
     };
 
     student.permanent_address = getAddressFromAddressDiv(document.getElementById("add-address_permanent"));
@@ -647,13 +650,14 @@ function onPassportEditClicked(button) {
     document.getElementById("passport-issue-date").readOnly = false;
     document.getElementById("passport-expiry-date").readOnly = false;
     document.getElementById("passport-issue-location").readOnly = false;
+    document.getElementById("passport-notes").readOnly = false;
 
     document.getElementById("passport-id").value = passportData._id;
     document.getElementById("passport-type").value = passportData.type;
     document.getElementById("passport-country-code").value = passportData.country_code;
     document.getElementById("passport-issue-date").value = passportData.issue_date;
     document.getElementById("passport-expiry-date").value = passportData.expiry_date;
-    document.getElementById("passport-issue-location").value = passportData.issue_location;
+    document.getElementById("passport-notes").value = passportData.notes;
 }
 
 function onPassportDialogSubmitted(event) {
@@ -671,6 +675,7 @@ function onPassportDialogSubmitted(event) {
     const issueDate = document.getElementById("passport-issue-date").value;
     const expiryDate = document.getElementById("passport-expiry-date").value;
     const issueLocation = document.getElementById("passport-issue-location").value;
+    const notes = document.getElementById("passport-notes").value;
 
     applyPassportEdit({
         _id: passportId,
@@ -678,7 +683,8 @@ function onPassportDialogSubmitted(event) {
         country_code: countryCode,
         issue_date: issueDate,
         expiry_date: expiryDate,
-        issue_location: issueLocation
+        issue_location: issueLocation,
+        notes: notes,
     }, currentEditPassportDiv);
 
     passportDialog.close();
@@ -693,6 +699,7 @@ function applyPassportEdit(passportData, passportCell) {
     passportCell.querySelector("input[name='issue_date']").value = passportData.issue_date;
     passportCell.querySelector("input[name='expiry_date']").value = passportData.expiry_date;
     passportCell.querySelector("input[name='issue_location']").value = passportData.issue_location;
+    passportCell.querySelector("input[name='notes']").value = passportData.notes;
 
     const displayPassport = `${passportData._id}`;
     passportCell.querySelector(".passport-text").value = displayPassport;
@@ -705,7 +712,8 @@ function getPassportFromDiv(passportDiv) {
         country_code: passportDiv.querySelector("input[name='country_code']").value,
         issue_date: passportDiv.querySelector("input[name='issue_date']").value,
         expiry_date: passportDiv.querySelector("input[name='expiry_date']").value,
-        issue_location: passportDiv.querySelector("input[name='issue_location']").value
+        issue_location: passportDiv.querySelector("input[name='issue_location']").value,
+        notes: passportDiv.querySelector("input[name='notes']").value
     }
 }
 
@@ -721,6 +729,7 @@ function onPassportInfoClicked(button) {
     document.getElementById("passport-issue-date").value = passportData.issue_date;
     document.getElementById("passport-expiry-date").value = passportData.expiry_date;
     document.getElementById("passport-issue-location").value = passportData.issue_location;
+    document.getElementById("passport-notes").value = passportData.notes;
 
     // set all of them readonly
     document.getElementById("passport-id").readOnly = true;
@@ -729,6 +738,7 @@ function onPassportInfoClicked(button) {
     document.getElementById("passport-issue-date").readOnly = true;
     document.getElementById("passport-expiry-date").readOnly = true;
     document.getElementById("passport-issue-location").readOnly = true;
+    document.getElementById("passport-notes").readOnly = true;
 
     passportDialog.showModal();
 }

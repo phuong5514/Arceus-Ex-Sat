@@ -464,6 +464,7 @@ export const updateStudent = async (req, res) => {
     studentToUpdate.mailing_address = processedStudent.mailing_address;
     studentToUpdate.identity_card = processedStudent.identity_card;
     studentToUpdate.passport = processedStudent.passport;
+    studentToUpdate.nationality = processedStudent.national;
     
     await studentToUpdate.save();
 

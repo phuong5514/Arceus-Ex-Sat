@@ -138,7 +138,8 @@ const passports = [
     country_code: "VNM",
     issue_date: "2021-11-08",
     expiry_date: "2026-11-08",
-    issue_location: "TP HCM"
+    issue_location: "TP HCM",
+    notes: ""
   },
   {
     _id: "C9876543",
@@ -146,7 +147,8 @@ const passports = [
     country_code: "VNM",
     issue_date: "2021-01-01",
     expiry_date: "2026-01-01",
-    issue_location: "TP HCM"
+    issue_location: "TP HCM",
+    notes: "Đã gia hạn"
   },
   // Add more passport entries here
   {
@@ -155,7 +157,8 @@ const passports = [
     country_code: "VNM",
     issue_date: "2020-02-02",
     expiry_date: "2025-02-02",
-    issue_location: "TP HCM"
+    issue_location: "TP HCM",
+    notes: ""
   },
   {
     _id: "C2345678",
@@ -163,7 +166,8 @@ const passports = [
     country_code: "VNM",
     issue_date: "2019-03-03",
     expiry_date: "2024-03-03",
-    issue_location: "TP HCM"
+    issue_location: "TP HCM",
+    notes: ""
   }
 ];
 

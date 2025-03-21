@@ -5,3 +5,11 @@
 [2025-03-21T12:01:57.226Z] IMPORT - SUCCESS: Import 1 sinh viên thành công
 [2025-03-21T12:49:27.330Z] DELETE - SUCCESS: Xóa 7 sinh viên thành công
 [2025-03-21T12:49:27.331Z] DELETE - SUCCESS: Xóa 7 sinh viên thành công
+[2025-03-21T14:43:44.100Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công
+[2025-03-21T14:45:08.879Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công
+[2025-03-21T14:48:00.644Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120287 thành công
+[2025-03-21T14:48:42.635Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công
+[2025-03-21T14:49:17.497Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công
+[2025-03-21T14:49:36.940Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công
+[2025-03-21T14:49:50.452Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công
+[2025-03-21T14:50:29.454Z] UPDATE - SUCCESS: Cập nhật sinh viên 22120271 thành công

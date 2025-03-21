@@ -2,8 +2,12 @@
 ## Cấu trúc source code
 ```bash
 /
-├── nodemodules
-├── pb_migrations
+├── config 
+├── controllers 
+├── helpers 
+├── logs 
+├── models 
+├── node_modules
 ├── public
 │   ├── css
 │   ├── images
@@ -12,23 +16,27 @@
 ├── views
 ├── app.js
 ├── seeder.js
-├── superuser.js
-└── pocketbase.exe
 ```
 
 `app.js` là file chính của chương trình, chứa cấu hình của server và các route xử lý request từ client.
 
 `public` chứa các file css để định kiểu, javascript để cung cấp tương tác và images để chứa các hình ảnh của trang web.
 
-`routes` chứa file xử lý request từ clientm như GET, POST, PUT, DELETE.
+`routes` chứa file xử lý request từ client như GET, POST, PUT, DELETE.
 
 `views` chứa các file html của chương trình. Các file này được viết bằng view engine [EJS](https://ejs.co/).
 
-`pb_migrations` chứa các file migration của database, cần thiết để dựng các lược đồ quan hệ trong database.
-
-`superuser.js` cấp quyền truy cập database cho người dùng với vai trò là superuser client để thực hiện các thao tác CRUD.  
-
 `seeder.js` thêm dữ liệu mẫu vào database.
+
+`config` chứa các file cài đặt của chương trình.
+
+`controllers` chứa các file xử lý các thao tác của business logic.
+
+`helpers` chứa các file hỗ trợ hoạt động chính của chương trình (thay đổi định dạng dữ liệu, log các xử lý,...).
+
+`logs` chứa các file log ghi chép về các xử lý của chương trình.
+
+`models` chứa các model dữ liệu (bảng) của MongoDB.
 
 ## Hướng dẫn cài đặt & chạy chương trình
 ### Yêu cầu
@@ -46,20 +54,46 @@ Tiến hành cài đặt các module cần thiết bằng lệnh:
 ```bash
 npm install
 ```
+![image](readme_resources/install_step_1.png)
+
 Thiết lập biến môi trường (có trong file) .env chứa chuỗi kết nối MongoDB:
 
 ```bash
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
 ```
 
-Sau đó, thêm dữ liệu mẫu vào database. Bộ dữ liệu mẫu bao gồm dữ liệu 21 sinh viên:
+Sau đó, thêm dữ liệu mẫu vào database. Bộ dữ liệu mẫu bao gồm dữ liệu 4 sinh viên, căn cước công dân / cmnd và hộ chiếu; 6 khoa; 6 chương trình đào tạo; 6 trạng thái; 12 địa chỉ:
 
 ```bash
 node seeder.js
 ```
+
+![image](readme_resources/install_step_2.png)
 
 Cuối cùng, chạy chương trình bằng lệnh:
 
 ```bash
 npm run dev
 ```
+
+![image](readme_resources/starting.png)
+
+## Các trang hiện có trong chương trình
+
+## Trang chính 
+
+Các chức năng: `Các thao tác CRUD thông tin sinh viên`,`Tìm kiếm sinh viên`, `export dữ liệu sinh viên đang hiển thị (json)`
+
+![image](readme_resources/main_page.png)
+
+## Trang import
+
+Chức năng: `import dữ liệu (json và csv)`
+
+![image](readme_resources/import_page.png)
+
+## Trang quản lý danh mục
+
+Chức năng: `các thao tác CRUD lên thông tin danh mục (khoa, tình trạng sinh viên, chương trình)`
+
+![image](readme_resources/categories_page.png)

@@ -3,3 +3,5 @@
 [2025-03-21T11:21:42.007Z] IMPORT - SUCCESS: Import 1 sinh viên thành công
 [2025-03-21T11:42:50.908Z] IMPORT - ERROR: Import sinh viên thất bại: Cannot read properties of undefined (reading 'file')
 [2025-03-21T12:01:57.226Z] IMPORT - SUCCESS: Import 1 sinh viên thành công
+[2025-03-21T12:49:27.330Z] DELETE - SUCCESS: Xóa 7 sinh viên thành công
+[2025-03-21T12:49:27.331Z] DELETE - SUCCESS: Xóa 7 sinh viên thành công

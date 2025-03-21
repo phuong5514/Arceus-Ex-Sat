@@ -5,7 +5,6 @@ import fileUpload from 'express-fileupload';
 
 
 const router = express.Router();
-const PAGE_SIZE = 20;
 
 // Cấu hình file upload
 router.use(fileUpload({

@@ -8,6 +8,7 @@ import fs from 'fs';
 
 const app = express();
 const port = 3000;
+
 app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +19,6 @@ const logsDir = path.join(__dirname, 'logs');
 if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir);
 }
-
 
 // Middleware logging
 app.use((req, res, next) => {

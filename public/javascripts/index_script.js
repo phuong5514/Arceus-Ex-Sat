@@ -17,16 +17,12 @@ function onStudentRowClick(row, studentId) {
     if (mode !== "edit") return;
     const checkbox = row.querySelector('.edit-checkbox');
     checkbox.checked = !checkbox.checked;
-    
-    onEditCheckboxChange(checkbox, studentId);
-}
-
-function onEditCheckboxChange(checkbox, studentId) {
-    const row = checkbox.closest('tr');
 
     document.querySelectorAll('.edit-checkbox').forEach(cb => {
         if (cb !== checkbox) {
             cb.checked = false;
+        } else {
+            cb.checked = true;
         }
     });
 
@@ -89,7 +85,6 @@ function onEditCheckboxChange(checkbox, studentId) {
         document.getElementById("edit-status").value = "";
     }
 }
-
 
 function onRemoveStudentClicked() {
     changeToMode("remove");

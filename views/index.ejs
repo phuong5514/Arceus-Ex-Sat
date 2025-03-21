@@ -203,7 +203,7 @@
         </form>
     </dialog>
 
-    <div class="main_container">
+    <div class="main_container flex-column">
         <table>
             <thead>
                 <tr class="header-row">
@@ -427,8 +427,7 @@
                             </div>
                             <div class="edit">
                                 <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
-                                    value="<%= results.docs[i]._id %>"
-                                    onchange="onEditCheckboxChange(this, '<%= results.docs[i]._id %>')">
+                                    value="<%= results.docs[i]._id %>">
                             </div>
                         </td>
                         <td><%= results.docs[i]._id %></td>
@@ -456,7 +455,7 @@
                                     <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
                                     <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
                                 </div>
-                                <i onclick="onIdentityCardInfoClicked(this)">
+                                <i class="more-info" onclick="onIdentityCardInfoClicked(this)">
                                     ...
                                 </i>
                             </div>
@@ -475,7 +474,7 @@
                                     <input type="hidden" name="expiry_date" value="<%= results.docs[i].passport?.expiry_date || "" %>">
                                     <input type="hidden" name="issue_location" value="<%= results.docs[i].passport?.issue_location || "" %>">
                                 </div>                                
-                                <i onclick="onPassportInfoClicked(this)">
+                                <i class="more-info" onclick="onPassportInfoClicked(this)">
                                     ...
                                 </i>
                             </div>
@@ -495,7 +494,7 @@
                                     <input type="hidden" name="country" value="<%= results.docs[i].permanent_address.country %>">
                                     <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
                                 </div>
-                                <i  onclick="onAddressInfoClicked(this)">
+                                <i class="more-info" onclick="onAddressInfoClicked(this)">
                                     ...
                                 </i>
                             </div>
@@ -515,7 +514,7 @@
                                     <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
                                     <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
                                 </div>
-                                <i onclick="onAddressInfoClicked(this)">
+                                <i class="more-info" onclick="onAddressInfoClicked(this)">
                                     ...
                                 </i>
                             </div>
@@ -535,7 +534,7 @@
                                     <input type="hidden" name="country" value="<%= results.docs[i].mailing_address.country %>">
                                     <input type="hidden" name="postal_code" value="<%= results.docs[i].mailing_address.postal_code %>">
                                 </div>
-                                <i  onclick="onAddressInfoClicked(this)">
+                                <i class="more-info" onclick="onAddressInfoClicked(this)">
                                     ...
                                 </i>
                             </div>

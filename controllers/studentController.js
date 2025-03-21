@@ -12,6 +12,128 @@ import fs from 'fs';
 import path from 'path';
 import { writeLog } from '../helpers/logger.js';
 
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+
+dayjs.extend(customParseFormat);
+
+
+const importCSVGuidance = {
+  "_id": "22120271",
+  "name": "Dương Hoàng Hồng Phúc",
+  "birthdate": "08/11/2004",
+  "gender": "Nam",
+  "class_year": 2022,
+  "program": "Đại trà",
+  "address": "TP HCM",
+  "email": "phuc21744@gmail.com",
+  "phone_number": "0325740149",
+  "status": "Đang học", // This must be check againts the status collection
+  "major": "Tiếng Anh Thương mại", // This must be check againts the majors collection
+  
+  "nationality": "Việt Nam",
+
+  // Address id is generated from student id + ADDRPMNT + type
+  "permanent_address.house_number": "123",
+  "permanent_address.street": "Nguyễn Văn Cừ",
+  "permanent_address.ward": "Phường 1",
+  "permanent_address.district": "Quận 5",
+  "permanent_address.city": "TP HCM",
+  "permanent_address.country": "Việt Nam",
+  "permanent_address.postal_code": "700000",
+
+  // Address id is generated from student id + ADDRTMP + type
+  "temporary_address.house_number": "456",
+  "temporary_address.street": "Nguyễn Trãi",
+  "temporary_address.ward": "Phường 2",
+  "temporary_address.district": "Quận 5",
+  "temporary_address.city": "TP HCM",
+  "temporary_address.country": "Việt Nam",
+  "temporary_address.postal_code": "700000",
+
+  // Address id is generated from student id + ADDRMAIL + type
+  "mailing_address.house_number": "789",
+  "mailing_address.street": "Lê Lợi",
+  "mailing_address.ward": "Phường 3",
+  "mailing_address.district": "Quận 1",
+  "mailing_address.city": "TP HCM",
+  "mailing_address.country": "Việt Nam",
+  "mailing_address.postal_code": "700000",
+
+  "identity_card._id": "012345678910",
+  "identity_card.issue_date": "26/05/2020",
+  "identity_card.expiry_date": "26/05/2020",
+  "identity_card.issue_location": "TP HCM",
+  "identity_card.is_digitized": true,
+  "identity_card.chip_attached": true,
+
+  "passport._id": "C1234567",
+  "passport.type": "Regular",
+  "passport.country_code": "VNM",
+  "passport.issue_date": "08/11/2021",
+  "passport.expiry_date": "08/11/2026",
+  "passport.issue_location": "TP HCM",
+  "passport.notes": ""
+}
+
+const importJSONGuidance = {
+  "_id": "22120271",
+  "name": "Dương Hoàng Hồng Phúc",
+  "birthdate": "08/11/2004",
+  "gender": "Nam",
+  "class_year": 2022,
+  "program": "Đại trà",
+  "address": "TP HCM",
+  "email": "phuc21744@gmail.com",
+  "phone_number": "0325740149",
+  "status": "Đang học",
+  "major": "Tiếng Anh Thương mại",
+  "nationality": "Việt Nam",
+  "permanent_address": {
+    "house_number": "123",
+    "street": "Nguyễn Văn Cừ",
+    "ward": "Phường 1",
+    "district": "Quận 5",
+    "city": "TP HCM",
+    "country": "Việt Nam",
+    "postal_code": "700000"
+  },
+  "temporary_address": {
+    "house_number": "456",
+    "street": "Nguyễn Trãi",
+    "ward": "Phường 2",
+    "district": "Quận 5",
+    "city": "TP HCM",
+    "country": "Việt Nam",
+    "postal_code": "700000"
+  },
+  "mailing_address": {
+    "house_number": "789",
+    "street": "Lê Lợi",
+    "ward": "Phường 3",
+    "district": "Quận 1",
+    "city": "TP HCM",
+    "country": "Việt Nam",
+    "postal_code": "700000"
+  },
+  "identity_card": {
+    "_id": "012345678910",
+    "issue_date": "26/05/2020",
+    "expiry_date": "26/05/2020",
+    "issue_location": "TP HCM",
+    "is_digitized": true,
+    "chip_attached": true
+  },
+  "passport": {
+    "_id": "C1234567",
+    "type": "Regular",
+    "country_code": "VNM",
+    "issue_date": "08/11/2021",
+    "expiry_date": "08/11/2026",
+    "issue_location": "TP HCM",
+    "notes": ""
+  }
+}
+
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
     pagination: false,
@@ -418,12 +540,13 @@ export const importStudents = async (req, res) => {
   try {
     // Kiểm tra file
     if (!req.files || !req.files.file) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Vui lòng chọn file để import'
       });
     }
-
+    
+    
     const file = req.files.file;
     const fileType = req.body.fileType;
 
@@ -434,7 +557,8 @@ export const importStudents = async (req, res) => {
         message: 'File phải có định dạng .csv'
       });
     }
-    if (fileType === 'json' && !file.name.toLowerCase().endsWith('.json')) {
+    // HOTFIX: Somehow file extension will change from "".json" to "j.son"
+    if (fileType === 'json' && !file.name.toLowerCase().endsWith('.json') && !file.name.toLowerCase().endsWith('j.son')) {
       return res.status(400).json({
         success: false,
         message: 'File phải có định dạng .json'
@@ -443,92 +567,150 @@ export const importStudents = async (req, res) => {
 
     // Đọc nội dung file
     const fileContent = file.data.toString('utf8');
-    let students = [];
+    const students = [];
 
-    if (fileType === 'csv') {
-      // Xử lý CSV
-      const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line);
-      if (lines.length < 2) {
-        return res.status(400).json({
-          success: false,
-          message: 'File CSV phải có ít nhất header và một dòng dữ liệu'
-        });
-      }
-
-      const headers = lines[0].split(',').map(h => h.trim());
-      const expectedHeaders = ['MSSV', 'Họ tên', 'Ngày sinh', 'Giới tính', 'Khoa', 'Khóa', 'Chương trình', 'Địa chỉ', 'Email', 'SĐT', 'Tình trạng'];
-
-      // Kiểm tra header
-      if (!expectedHeaders.every(h => headers.includes(h))) {
-        return res.status(400).json({
-          success: false,
-          message: `File CSV phải có đầy đủ các cột: ${expectedHeaders.join(', ')}`
-        });
-      }
-
-      // Map vị trí các cột
-      const headerIndexes = {};
-      expectedHeaders.forEach(header => {
-        headerIndexes[header] = headers.indexOf(header);
-      });
-
-      // Đọc từng dòng dữ liệu
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v ? v.trim() : '');
-        if (values.length !== headers.length) {
-          console.log(`Bỏ qua dòng ${i + 1} vì số cột không khớp`);
-          continue;
-        }
-
-        // Kiểm tra xem có trường nào bị thiếu không
-        const hasEmptyFields = values.some(v => !v);
-        if (hasEmptyFields) {
-          console.log(`Bỏ qua dòng ${i + 1} vì có trường dữ liệu trống`);
-          continue;
-        }
-
-        students.push({
-          _id: values[headerIndexes['MSSV']],
-          name: values[headerIndexes['Họ tên']],
-          birthdate: values[headerIndexes['Ngày sinh']],
-          gender: values[headerIndexes['Giới tính']],
-          major: values[headerIndexes['Khoa']],
-          class_year: values[headerIndexes['Khóa']],
-          program: values[headerIndexes['Chương trình']],
-          address: values[headerIndexes['Địa chỉ']],
-          email: values[headerIndexes['Email']],
-          phone_number: values[headerIndexes['SĐT']],
-          status: values[headerIndexes['Tình trạng']]
-        });
-      }
-    } else if (fileType === 'json') {
-      // Xử lý JSON
-      try {
-        const jsonData = JSON.parse(fileContent);
-        if (!Array.isArray(jsonData)) {
+    switch (fileType) {
+      case 'csv':{
+        // Xử lý CSV
+        const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line);
+        if (lines.length < 2) {
           return res.status(400).json({
             success: false,
-            message: 'File JSON phải chứa một mảng các sinh viên'
+            message: 'File CSV phải có ít nhất header và một dòng dữ liệu'
           });
         }
-        students = jsonData.map(student => ({
-          _id: student.MSSV,
-          name: student['Họ tên'],
-          birthdate: student['Ngày sinh'],
-          gender: student['Giới tính'],
-          major: student['Khoa'],
-          class_year: student['Khóa'],
-          program: student['Chương trình'],
-          address: student['Địa chỉ'],
-          email: student['Email'],
-          phone_number: student['SĐT'],
-          status: student['Tình trạng']
-        }));
-      } catch (error) {
-        return res.status(400).json({
-          success: false,
-          message: 'File JSON không hợp lệ'
+
+        const headers = lines[0].split(',').map(h => h.trim());
+        const expectedHeaders = Object.keys(importCSVGuidance);
+
+        // Kiểm tra header
+        if (!expectedHeaders.every(h => headers.includes(h))) {
+          return res.status(400).json({
+            success: false,
+            message: `File CSV phải có đầy đủ các cột: ${expectedHeaders.join(', ')}`
+          });
+        }
+
+        // Map vị trí các cột
+        const headerMap = {};
+        expectedHeaders.forEach((headerName, headerIndex) => {
+          headerMap[headerName] = headerIndex;
         });
+
+        // Đọc từng dòng dữ liệu
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          if (values.length !== headers.length) {
+            console.log(`Bỏ qua dòng ${i + 1} vì số cột không khớp`);
+            continue;
+          }
+          
+          // Kiểm tra xem có trường nào bị thiếu không
+          // const hasEmptyFields = values.some(v => !v);
+          // if (hasEmptyFields) {
+          //   console.log(`Bỏ qua dòng ${i + 1} vì có trường dữ liệu trống`);
+          //   continue;
+          // }
+
+          const newStudent = {
+            _id: values[headerMap['_id']],
+            name: values[headerMap['name']],
+            birthdate: values[headerMap['birthdate']],
+            gender: values[headerMap['gender']],
+            major: values[headerMap['major']],
+            class_year: values[headerMap['class_year']],
+            program: values[headerMap['program']],
+            email: values[headerMap['email']],
+            phone_number: values[headerMap['phone_number']],
+            status: values[headerMap['status']],
+            permanent_address: {
+              _id: values[headerMap['permanent_address.id']],
+              house_number: values[headerMap['permanent_address.house_number']],
+              street: values[headerMap['permanent_address.street']],
+              ward: values[headerMap['permanent_address.ward']],
+              district: values[headerMap['permanent_address.district']],
+              city: values[headerMap['permanent_address.city']],
+              country: values[headerMap['permanent_address.country']],
+              postal_code: values[headerMap['permanent_address.postal_code']]
+            },
+            temporary_address: {
+              _id: values[headerMap['temporary_address.id']],
+              house_number: values[headerMap['temporary_address.house_number']],
+              street: values[headerMap['temporary_address.street']],
+              ward: values[headerMap['temporary_address.ward']],
+              district: values[headerMap['temporary_address.district']],
+              city: values[headerMap['temporary_address.city']],
+              country: values[headerMap['temporary_address.country']],
+              postal_code: values[headerMap['temporary_address.postal_code']]
+            },
+            mailing_address: {
+              _id: values[headerMap['mailing_address.id']],
+              house_number: values[headerMap['mailing_address.house_number']],
+              street: values[headerMap['mailing_address.street']],
+              ward: values[headerMap['mailing_address.ward']],
+              district: values[headerMap['mailing_address.district']],
+              city: values[headerMap['mailing_address.city']],
+              country: values[headerMap['mailing_address.country']],
+              postal_code: values[headerMap['mailing_address.postal_code']]
+            },
+            identity_card: {
+              _id: values[headerMap['identity_card._id']],
+              issue_date: values[headerMap['identity_card.issue_date']],
+              expiry_date: values[headerMap['identity_card.expiry_date']],
+              issue_location: values[headerMap['identity_card.issue_location']],
+              is_digitized: values[headerMap['identity_card.is_digitized']],
+              chip_attached: values[headerMap['identity_card.chip_attached']]
+            },
+            passport: {
+              _id: values[headerMap['passport._id']],
+              type: values[headerMap['passport.type']],
+              country_code: values[headerMap['passport.country_code']],
+              issue_date: values[headerMap['passport.issue_date']],
+              expiry_date: values[headerMap['passport.expiry_date']],
+              issue_location: values[headerMap['passport.issue_location']],
+              notes: values[headerMap['passport.notes']]
+            },
+            nationality: values[headerMap['nationality']]
+          };
+
+          await processStudentImport(newStudent, (err)=>{
+            if (err){
+              console.error("Bỏ qua dòng", i + 1, "vì dữ liệu không hợp lệ: ", err.message);
+            } else {
+              console.log("Thêm sinh viên", newStudent._id, "thành công");
+              students.push(newStudent);
+              console.log(students.length);
+            }
+          });
+        }
+        break;
+      }
+      case 'json': {  
+        // Xử lý JSON
+        try {
+          const jsonData = JSON.parse(fileContent);
+          if (!Array.isArray(jsonData)) {
+            return res.status(400).json({
+              success: false,
+              message: 'File JSON phải chứa một mảng các sinh viên'
+            });
+          }
+          for (let i = 0; i < jsonData.length; i++) {
+            await processStudentImport(jsonData[i], (err)=>{
+              if (err){
+                console.error("Bỏ qua dòng", i + 1, "vì dữ liệu không hợp lệ: ", err.message);
+              } else {
+                console.log("Thêm sinh viên", jsonData[i]._id, "thành công");
+                students.push(jsonData[i]);
+              }
+            });
+          }
+        } catch (error) {
+          return res.status(400).json({
+            success: false,
+            message: 'File JSON không hợp lệ'
+          });
+        }
       }
     }
 
@@ -536,166 +718,18 @@ export const importStudents = async (req, res) => {
     if (students.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Không có dữ liệu hợp lệ để import'
-      });
-    }
-
-    // Validate từng sinh viên
-    for (const student of students) {
-      // MSSV: 8 chữ số
-      if (!student._id || !/^\d{8}$/.test(student._id)) {
-        return res.status(400).json({
-          success: false,
-          message: `MSSV ${student._id} không hợp lệ. MSSV phải là 8 chữ số.`
-        });
-      }
-
-      // Họ tên: không được trống
-      if (!student.name || student.name.trim() === '') {
-        return res.status(400).json({
-          success: false,
-          message: `Họ tên của sinh viên ${student._id} không được để trống`
-        });
-      }
-
-      // Email: đúng định dạng
-      if (!student.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.email)) {
-        return res.status(400).json({
-          success: false,
-          message: `Email ${student.email} của sinh viên ${student._id} không hợp lệ`
-        });
-      }
-
-      // Số điện thoại: 10-11 chữ số
-      if (!student.phone_number || !/^\d{10,11}$/.test(student.phone_number)) {
-        return res.status(400).json({
-          success: false,
-          message: `Số điện thoại ${student.phone_number} của sinh viên ${student._id} không hợp lệ`
-        });
-      }
-
-      // Giới tính: Nam hoặc Nữ
-      if (!['Nam', 'Nữ'].includes(student.gender)) {
-        return res.status(400).json({
-          success: false,
-          message: `Giới tính ${student.gender} của sinh viên ${student._id} không hợp lệ. Phải là Nam hoặc Nữ`
-        });
-      }
-
-      // Ngày sinh: định dạng DD/MM/YYYY
-      if (!student.birthdate || !/^\d{2}\/\d{2}\/\d{4}$/.test(student.birthdate)) {
-        return res.status(400).json({
-          success: false,
-          message: `Ngày sinh ${student.birthdate} của sinh viên ${student._id} không hợp lệ. Định dạng phải là DD/MM/YYYY`
-        });
-      }
-
-      // Khóa: 4 chữ số
-      if (!student.class_year || !/^\d{4}$/.test(student.class_year)) {
-        return res.status(400).json({
-          success: false,
-          message: `Khóa ${student.class_year} của sinh viên ${student._id} không hợp lệ. Phải là 4 chữ số`
-        });
-      }
-    }
-
-    // Lấy danh sách các giá trị hợp lệ từ database
-    const [majors, programs, statuses] = await Promise.all([
-      Major.find().lean(),
-      Program.find().lean(),
-      Status.find().lean()
-    ]);
-
-    // Log để debug
-    console.log('Available majors:', majors.map(m => m.major_name));
-    console.log('Available programs:', programs.map(p => p.program_name));
-    console.log('Available statuses:', statuses.map(s => s.status_name));
-
-    // Kiểm tra và chuyển đổi dữ liệu
-    const processedStudents = [];
-    for (const student of students) {
-      // Kiểm tra xem student.major có tồn tại và không phải undefined
-      if (!student.major) {
-        return res.status(400).json({
-          success: false,
-          message: `Ngành học của sinh viên ${student._id} không được để trống`
-        });
-      }
-
-      // Tìm major
-      const major = majors.find(m => m.major_name && student.major &&
-        m.major_name.toLowerCase() === student.major.toLowerCase());
-      if (!major) {
-        return res.status(400).json({
-          success: false,
-          message: `Ngành học "${student.major}" của sinh viên ${student._id} không hợp lệ. Các ngành hợp lệ: ${majors.map(m => m.major_name).join(', ')}`
-        });
-      }
-
-      // Kiểm tra program
-      if (!student.program) {
-        return res.status(400).json({
-          success: false,
-          message: `Chương trình học của sinh viên ${student._id} không được để trống`
-        });
-      }
-
-      // Tìm program
-      const program = programs.find(p => p.program_name && student.program &&
-        p.program_name.toLowerCase() === student.program.toLowerCase());
-      if (!program) {
-        return res.status(400).json({
-          success: false,
-          message: `Chương trình "${student.program}" của sinh viên ${student._id} không hợp lệ. Các chương trình hợp lệ: ${programs.map(p => p.program_name).join(', ')}`
-        });
-      }
-
-      // Kiểm tra status
-      if (!student.status) {
-        return res.status(400).json({
-          success: false,
-          message: `Trạng thái của sinh viên ${student._id} không được để trống`
-        });
-      }
-
-      // Tìm status
-      const status = statuses.find(s => s.status_name && student.status &&
-        s.status_name.toLowerCase() === student.status.toLowerCase());
-      if (!status) {
-        return res.status(400).json({
-          success: false,
-          message: `Trạng thái "${student.status}" của sinh viên ${student._id} không hợp lệ. Các trạng thái hợp lệ: ${statuses.map(s => s.status_name).join(', ')}`
-        });
-      }
-
-      // Chuyển đổi ngày sinh sang định dạng YYYY-MM-DD
-      const [day, month, year] = student.birthdate.split('/');
-      const formattedBirthdate = `${year}-${month}-${day}`;
-
-      // Thêm vào danh sách sinh viên đã xử lý
-      processedStudents.push({
-        _id: student._id,
-        name: student.name,
-        birthdate: formattedBirthdate,
-        gender: student.gender,
-        major: major._id,
-        class_year: student.class_year,
-        program: program._id,
-        address: student.address,
-        email: student.email,
-        phone_number: student.phone_number,
-        status: status._id
+        message: 'Không có dữ liệu nào được import'
       });
     }
 
     // Import vào database
-    await Student.insertMany(processedStudents);
+    await Student.insertMany(students);
 
     // Ghi log và trả về kết quả
-    writeLog('IMPORT', 'SUCCESS', `Import ${processedStudents.length} sinh viên thành công`);
+    writeLog('IMPORT', 'SUCCESS', `Import ${students.length} sinh viên thành công`);
     return res.status(200).json({
       success: true,
-      message: `Import thành công ${processedStudents.length} sinh viên`
+      message: `Import thành công ${students.length} sinh viên`
     });
 
   } catch (error) {
@@ -706,4 +740,177 @@ export const importStudents = async (req, res) => {
       message: 'Có lỗi xảy ra khi import: ' + error.message
     });
   }
+};
+
+
+// This function validates and alter the student data before inserting into the database
+async function processStudentImport(student, resultCallback) {
+  const requiredFields = [
+    "_id", "name", "birthdate", "gender", "class_year", "program", // "address", old address field 
+    "email", "phone_number", "status", "major", "nationality",
+    // {"permanent_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
+    // {"temporary_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
+    // {"mailing_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
+    {"identity_card": ["_id", "issue_date", "expiry_date", "issue_location", "is_digitized", "chip_attached"]},
+    {"passport": ["_id", "type", "country_code", "issue_date", "expiry_date", "issue_location"]},
+    // passport_notes is optional
+  ];
+
+  // Check if all required fields are present
+  if (!checkRequiredFields(student, requiredFields, resultCallback)) {
+    return;
+  }
+
+  // Check if student id is new
+  const studentExist = await Student.findOne({ _id: student._id });
+  if (studentExist) {
+    resultCallback(new Error(`Sinh viên ${student._id} đã tồn tại trong hệ thống`));
+    return;
+  }
+
+  if (!/^\d{8}$/.test(student._id)) {
+    resultCallback(new Error("Mã số sinh viên phải là 8 chữ số"));
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.email)) {
+    resultCallback(new Error("Định dạng email không hợp lệ"));
+    return;
+  }
+
+  if (!/^\d{10,11}$/.test(student.phone_number)) {
+    resultCallback(new Error("Số điện thoại phải từ 10 đến 11 chữ số"));
+    return;
+  }
+
+  if (!["Nam", "Nữ"].includes(student.gender)) {
+    resultCallback(new Error("Giới tính phải là Nam hoặc Nữ"));
+    return;
+  }
+
+  if (!/^\d{4}$/.test(student.class_year)) {
+    resultCallback(new Error("Năm học phải là 4 chữ số"));
+    return;
+  }
+
+  if (!dayjs(student.birthdate).isValid()) {
+    resultCallback(new Error("Ngày sinh không hợp lệ"));
+    return;
+  } else {
+    student.birthdate = dayjs(student.birthdate, "DD/MM/YYYY").format("YYYY-MM-DD");
+  }
+
+  if (!dayjs(student.identity_card.issue_date, "DD/MM/YYYY", true).isValid()) {
+    resultCallback(new Error("Ngày cấp CCCD/CMND phải thuộc định dạng DD/MM/YYYY"));
+    return;
+  } else {
+    student.identity_card.issue_date = dayjs(student.identity_card.issue_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+  }
+
+  if (!dayjs(student.identity_card.expiry_date, "DD/MM/YYYY", true).isValid()) {
+    resultCallback(new Error("Ngày hết hạn CCCD/CMND phải thuộc định dạng DD/MM/YYYY"));
+    return;
+  } else {
+    student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+  }
+
+  if (!dayjs(student.passport.issue_date, "DD/MM/YYYY", true).isValid()) {
+    resultCallback(new Error("Ngày cấp hộ chiếu phải thuộc định dạng DD/MM/YYYY"));
+    return;
+  } else {
+    student.passport.issue_date = dayjs(student.passport.issue_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+  }
+
+  if (!dayjs(student.passport.expiry_date).isValid()) {
+    resultCallback(new Error("Ngày hết hạn hộ chiếu phải thuộc định dạng DD/MM/YYYY"));
+    return;
+  } else {
+    student.passport.expiry_date = dayjs(student.passport.expiry_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+  }
+
+  // Run check on major and change to its id 
+  if (student.major){
+    const major = await Major.findOne({major_name: student.major});
+    if (major){
+      student.major = major._id;
+    } else {
+      resultCallback(new Error(`Ngành học ${major} không nằm trong danh sách ngành học có sẵn`));
+      return;
+    }
+  }
+  // Run check on status and change to its id
+  if (student.status){
+    const status = Status.findOne({status_name: student.status});
+    if (status){
+      student.status = status._id;
+    } else {
+      resultCallback(new Error(`Trạng thái ${student.status} không nằm trong danh sách trạng thái có sẵn`));
+      return;
+    }
+  }
+  // Run check on program and change to its id
+  if (student.program){
+    const program = Program.findOne({program_name: student.program});
+    if (program){
+      student.program = program._id;
+    } else {
+      resultCallback(new Error("Trạng thái không nằm trong danh sách trạng thái có sẵn"));
+      return;
+    }
+  }
+  // Add in new address if needed
+  if (student.permanent_address){
+    const addressId = student._id + "ADDRPMNT";
+    const address = await Address.find({ _id: addressId });
+    if (!address){
+      student.permanent_address._id = addressId;
+      await Address.insertOne(student.permanent_address);
+    }
+    student.permanent_address = addressId;
+  }
+  if (student.temporary_address){
+    const addressId = student._id + "ADDRTMP";
+    const address = await Address.find({ _id: addressId });
+    if (!address){
+      student.temporary_address._id = addressId;
+      await Address.insertOne(student.temporary_address);
+    }
+    student.temporary_address = addressId;
+  }
+  if (student.mailing_address){
+    const addressId = student._id + "ADDRMAIL";
+    const address = await Address.find({ _id: addressId });
+    if (!address){
+      student.mailing_address._id = addressId;
+      await Address.insertOne(student.mailing_address);
+    }
+    student.mailing_address = addressId;
+  }
+
+  resultCallback(null);
+}
+
+const checkRequiredFields = (student, requiredFields, resultCallback) => {
+  const checkFields = (obj, fields, parent = '') => {
+    for (const field of fields) {
+      if (typeof field === "string") {
+        if (!obj[field]) {
+          resultCallback(new Error(`Trường ${parent}${field} không được để trống`));
+          return false;
+        }
+      } else if (typeof field === "object") {
+        const parentField = Object.keys(field)[0];
+        if (!obj[parentField]) {
+          resultCallback(new Error(`Trường ${parent}${parentField} không được để trống`));
+          return false;
+        }
+        if (!checkFields(obj[parentField], field[parentField], `${parent}${parentField}.`)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  return checkFields(student, requiredFields);
 };

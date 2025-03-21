@@ -1,131 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .sample-format {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-            font-family: monospace;
-        }
-        #message {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        #message.error {
-            display: block;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        #message.success {
-            display: block;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %>
+  </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .sample-format {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      font-family: monospace;
+    }
+
+    #message {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    #message.error {
+      display: block;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    #message.success {
+      display: block;
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Import Students Data</h2>
-            <a href="/" class="btn btn-secondary">Quay lại</a>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <form id="importForm" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="fileType" class="form-label">Loại file</label>
-                        <select class="form-select" id="fileType" name="fileType" required onchange="showFormat()">
-                            <option value="csv">CSV</option>
-                            <option value="json">JSON</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="file" class="form-label">Chọn file</label>
-                        <input type="file" class="form-control" id="file" name="file" accept=".csv,.json" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Import</button>
-                </form>
-                <div id="message"></div>
-
-                <div id="csvFormat" class="sample-format">
-                    <h5>Format CSV:</h5>
-                    <pre>MSSV,Họ tên,Ngày sinh,Giới tính,Khoa,Khóa,Chương trình,Địa chỉ,Email,SĐT,Tình trạng
-20120001,Nguyễn Văn An,15/03/2002,Nam,Kinh tế,2020,Chính quy,123 Lê Văn Việt Q9,nvan@gmail.com,0901234567,Đang học</pre>
-                </div>
-
-                <div id="jsonFormat" class="sample-format" style="display: none;">
-                    <h5>Format JSON:</h5>
-                    <pre>[{
-    "MSSV": "20120001",
-    "Họ tên": "Nguyễn Văn An",
-    "Ngày sinh": "15/03/2002",
-    "Giới tính": "Nam",
-    "Khoa": "Kinh tế",
-    "Khóa": "2020",
-    "Chương trình": "Chính quy",
-    "Địa chỉ": "123 Lê Văn Việt Q9",
-    "Email": "nvan@gmail.com",
-    "SĐT": "0901234567",
-    "Tình trạng": "Đang học"
-}]</pre>
-                </div>
-            </div>
-        </div>
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Import Students Data</h2>
+      <a href="/" class="btn btn-secondary">Quay lại</a>
     </div>
 
-    <script>
-        function showFormat() {
-            const fileType = document.getElementById('fileType').value;
-            document.getElementById('csvFormat').style.display = fileType === 'csv' ? 'block' : 'none';
-            document.getElementById('jsonFormat').style.display = fileType === 'json' ? 'block' : 'none';
-        }
+    <div class="card">
+      <div class="card-body">
+        <form id="importForm" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="fileType" class="form-label">Loại file</label>
+            <select class="form-select" id="fileType" name="fileType" required onchange="showFormat()">
+              <option value="csv">CSV</option>
+              <option value="json">JSON</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="file" class="form-label">Chọn file</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".csv,.json" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Import</button>
+        </form>
+        <div id="message"></div>
 
-        document.getElementById('importForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('fileType', document.getElementById('fileType').value);
-            formData.append('file', document.getElementById('file').files[0]);
+        <div id="csvFormat" class="sample-format">
+          <h5>Format CSV:</h5>
+          <pre>_id,name,birthdate,gender,class_year,program,address,email,phone_number,status,major,nationality,permanent_address.house_number,permanent_address.street,permanent_address.ward,permanent_address.district,permanent_address.city,permanent_address.country,permanent_address.postal_code,temporary_address.house_number,temporary_address.street,temporary_address.ward,temporary_address.district,temporary_address.city,temporary_address.country,temporary_address.postal_code,mailing_address.house_number,mailing_address.street,mailing_address.ward,mailing_address.district,mailing_address.city,mailing_address.country,mailing_address.postal_code,identity_card._id,identity_card.issue_date,identity_card.expiry_date,identity_card.issue_location,identity_card.is_digitized,identity_card.chip_attached,passport._id,passport.type,passport.country_code,passport.issue_date,passport.expiry_date,passport.issue_location,passport.notes
+22120222,Dương Hoàng Hồng Phúc,08/11/2004,Nam,2022,Đại trà,TP HCM,phuc21744@gmail.com,0325740149,Đang học,Tiếng Anh Thương mại,Việt Nam,123,Nguyễn Văn Cừ,Phường 1,Quận 5,TP HCM,Việt Nam,700000,456,Nguyễn Trãi,Phường 2,Quận 5,TP HCM,Việt Nam,700000,789,Lê Lợi,Phường 3,Quận 1,TP HCM,Việt Nam,700000,012345678910,26/05/2020,26/05/2020,TP HCM,true,true,C1234567,Regular,VNM,08/11/2021,08/11/2026,TP HCM,
+          </pre>
+        </div>
 
-            try {
-                const response = await fetch('/import', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await response.json();
-                
-                const messageDiv = document.getElementById('message');
-                messageDiv.textContent = data.message;
-                messageDiv.className = data.success ? 'success' : 'error';
-                messageDiv.style.display = 'block';
+        <div id="jsonFormat" class="sample-format" style="display: none;">
+          <h5>Format JSON:</h5>
+          <pre>[
+  {
+    "_id": "22120271",
+    "name": "Dương Hoàng Hồng Phúc",
+    "birthdate": "08/11/2004",
+    "gender": "Nam",
+    "class_year": 2022,
+    "program": "Đại trà",
+    "address": "TP HCM",
+    "email": "phuc21744@gmail.com",
+    "phone_number": "0325740149",
+    "status": "Đang học",
+    "major": "Tiếng Anh Thương mại",
+    "nationality": "Việt Nam",
+    "permanent_address": {
+      "house_number": "123",
+      "street": "Nguyễn Văn Cừ",
+      "ward": "Phường 1",
+      "district": "Quận 5",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "postal_code": "700000"
+    },
+    "temporary_address": {
+      "house_number": "456",
+      "street": "Nguyễn Trãi",
+      "ward": "Phường 2",
+      "district": "Quận 5",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "postal_code": "700000"
+    },
+    "mailing_address": {
+      "house_number": "789",
+      "street": "Lê Lợi",
+      "ward": "Phường 3",
+      "district": "Quận 1",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "postal_code": "700000"
+    },
+    "identity_card": {
+      "_id": "012345678910",
+      "issue_date": "26/05/2020",
+      "expiry_date": "26/05/2020",
+      "issue_location": "TP HCM",
+      "is_digitized": true,
+      "chip_attached": true
+    },
+    "passport": {
+      "_id": "C1234567",
+      "type": "Regular",
+      "country_code": "VNM",
+      "issue_date": "08/11/2021",
+      "expiry_date": "08/11/2026",
+      "issue_location": "TP HCM",
+      "notes": ""
+    }
+  }
+]</pre>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                if (data.success) {
-                    // Nếu import thành công, reset form sau 2 giây
-                    setTimeout(() => {
-                        document.getElementById('importForm').reset();
-                        messageDiv.style.display = 'none';
-                    }, 2000);
-                }
-            } catch (error) {
-                const messageDiv = document.getElementById('message');
-                messageDiv.textContent = 'Error importing file: ' + error.message;
-                messageDiv.className = 'error';
-                messageDiv.style.display = 'block';
-            }
+  <script>
+    function showFormat() {
+      const fileType = document.getElementById('fileType').value;
+      document.getElementById('csvFormat').style.display = fileType === 'csv' ? 'block' : 'none';
+      document.getElementById('jsonFormat').style.display = fileType === 'json' ? 'block' : 'none';
+    }
+
+    document.getElementById('importForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('fileType', document.getElementById('fileType').value);
+      formData.append('file', document.getElementById('file').files[0]);
+
+      try {
+        const response = await fetch('/import', {
+          method: 'POST',
+          body: formData
         });
+        const data = await response.json();
 
-        // Show CSV format by default
-        showFormat();
-    </script>
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = data.message;
+        messageDiv.className = data.success ? 'success' : 'error';
+        messageDiv.style.display = 'block';
+
+        if (data.success) {
+          // Nếu import thành công, reset form sau 2 giây
+          setTimeout(() => {
+            document.getElementById('importForm').reset();
+            messageDiv.style.display = 'none';
+          }, 2000);
+        }
+      } catch (error) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = 'Error importing file: ' + error.message;
+        messageDiv.className = 'error';
+        messageDiv.style.display = 'block';
+      }
+    });
+
+    // Show CSV format by default
+    showFormat();
+  </script>
 </body>
-</html> 
+
+</html>

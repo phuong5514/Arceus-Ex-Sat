@@ -358,7 +358,7 @@ async function onAddStudentSaved() {
         student.identification.country_code = document.getElementById("add-passport-country").value;
         student.identification.notes = document.getElementById("add-passport-notes").value;
     }
-    console.log("Sending student data:", student); // 🔍 Debug Log
+    console.log("Sending student data:", student); //Debug Log
 
     const response = await fetch("/students", {
         method: "POST",

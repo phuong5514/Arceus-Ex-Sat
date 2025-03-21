@@ -19,12 +19,6 @@ router.use(fileUpload({
     preserveExtension: true
 }));
 
-function formatStudentData(students) {
-    students.forEach(student => {
-        student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-    });
-}
-
 router.get("/", getAllStudents);
 
 router.get("/search", searchStudents);
@@ -34,5 +28,10 @@ router.post("/students", addStudent);
 router.put("/students/:student_id", updateStudent);
 
 router.delete("/students", deleteStudents);
+
+router.get('/import', showImportPage);
+
+router.post('/import', importStudents);
+
 
 export default router;

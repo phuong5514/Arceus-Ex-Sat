@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { addStudent, deleteStudents, getAllStudents, updateStudent, searchStudents, showImportPage, importStudents } from '../controllers/studentController.js';
 import fileUpload from 'express-fileupload';
 
+
 const router = express.Router();
 const PAGE_SIZE = 20;
 
@@ -33,9 +34,5 @@ router.post("/students", addStudent);
 router.put("/students/:student_id", updateStudent);
 
 router.delete("/students", deleteStudents);
-
-// Routes
-router.get('/import', showImportPage);
-router.post('/import', importStudents);
 
 export default router;

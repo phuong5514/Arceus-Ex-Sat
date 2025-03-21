@@ -127,13 +127,13 @@ export const addStudent = async (req, res) => {
     const newStudent = await preprocessStudent(student);
 
     await Student.insertOne(student);
-    writeLog('CREATE', 'SUCCESS', `Thêm sinh viên ${student._id} thành công`);
+
+    console.log("Student added successfully");
     res.status(200).json({ ok: true, message: "Thêm sinh viên thành công" });
   } catch (error) {
       console.error("Error adding student:", error.message);
       res.status(400).json({ ok: false, error: error.message });
-    writeLog('CREATE', 'ERROR', `Thêm sinh viên thất bại: ${error.message}`);
-    res.status(400).json({ ok: false, error: error.message });
+      writeLog('CREATE', 'ERROR', `Thêm sinh viên thất bại: ${error.message}`);
   }
 };
 
@@ -338,7 +338,6 @@ export const updateStudent = async (req, res) => {
     studentToUpdate.passport = processedStudent.passport;
     
     await studentToUpdate.save();
-    writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
     console.error("❌ Error updating student:", error.message);

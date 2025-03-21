@@ -77,3 +77,23 @@ npm run dev
 ```
 
 ![image](readme_resources/starting.png)
+
+## Các trang hiện có trong chương trình
+
+## Trang chính 
+
+Các chức năng: `Các thao tác CRUD thông tin sinh viên`,`Tìm kiếm sinh viên`, `export dữ liệu sinh viên đang hiển thị (json)`
+
+![image](readme_resources/main_page.png)
+
+## Trang import
+
+Chức năng: `import dữ liệu (json và csv)`
+
+![image](readme_resources/import_page.png)
+
+## Trang quản lý danh mục
+
+Chức năng: `các thao tác CRUD lên thông tin danh mục (khoa, tình trạng sinh viên, chương trình)`
+
+![image](readme_resources/categories_page.png)

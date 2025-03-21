@@ -13,6 +13,7 @@ import path from 'path';
 import { writeLog } from '../helpers/logger.js';
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import { fileURLToPath } from "url";
 
 dayjs.extend(customParseFormat);
 
@@ -913,4 +914,26 @@ const checkRequiredFields = (student, requiredFields, resultCallback) => {
   };
 
   return checkFields(student, requiredFields);
+};
+
+export const exportAllStudents = async (req, res) => {
+  try {
+    const data = await fetchAndFormatStudents();
+    
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const filePath = path.join(__dirname, '../public', 'data.json');
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    res.download(filePath, 'data.json', (err) => {
+        if (err) {
+          console.error("Download error:", err);
+          res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
+          return
+        }
+    });
+  } catch (error){
+    console.error("Error exporting students:", error.message);
+    res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
+  }
 };

@@ -1,6 +1,6 @@
 import express, { query } from 'express';
 import dayjs from 'dayjs';
-import { addStudent, deleteStudents, getAllStudents, updateStudent, searchStudents, showImportPage, importStudents } from '../controllers/studentController.js';
+import { addStudent, deleteStudents, getAllStudents, updateStudent, searchStudents, showImportPage, importStudents, exportAllStudents } from '../controllers/studentController.js';
 import fileUpload from 'express-fileupload';
 
 
@@ -32,5 +32,6 @@ router.get('/import', showImportPage);
 
 router.post('/import', importStudents);
 
+router.get('/export-download', exportAllStudents);
 
 export default router;

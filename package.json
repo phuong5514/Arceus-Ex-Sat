@@ -13,10 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "express-fileupload": "^1.5.1",
     "mongoose": "^8.12.1",
     "mongoose-aggregate-paginate-v2": "^1.1.4",
     "mongoose-paginate-v2": "^1.9.0",
@@ -30,5 +32,8 @@
   "bugs": {
     "url": "https://github.com/phuong5514/Arceus-Ex-Sat/issues"
   },
-  "homepage": "https://github.com/phuong5514/Arceus-Ex-Sat#readme"
+  "homepage": "https://github.com/phuong5514/Arceus-Ex-Sat#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
 }

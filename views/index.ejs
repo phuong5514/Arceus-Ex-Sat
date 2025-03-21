@@ -206,361 +206,366 @@
         <label for="passport-issue-location">Nơi cấp:</label>
         <input type="text" id="passport-issue-location" name="issue_location" placeholder="Nơi cấp" size="20">
       </div>
+            <div class="flex-column gap-8">
+                <label for="passport-notes">Ghi chú:</label>
+                <input type="text" id="passport-notes" name="passport-notes" placeholder="Ghi chú" size="20">
+            </div>
+            
       <button id="submit-passport-button" class="passport-dialog-submit-button" type="submit">OK</button>
     </form>
   </dialog>
 
-  <div class="main_container flex-column">
-    <table>
-      <thead>
-        <tr class="header-row">
-          <th></th>
-          <th>MSSV</th>
-          <th>Họ tên</th>
-          <th>Ngày sinh</th>
-          <th>Giới tính</th>
-          <th>Khoa</th>
-          <th>Khóa</th>
-          <th>Chương trình</th>
-          <th>CCCD/CMND</th>
-          <th>Hộ chiếu</th>
-          <th>Địa chỉ thường trú</th>
-          <th>Địa chỉ tạm trú</th>
-          <th>Địa chỉ nhận thư</th>
-          <th>Email</th>
-          <th>SĐT</th>
-          <th>Tình trạng</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% const addressTypes = ['address_permanent', 'address_temporary', 'address_mailing']; %>
-        <tr class="add editable-row">
-          <td> </td>
-          <td>
-            <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
-          </td>
-          <td>
-            <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
-          </td>
-          <td>
-            <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
-          </td>
-          <td>
-            <select name="gender" id="add-gender">
-              <option value="" disabled selected>--Chọn giới tính--</option>
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-            </select>
-          </td>
-          <td>
-            <select name="major" id="add-major">
-              <option value="" disabled selected>--Chọn khoa--</option>
-              <% for (var i = 0; i < majors.length; i++) { %>
-                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
-              <% } %>
-            </select>
-          </td>
-          <td>
-            <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
-          </td>
-          <td>
-            <select name="program" id="add-program">
-              <option value="" disabled selected>--Chọn chương trình--</option>
-              <% for (var i = 0; i < programs.length; i++) { %>
-                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
-              <% } %>
-            </select>
-          </td>
-          <td id="add-identity_card">
-            <div class="flex-row-space-between">
-              <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
-              <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
-              <!-- Invisible elements to hold data -->
-              <input type="hidden" name="identity_card_id">
-              <input type="hidden" name="issue_date">
-              <input type="hidden" name="expiry_date">
-              <input type="hidden" name="issue_location">
-              <input type="hidden" name="is_digitized">
-              <input type="hidden" name="chip_attached">
-            </div>
-          </td>
-          <td id="add-passport">
-            <div class="flex-row-space-between">
-              <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
-              <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
-              <!-- Invisible elements to hold data -->
-              <input type="hidden" name="passport_id">
-              <input type="hidden" name="type">
-              <input type="hidden" name="country_code">
-              <input type="hidden" name="issue_date">
-              <input type="hidden" name="expiry_date">
-              <input type="hidden" name="issue_location">
-            </div>
-          </td>
-          <% addressTypes.forEach(addressType => { %>
-            <td id="add-<%-addressType%>">
-              <div class="flex-row-space-between">
-                <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
-                <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
-                <!-- Invisible elements to hold data -->
-                <input type="hidden" name="house_number">
-                <input type="hidden" name="street">
-                <input type="hidden" name="ward">
-                <input type="hidden" name="district">
-                <input type="hidden" name="city">
-                <input type="hidden" name="country">
-                <input type="hidden" name="postal_code">
-              </div>
-            </td>
-          <% }) %>
-          <td>
-            <input type="email" id="add-email" name="email" placeholder="Email" size="20">
-          </td>
-          <td>
-            <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
-          </td>
-          <td>
-            <select name="status" id="add-status">
-              <option value="" disabled selected>--Chọn tình trạng--</option>
-              <% for (var i = 0; i < status.length; i++) { %>
-                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
-              <% } %>
-            </select>
-          </td>
-        </tr>
-        <tr class="edit editable-row">
-          <td> </td>
-          <td>
-            <input type="text" id="edit-student-id" name="student_id" placeholder="MSSV" size="9" readonly>
-          </td>
-          <td>
-            <input type="text" id="edit-name" name="name" placeholder="Họ tên" size="20">
-          </td>
-          <td>
-            <input type="date" id="edit-birthdate" name="birthdate">
-          </td>
-          <td>
-            <select name="gender" id="edit-gender">
-              <option value="" disabled selected>--Chọn giới tính--</option>
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-            </select>
-          </td>
-          <td>
-            <select name="major" id="edit-major">
-              <option value="" disabled selected>--Chọn khoa--</option>
-              <% for (var i = 0; i < majors.length; i++) { %>
-                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
-              <% } %>
-            </select>
-          </td>
-          <td>
-            <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
-          </td>
-          
-          <td>
-            <select name="program" id="edit-program">
-              <option value="" disabled selected>--Chọn chương trình--</option>
-              <% for (var i = 0; i < programs.length; i++) { %>
-                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
-              <% } %>
-            </select>
-          </td>
-          <td id="edit-identity_card">
-            <div class="flex-row-space-between">
-              <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
-              <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
-              <!-- Invisible elements to hold data -->
-              <input type="hidden" name="identity_card_id">
-              <input type="hidden" name="issue_date">
-              <input type="hidden" name="expiry_date">
-              <input type="hidden" name="issue_location">
-              <input type="hidden" name="is_digitized">
-              <input type="hidden" name="chip_attached">
-            </div>
-          </td>
-          <td id="edit-passport">
-            <div class="flex-row-space-between">
-              <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
-              <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
-              <!-- Invisible elements to hold data -->
-              <input type="hidden" name="passport_id">
-              <input type="hidden" name="type">
-              <input type="hidden" name="country_code">
-              <input type="hidden" name="issue_date">
-              <input type="hidden" name="expiry_date">
-              <input type="hidden" name="issue_location">
-            </div>
-          </td>
-          <% addressTypes.forEach(addressType => { %>
-            <td id="edit-<%=addressType%>">
-              <div class="flex-row-space-between">
-                <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
-                <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
-                <!-- Invisible elements to hold data -->
-                <input type="hidden" name="house_number">
-                <input type="hidden" name="street">
-                <input type="hidden" name="ward">
-                <input type="hidden" name="district">
-                <input type="hidden" name="city">
-                <input type="hidden" name="country">
-                <input type="hidden" name="postal_code">
-              </div>
-            </td>
-          <% }) %>
-          <td>
-            <input type="email" id="edit-email" name="email" placeholder="Email" size="20">
-          </td>
-          <td>
-            <input type="text" id="edit-phone_number" name="phone_number" placeholder="SĐT" size="12">
-          </td>
-          <td>
-            <select name="status" id="edit-status">
-              <% for (var i = 0; i < status.length; i++) { %>
-                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
-              <% } %>
-            </select>
-          </td>
-        </tr>
-        <% for (var i=0; i < results.docs.length; i++) { %>
-          <tr class="student-row" 
-            data-student-id="<%= results.docs[i]._id %>" 
-            onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
+    <div class="main_container flex-column">
+        <table>
+            <thead>
+                <tr class="header-row">
+                    <th></th>
+                    <th>MSSV</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Khoa</th>
+                    <th>Khóa</th>
+                    <th>Chương trình</th>
+                    <th>CCCD/CMND</th>
+                    <th>Hộ chiếu</th>
+                    <th>Địa chỉ thường trú</th>
+                    <th>Địa chỉ tạm trú</th>
+                    <th>Địa chỉ nhận thư</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Tình trạng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% const addressTypes = ['address_permanent', 'address_temporary', 'address_mailing']; %>
+                <tr class="add editable-row">
+                    <td> </td>
+                    <td>
+                        <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
+                    </td>
+                    <td>
+                        <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
+                    </td>
+                    <td>
+                        <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
+                    </td>
+                    <td>
+                        <select name="gender" id="add-gender">
+                            <option value="" disabled selected>--Chọn giới tính--</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="major" id="add-major">
+                            <option value="" disabled selected>--Chọn khoa--</option>
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
+                    </td>
+                    <td>
+                        <select name="program" id="add-program">
+                            <option value="" disabled selected>--Chọn chương trình--</option>
+                            <% for (var i = 0; i < programs.length; i++) { %>
+                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td id="add-identity_card">
+                        <div class="flex-row-space-between">
+                            <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
+                            <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="identity_card_id">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                            <input type="hidden" name="is_digitized">
+                            <input type="hidden" name="chip_attached">
+                        </div>
+                    </td>
+                    <td id="add-passport">
+                        <div class="flex-row-space-between">
+                            <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
+                            <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="passport_id">
+                            <input type="hidden" name="type">
+                            <input type="hidden" name="country_code">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                        </div>
+                    </td>
+                    <% addressTypes.forEach(addressType => { %>
+                        <td id="add-<%-addressType%>">
+                            <div class="flex-row-space-between">
+                                <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
+                                <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
+                                <!-- Invisible elements to hold data -->
+                                <input type="hidden" name="house_number">
+                                <input type="hidden" name="street">
+                                <input type="hidden" name="ward">
+                                <input type="hidden" name="district">
+                                <input type="hidden" name="city">
+                                <input type="hidden" name="country">
+                                <input type="hidden" name="postal_code">
+                            </div>
+                        </td>
+                    <% }) %>
+                    <td>
+                        <input type="email" id="add-email" name="email" placeholder="Email" size="20">
+                    </td>
+                    <td>
+                        <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                    </td>
+                    <td>
+                        <select name="status" id="add-status">
+                            <option value="" disabled selected>--Chọn tình trạng--</option>
+                            <% for (var i = 0; i < status.length; i++) { %>
+                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="edit editable-row">
+                    <td> </td>
+                    <td>
+                        <input type="text" id="edit-student-id" name="student_id" placeholder="MSSV" size="9" readonly>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-name" name="name" placeholder="Họ tên" size="20">
+                    </td>
+                    <td>
+                        <input type="date" id="edit-birthdate" name="birthdate">
+                    </td>
+                    <td>
+                        <select name="gender" id="edit-gender">
+                            <option value="" disabled selected>--Chọn giới tính--</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="major" id="edit-major">
+                            <option value="" disabled selected>--Chọn khoa--</option>
+                            <% for (var i = 0; i < majors.length; i++) { %>
+                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
+                    </td>
+                    
+                    <td>
+                        <select name="program" id="edit-program">
+                            <option value="" disabled selected>--Chọn chương trình--</option>
+                            <% for (var i = 0; i < programs.length; i++) { %>
+                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td id="edit-identity_card">
+                        <div class="flex-row-space-between">
+                            <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
+                            <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="identity_card_id">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                            <input type="hidden" name="is_digitized">
+                            <input type="hidden" name="chip_attached">
+                        </div>
+                    </td>
+                    <td id="edit-passport">
+                        <div class="flex-row-space-between">
+                            <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
+                            <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
+                            <!-- Invisible elements to hold data -->
+                            <input type="hidden" name="passport_id">
+                            <input type="hidden" name="type">
+                            <input type="hidden" name="country_code">
+                            <input type="hidden" name="issue_date">
+                            <input type="hidden" name="expiry_date">
+                            <input type="hidden" name="issue_location">
+                        </div>
+                    </td>
+                    <% addressTypes.forEach(addressType => { %>
+                        <td id="edit-<%=addressType%>">
+                            <div class="flex-row-space-between">
+                                <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
+                                <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
+                                <!-- Invisible elements to hold data -->
+                                <input type="hidden" name="house_number">
+                                <input type="hidden" name="street">
+                                <input type="hidden" name="ward">
+                                <input type="hidden" name="district">
+                                <input type="hidden" name="city">
+                                <input type="hidden" name="country">
+                                <input type="hidden" name="postal_code">
+                            </div>
+                        </td>
+                    <% }) %>
+                    <td>
+                        <input type="email" id="edit-email" name="email" placeholder="Email" size="20">
+                    </td>
+                    <td>
+                        <input type="text" id="edit-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                    </td>
+                    <td>
+                        <select name="status" id="edit-status">
+                            <% for (var i = 0; i < status.length; i++) { %>
+                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
+                            <% } %>
+                        </select>
+                    </td>
+                </tr>
+                <% for (var i=0; i < results.docs.length; i++) { %>
+                    <tr class="student-row" 
+                        data-student-id="<%= results.docs[i]._id %>" 
+                        onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
+                        
+                        <td>
+                            <div class="remove">
+                                <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
+                                    value="<%= results.docs[i]._id %>">
+                            </div>
+                            <div class="edit">
+                                <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
+                                    value="<%= results.docs[i]._id %>">
+                            </div>
+                        </td>
+                        <td><%= results.docs[i]._id %></td>
+                        <td><%= results.docs[i].name || "Chưa có" %></td>
+                        <td><%= results.docs[i].birthdate || "Chưa có" %></td>
+                        <td><%= results.docs[i].gender || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].major?._id || ''%>">
+                            <%= results.docs[i].major?.major_name || "Chưa có" %>
+                        </td>
+                        <td><%= results.docs[i].class_year || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].program?._id || ""%>">
+                            <%= results.docs[i].program?.program_name || "Chưa có" %>
+                        </td>
+                        <td >
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <div>
+                                        <%= results.docs[i].identity_card?.text || "" %>
+                                    </div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="identity_card_id" value="<%= results.docs[i].identity_card?._id || '' %>">
+                                    <input type="hidden" name="issue_date" value="<%= results.docs[i].identity_card?.issue_date || '' %>">
+                                    <input type="hidden" name="expiry_date" value="<%= results.docs[i].identity_card?.expiry_date || '' %>">
+                                    <input type="hidden" name="issue_location" value="<%= results.docs[i].identity_card?.issue_location || '' %>">
+                                    <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
+                                    <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
+                                </div>
+                                <i class="more-info" onclick="onIdentityCardInfoClicked(this)">
+                                    ...
+                                </i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].passport?.text || "" %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="passport_id" value="<%= results.docs[i].passport?._id || "" %>">
+                                    <input type="hidden" name="type" value="<%= results.docs[i].passport?.type || "" %>">
+                                    <input type="hidden" name="country_code" value="<%= results.docs[i].passport?.country_code || "" %>">
+                                    <input type="hidden" name="issue_date" value="<%= results.docs[i].passport?.issue_date || "" %>">
+                                    <input type="hidden" name="expiry_date" value="<%= results.docs[i].passport?.expiry_date || "" %>">
+                                    <input type="hidden" name="issue_location" value="<%= results.docs[i].passport?.issue_location || "" %>">
+                                </div>                                
+                                <i class="more-info" onclick="onPassportInfoClicked(this)">
+                                    ...
+                                </i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].permanent_address.text %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="house_number" value="<%= results.docs[i].permanent_address.house_number %>">
+                                    <input type="hidden" name="street" value="<%= results.docs[i].permanent_address.street %>">
+                                    <input type="hidden" name="ward" value="<%= results.docs[i].permanent_address.ward %>">
+                                    <input type="hidden" name="district" value="<%= results.docs[i].permanent_address.district %>">
+                                    <input type="hidden" name="city" value="<%= results.docs[i].permanent_address.city %>">
+                                    <input type="hidden" name="country" value="<%= results.docs[i].permanent_address.country %>">
+                                    <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
+                                </div>
+                                <i class="more-info" onclick="onAddressInfoClicked(this)">
+                                    ...
+                                </i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].temporary_address.text %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="house_number" value="<%= results.docs[i].temporary_address.house_number %>">
+                                    <input type="hidden" name="street" value="<%= results.docs[i].temporary_address.street %>">
+                                    <input type="hidden" name="ward" value="<%= results.docs[i].temporary_address.ward %>">
+                                    <input type="hidden" name="district" value="<%= results.docs[i].temporary_address.district %>">
+                                    <input type="hidden" name="city" value="<%= results.docs[i].temporary_address.city %>">
+                                    <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
+                                    <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
+                                </div>
+                                <i class="more-info" onclick="onAddressInfoClicked(this)">
+                                    ...
+                                </i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex-row-space-between">
+                                <div>
+                                    <%= results.docs[i].mailing_address.text %>
+                                </div>
+                                <div>
+                                    <!-- Invisible elements to hold data -->
+                                    <input type="hidden" name="house_number" value="<%= results.docs[i].mailing_address.house_number%>">
+                                    <input type="hidden" name="street" value="<%= results.docs[i].mailing_address.street %>">
+                                    <input type="hidden" name="ward" value="<%= results.docs[i].mailing_address.ward %>">
+                                    <input type="hidden" name="district" value="<%= results.docs[i].mailing_address.district %>">
+                                    <input type="hidden" name="city" value="<%= results.docs[i].mailing_address.city %>">
+                                    <input type="hidden" name="country" value="<%= results.docs[i].mailing_address.country %>">
+                                    <input type="hidden" name="postal_code" value="<%= results.docs[i].mailing_address.postal_code %>">
+                                </div>
+                                <i class="more-info" onclick="onAddressInfoClicked(this)">
+                                    ...
+                                </i>
+                            </div>
+                        </td>
+                        <td><%= results.docs[i].email || "Chưa có" %></td>
+                        <td><%= results.docs[i].phone_number || "Chưa có" %></td>
+                        <td name="<%=results.docs[i].status?._id || ""%>">
+                            <%= results.docs[i].status?.status_name || "Chưa có" %>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
             
-            <td>
-              <div class="remove">
-                <input class="remove-checkbox checkbox" type="checkbox" name="remove_student"
-                  value="<%= results.docs[i]._id %>">
-              </div>
-              <div class="edit">
-                <input class="edit-checkbox checkbox" type="checkbox" name="edit_student"
-                  value="<%= results.docs[i]._id %>">
-              </div>
-            </td>
-            <td><%= results.docs[i]._id %></td>
-            <td><%= results.docs[i].name || "Chưa có" %></td>
-            <td><%= results.docs[i].birthdate || "Chưa có" %></td>
-            <td><%= results.docs[i].gender || "Chưa có" %></td>
-            <td name="<%=results.docs[i].major?._id || ''%>">
-              <%= results.docs[i].major?.major_name || "Chưa có" %>
-            </td>
-            <td><%= results.docs[i].class_year || "Chưa có" %></td>
-            <td name="<%=results.docs[i].program?._id || ""%>">
-              <%= results.docs[i].program?.program_name || "Chưa có" %>
-            </td>
-            <td >
-              <div class="flex-row-space-between">
-                <div>
-                  <div>
-                    <%= results.docs[i].identity_card?.text || "" %>
-                  </div>
-                  <!-- Invisible elements to hold data -->
-                  <input type="hidden" name="identity_card_id" value="<%= results.docs[i].identity_card?._id || '' %>">
-                  <input type="hidden" name="issue_date" value="<%= results.docs[i].identity_card?.issue_date || '' %>">
-                  <input type="hidden" name="expiry_date" value="<%= results.docs[i].identity_card?.expiry_date || '' %>">
-                  <input type="hidden" name="issue_location" value="<%= results.docs[i].identity_card?.issue_location || '' %>">
-                  <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
-                  <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
-                </div>
-                <i class="more-info" onclick="onIdentityCardInfoClicked(this)">
-                  ...
-                </i>
-              </div>
-            </td>
-            <td>
-              <div class="flex-row-space-between">
-                <div>
-                  <%= results.docs[i].passport?.text || "" %>
-                </div>
-                <div>
-                  <!-- Invisible elements to hold data -->
-                  <input type="hidden" name="passport_id" value="<%= results.docs[i].passport?._id || "" %>">
-                  <input type="hidden" name="type" value="<%= results.docs[i].passport?.type || "" %>">
-                  <input type="hidden" name="country_code" value="<%= results.docs[i].passport?.country_code || "" %>">
-                  <input type="hidden" name="issue_date" value="<%= results.docs[i].passport?.issue_date || "" %>">
-                  <input type="hidden" name="expiry_date" value="<%= results.docs[i].passport?.expiry_date || "" %>">
-                  <input type="hidden" name="issue_location" value="<%= results.docs[i].passport?.issue_location || "" %>">
-                </div>                
-                <i class="more-info" onclick="onPassportInfoClicked(this)">
-                  ...
-                </i>
-              </div>
-            </td>
-            <td>
-              <div class="flex-row-space-between">
-                <div>
-                  <%= results.docs[i].permanent_address.text %>
-                </div>
-                <div>
-                  <!-- Invisible elements to hold data -->
-                  <input type="hidden" name="house_number" value="<%= results.docs[i].permanent_address.house_number %>">
-                  <input type="hidden" name="street" value="<%= results.docs[i].permanent_address.street %>">
-                  <input type="hidden" name="ward" value="<%= results.docs[i].permanent_address.ward %>">
-                  <input type="hidden" name="district" value="<%= results.docs[i].permanent_address.district %>">
-                  <input type="hidden" name="city" value="<%= results.docs[i].permanent_address.city %>">
-                  <input type="hidden" name="country" value="<%= results.docs[i].permanent_address.country %>">
-                  <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
-                </div>
-                <i class="more-info" onclick="onAddressInfoClicked(this)">
-                  ...
-                </i>
-              </div>
-            </td>
-            <td>
-              <div class="flex-row-space-between">
-                <div>
-                  <%= results.docs[i].temporary_address.text %>
-                </div>
-                <div>
-                  <!-- Invisible elements to hold data -->
-                  <input type="hidden" name="house_number" value="<%= results.docs[i].temporary_address.house_number %>">
-                  <input type="hidden" name="street" value="<%= results.docs[i].temporary_address.street %>">
-                  <input type="hidden" name="ward" value="<%= results.docs[i].temporary_address.ward %>">
-                  <input type="hidden" name="district" value="<%= results.docs[i].temporary_address.district %>">
-                  <input type="hidden" name="city" value="<%= results.docs[i].temporary_address.city %>">
-                  <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
-                  <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
-                </div>
-                <i class="more-info" onclick="onAddressInfoClicked(this)">
-                  ...
-                </i>
-              </div>
-            </td>
-            <td>
-              <div class="flex-row-space-between">
-                <div>
-                  <%= results.docs[i].mailing_address.text %>
-                </div>
-                <div>
-                  <!-- Invisible elements to hold data -->
-                  <input type="hidden" name="house_number" value="<%= results.docs[i].mailing_address.house_number%>">
-                  <input type="hidden" name="street" value="<%= results.docs[i].mailing_address.street %>">
-                  <input type="hidden" name="ward" value="<%= results.docs[i].mailing_address.ward %>">
-                  <input type="hidden" name="district" value="<%= results.docs[i].mailing_address.district %>">
-                  <input type="hidden" name="city" value="<%= results.docs[i].mailing_address.city %>">
-                  <input type="hidden" name="country" value="<%= results.docs[i].mailing_address.country %>">
-                  <input type="hidden" name="postal_code" value="<%= results.docs[i].mailing_address.postal_code %>">
-                </div>
-                <i class="more-info" onclick="onAddressInfoClicked(this)">
-                  ...
-                </i>
-              </div>
-            </td>
-            <td><%= results.docs[i].email || "" %></td>
-            <td><%= results.docs[i].phone_number || "" %></td>
-            <td name="<%=results.docs[i].status?._id || ""%>">
-              <%= results.docs[i].status?.status_name || "" %>
-            </td>
-          </tr>
-        <% } %>
-      </tbody>
-      
-  
-    </table>
-    <% if (results.docs.length == 0) { %>
-      <div class="empty-table">(Không có sinh viên)</div>
-      <% } %>
-  </div>
+    
+        </table>
+        <% if (results.docs.length == 0) { %>
+            <div class="empty-table">(Không có sinh viên)</div>
+            <% } %>
+    </div>
 
 </body>
 </html>

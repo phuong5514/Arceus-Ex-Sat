@@ -4,30 +4,112 @@ import Major from "../models/majorModel.js";
 import dayjs from "dayjs";
 import Program from "../models/programModel.js";
 import Status from "../models/statusModel.js";
-import csv from 'csv-parser';
-import fs from 'fs';
-import path from 'path';
-import { writeLog } from '../helpers/logger.js';
+import Address from "../models/addressModel.js";
+import IdentityCard from "../models/identityCardModel.js";
+import Passport from "../models/passportModel.js";
+
+const fetchAndFormatStudents = async (query = {}, options = {}) => {
+  const defaultOptions = {
+    pagination: false,
+    page: 1,
+    limit: 100,
+    sort: "_id",
+    lean: true, // convert to POJO
+    populate: [ // reference other collections
+      "major",
+      "program",
+      "status",
+      "permanent_address",
+      "temporary_address",
+      "mailing_address",
+      "identity_card",
+      "passport"
+    ]
+  };
+
+  const finalOptions = { ...defaultOptions, ...options };
+  const results = await Student.paginate(query, finalOptions);
+
+  // format students data
+  results.docs.forEach(student => {
+    student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
+    if (student.permanent_address) {
+      student.permanent_address.text = formatAddress(student.permanent_address);
+    } else {
+      student.permanent_address = emptyAddress();
+      student.permanent_address.text = "";
+    }
+    if (student.temporary_address) {
+      student.temporary_address.text = formatAddress(student.temporary_address);
+    } else {
+      student.temporary_address = emptyAddress();
+      student.temporary_address.text = "";
+    }
+    if (student.mailing_address) {
+      student.mailing_address.text = formatAddress(student.mailing_address);
+    } else {
+      student.mailing_address = emptyAddress();
+      student.mailing_address.text = "";
+    }
+    if (student.identity_card) {
+      student.identity_card.issue_date = dayjs(student.identity_card.issue_date).format('YYYY-MM-DD');
+      student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date).format('YYYY-MM-DD');
+      student.identity_card.text = formatIdentityCard(student.identity_card);
+    } else {
+      student.identity_card = null;
+    }
+    if (student.passport) {
+      student.passport.issue_date = dayjs(student.passport.issue_date).format('YYYY-MM-DD');
+      student.passport.expiry_date = dayjs(student.passport.expiry_date).format('YYYY-MM-DD');
+      student.passport.text = formatPassport(student.passport);
+    } else {
+      student.passport = null;
+    }
+  });
+
+  return results;
+};
+
+function formatAddress(address) {
+  if (!address) {
+    return "";
+  }
+  return Object.entries(address)
+    .filter(([key, value]) => (key === "city" || key === "country") && typeof value !== "undefined" && value)
+    .map(([key, value]) => value)
+    .join(", ");
+}
+
+function formatIdentityCard(identityCard){
+  if (!identityCard){
+    return "";
+  }
+
+  return identityCard._id;
+}
+
+function formatPassport(passport){
+  if (!passport){
+    return "";
+  }
+  return passport._id;
+}
+
+function emptyAddress(){
+  return {
+    house_number: "",
+    street: "",
+    ward: "",
+    district: "",
+    city: "",
+    country: "",
+    postal_code: ""
+  };
+}
 
 export const getAllStudents = async (req, res) => {
   try {
-    const options = {
-      pagination: false,
-      page: 1,
-      limit: 100,
-      sort: "_id",
-      lean: true, // convert to POJO
-      populate: [// reference other collections
-        "major",
-        "program",
-        "status"
-      ]
-    }
-    const results = await Student.paginate({}, options);
-    // format students data
-    results.docs.forEach(student => {
-      student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-    });
+    const results = await fetchAndFormatStudents();
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
@@ -48,6 +130,8 @@ export const addStudent = async (req, res) => {
     writeLog('CREATE', 'SUCCESS', `Thêm sinh viên ${student._id} thành công`);
     res.status(200).json({ ok: true, message: "Thêm sinh viên thành công" });
   } catch (error) {
+      console.error("Error adding student:", error.message);
+      res.status(400).json({ ok: false, error: error.message });
     writeLog('CREATE', 'ERROR', `Thêm sinh viên thất bại: ${error.message}`);
     res.status(400).json({ ok: false, error: error.message });
   }
@@ -257,6 +341,7 @@ export const updateStudent = async (req, res) => {
     writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
+    console.error("❌ Error updating student:", error.message);
     writeLog('UPDATE', 'ERROR', `Cập nhật sinh viên ${studentId} thất bại: ${error.message}`);
     res.status(400).json({ ok: false, error: error.message });
   }
@@ -275,10 +360,9 @@ export const deleteStudents = async (req, res) => {
     if (result.deletedCount === 0) {
       throw new Error(`Không tìm thấy sinh viên nào nằm trong danh sách cần xóa`);
     }
-    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
+    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
     res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
   } catch (error) {
-    writeLog('DELETE', 'ERROR', `Xóa sinh viên thất bại: ${error.message}`);
     writeLog('DELETE', 'ERROR', `Xóa sinh viên thất bại: ${error.message}`);
     res.status(400).json({ ok: false, error: error.message });
   }
@@ -313,8 +397,9 @@ export const searchStudents = async (req, res) => {
     const programs = await Program.find().lean();
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: req.query.search, queryData: req.query });
   } catch (error) {
-    console.error("Error searching for students: ", error.message);
+    res.status(400).json({ ok: false, error: error.message });
   }
+};
 }
 
 export const showImportPage = (req, res) => {

@@ -1,4 +1,4 @@
-# Trang web Quản lý sinh viên 
+# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 2)
 ## Cấu trúc source code
 ```bash
 /
@@ -26,7 +26,6 @@
 
 `pb_migrations` chứa các file migration của database, cần thiết để dựng các lược đồ quan hệ trong database.
 
-
 `superuser.js` cấp quyền truy cập database cho người dùng với vai trò là superuser client để thực hiện các thao tác CRUD.  
 
 `seeder.js` thêm dữ liệu mẫu vào database.
@@ -36,9 +35,9 @@
 
 [Node.js](https://nodejs.org/en/download/) phiên bản từ v20.17.0 trở lên.
 
-Bài tập sử dụng [PocketBase](https://pocketbase.io/), một công cụ backend nhẹ và nhanh chóng để tạo và quản lý một SQLite database.  
+Bài tập sử dụng MongoDB, một hệ quản trị cơ sở dữ liệu NoSQL mạnh mẽ và linh hoạt.
 
-Trên hệ điều hành Linux hoặc MacOs, xóa file pockbase.exe, sau đó tải và giải nén file `.zip` tương thích từ [trang hướng dẫn của PocketBase](https://pocketbase.io/docs) tại thư mục gốc của project. Nếu hệ điều hành là Windows thì không cần thực hiện bước này.
+Chúng ta có thể tải MongoDB Atlas để trực tiếp nhìn thấy các record dữ liệu của trang web Quản lý học sinh.
 
 ### Cài đặt & chạy chương trình
 
@@ -47,11 +46,10 @@ Tiến hành cài đặt các module cần thiết bằng lệnh:
 ```bash
 npm install
 ```
+Thiết lập biến môi trường (có trong file) .env chứa chuỗi kết nối MongoDB:
 
-Trước khi chạy chương trình, tiến hành dựng PocketBase database bằng lệnh:
-  
 ```bash
-./pocketbase serve
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
 ```
 
 Sau đó, thêm dữ liệu mẫu vào database. Bộ dữ liệu mẫu bao gồm dữ liệu 21 sinh viên:

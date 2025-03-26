@@ -235,199 +235,105 @@
                     <th>Email</th>
                     <th>SĐT</th>
                     <th>Tình trạng</th>
+                    <th>Quốc gia</th>
                 </tr>
             </thead>
             <tbody>
                 <% const addressTypes = ['address_permanent', 'address_temporary', 'address_mailing']; %>
-                <tr class="add editable-row">
-                    <td> </td>
+                <% const editableRowModes = ['edit', 'add']; %>
+                <% editableRowModes.forEach( mode => { %>
+                  <tr class="<%= mode %> editable-row">
+                    <td></td>
                     <td>
-                        <input type="text" id="add-student_id" name="student_id" placeholder="MSSV" size="9">
+                      <input type="text" id="<%= mode %>-student_id" name="student_id" placeholder="MSSV" size="9" <%=mode==="edit"? "readonly" : "" %>>
                     </td>
                     <td>
-                        <input type="text" id="add-name" name="name" placeholder="Họ tên" size="20">
+                      <input type="text" id="<%= mode %>-name" name="name" placeholder="Họ tên" size="20">
                     </td>
                     <td>
-                        <input type="date" id="add-birthdate" name="birthdate" placeholder="Ngày sinh">
+                      <input type="date" id="<%= mode %>-birthdate" name="birthdate">
                     </td>
                     <td>
-                        <select name="gender" id="add-gender">
-                            <option value="" disabled selected>--Chọn giới tính--</option>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
+                      <select name="gender" id="<%= mode %>-gender">
+                        <option value="" disabled selected>--Chọn giới tính--</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                      </select>
                     </td>
                     <td>
-                        <select name="major" id="add-major">
-                            <option value="" disabled selected>--Chọn khoa--</option>
-                            <% for (var i = 0; i < majors.length; i++) { %>
-                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
-                            <% } %>
-                        </select>
+                      <select name="major" id="<%= mode %>-major">
+                        <option value="" disabled selected>--Chọn khoa--</option>
+                        <% majors.forEach(major=> { %>
+                          <option value="<%= major._id %>">
+                            <%= major.major_name %>
+                          </option>
+                          <% }); %>
+                      </select>
                     </td>
                     <td>
-                        <input type="text" id="add-class_year" name="class_year" placeholder="Khóa" size="5">
+                      <input type="text" id="<%= mode %>-class_year" name="class_year" placeholder="Khóa" size="5">
                     </td>
                     <td>
-                        <select name="program" id="add-program">
-                            <option value="" disabled selected>--Chọn chương trình--</option>
-                            <% for (var i = 0; i < programs.length; i++) { %>
-                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
-                            <% } %>
-                        </select>
+                      <select name="program" id="<%= mode %>-program">
+                        <option value="" disabled selected>--Chọn chương trình--</option>
+                        <% programs.forEach(program=> { %>
+                          <option value="<%= program._id %>">
+                            <%= program.program_name %>
+                          </option>
+                          <% }); %>
+                      </select>
                     </td>
-                    <td id="add-identity_card">
+                    <td id="<%= mode %>-identity_card">
+                      <div class="flex-row-space-between">
+                        <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
+                        <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
+                        <% ["identity_card_id", "issue_date" , "expiry_date" , "issue_location" , "is_digitized" , "chip_attached"].forEach(field=> { %>
+                          <input type="hidden" name="<%= field %>">
+                          <% }); %>
+                      </div>
+                    </td>
+                    <td id="<%= mode %>-passport">
+                      <div class="flex-row-space-between">
+                        <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
+                        <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
+                        <% ["passport_id", "type" , "country_code" , "issue_date" , "expiry_date" , "issue_location" , "notes"].forEach(field=> { %>
+                          <input type="hidden" name="<%= field %>">
+                          <% }); %>
+                      </div>
+                    </td>
+                    <% addressTypes.forEach(addressType=> { %>
+                      <td id="<%= mode %>-<%= addressType %>">
                         <div class="flex-row-space-between">
-                            <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
-                            <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
-                            <!-- Invisible elements to hold data -->
-                            <input type="hidden" name="identity_card_id">
-                            <input type="hidden" name="issue_date">
-                            <input type="hidden" name="expiry_date">
-                            <input type="hidden" name="issue_location">
-                            <input type="hidden" name="is_digitized">
-                            <input type="hidden" name="chip_attached">
+                          <input class="address-text" type="text" name="<%= addressType %>" placeholder="..." size="20" readonly>
+                          <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
+                          <% ["house_number", "street" , "ward" , "district" , "city" , "country" , "postal_code" ].forEach(field=> { %>
+                            <input type="hidden" name="<%= field %>">
+                            <% }); %>
                         </div>
-                    </td>
-                    <td id="add-passport">
-                        <div class="flex-row-space-between">
-                            <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
-                            <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
-                            <!-- Invisible elements to hold data -->
-                            <input type="hidden" name="passport_id">
-                            <input type="hidden" name="type">
-                            <input type="hidden" name="country_code">
-                            <input type="hidden" name="issue_date">
-                            <input type="hidden" name="expiry_date">
-                            <input type="hidden" name="issue_location">
-                        </div>
-                    </td>
-                    <% addressTypes.forEach(addressType => { %>
-                        <td id="add-<%-addressType%>">
-                            <div class="flex-row-space-between">
-                                <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
-                                <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
-                                <!-- Invisible elements to hold data -->
-                                <input type="hidden" name="house_number">
-                                <input type="hidden" name="street">
-                                <input type="hidden" name="ward">
-                                <input type="hidden" name="district">
-                                <input type="hidden" name="city">
-                                <input type="hidden" name="country">
-                                <input type="hidden" name="postal_code">
-                            </div>
+                      </td>
+                      <% }); %>
+                        <td>
+                          <input type="email" id="<%= mode %>-email" name="email" placeholder="Email" size="20">
                         </td>
-                    <% }) %>
-                    <td>
-                        <input type="email" id="add-email" name="email" placeholder="Email" size="20">
-                    </td>
-                    <td>
-                        <input type="text" id="add-phone_number" name="phone_number" placeholder="SĐT" size="12">
-                    </td>
-                    <td>
-                        <select name="status" id="add-status">
+                        <td>
+                          <input type="text" id="<%= mode %>-phone_number" name="phone_number" placeholder="SĐT" size="12">
+                        </td>
+                        <td>
+                          <select name="status" id="<%= mode %>-status">
                             <option value="" disabled selected>--Chọn tình trạng--</option>
-                            <% for (var i = 0; i < status.length; i++) { %>
-                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                </tr>
-                <tr class="edit editable-row">
-                    <td> </td>
-                    <td>
-                        <input type="text" id="edit-student-id" name="student_id" placeholder="MSSV" size="9" readonly>
-                    </td>
-                    <td>
-                        <input type="text" id="edit-name" name="name" placeholder="Họ tên" size="20">
-                    </td>
-                    <td>
-                        <input type="date" id="edit-birthdate" name="birthdate">
-                    </td>
-                    <td>
-                        <select name="gender" id="edit-gender">
-                            <option value="" disabled selected>--Chọn giới tính--</option>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="major" id="edit-major">
-                            <option value="" disabled selected>--Chọn khoa--</option>
-                            <% for (var i = 0; i < majors.length; i++) { %>
-                                <option value="<%= majors[i]._id %>"><%= majors[i].major_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" id="edit-class_year" name="class_year" placeholder="Khóa" size="5">
-                    </td>
-                    
-                    <td>
-                        <select name="program" id="edit-program">
-                            <option value="" disabled selected>--Chọn chương trình--</option>
-                            <% for (var i = 0; i < programs.length; i++) { %>
-                                <option value="<%= programs[i]._id %>"><%= programs[i].program_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                    <td id="edit-identity_card">
-                        <div class="flex-row-space-between">
-                            <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
-                            <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
-                            <!-- Invisible elements to hold data -->
-                            <input type="hidden" name="identity_card_id">
-                            <input type="hidden" name="issue_date">
-                            <input type="hidden" name="expiry_date">
-                            <input type="hidden" name="issue_location">
-                            <input type="hidden" name="is_digitized">
-                            <input type="hidden" name="chip_attached">
-                        </div>
-                    </td>
-                    <td id="edit-passport">
-                        <div class="flex-row-space-between">
-                            <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
-                            <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
-                            <!-- Invisible elements to hold data -->
-                            <input type="hidden" name="passport_id">
-                            <input type="hidden" name="type">
-                            <input type="hidden" name="country_code">
-                            <input type="hidden" name="issue_date">
-                            <input type="hidden" name="expiry_date">
-                            <input type="hidden" name="issue_location">
-                        </div>
-                    </td>
-                    <% addressTypes.forEach(addressType => { %>
-                        <td id="edit-<%=addressType%>">
-                            <div class="flex-row-space-between">
-                                <input class="address-text" type="text" name="<%=addressType%>" placeholder="..." size="20" readonly>
-                                <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
-                                <!-- Invisible elements to hold data -->
-                                <input type="hidden" name="house_number">
-                                <input type="hidden" name="street">
-                                <input type="hidden" name="ward">
-                                <input type="hidden" name="district">
-                                <input type="hidden" name="city">
-                                <input type="hidden" name="country">
-                                <input type="hidden" name="postal_code">
-                            </div>
+                            <% status.forEach(st=> { %>
+                              <option value="<%= st._id %>">
+                                <%= st.status_name %>
+                              </option>
+                              <% }); %>
+                          </select>
                         </td>
-                    <% }) %>
-                    <td>
-                        <input type="email" id="edit-email" name="email" placeholder="Email" size="20">
-                    </td>
-                    <td>
-                        <input type="text" id="edit-phone_number" name="phone_number" placeholder="SĐT" size="12">
-                    </td>
-                    <td>
-                        <select name="status" id="edit-status">
-                            <% for (var i = 0; i < status.length; i++) { %>
-                                <option value="<%= status[i]._id %>"><%= status[i].status_name %></option>
-                            <% } %>
-                        </select>
-                    </td>
-                </tr>
-                <% for (var i=0; i < results.docs.length; i++) { %>
+                        <td>
+                          <input type="text" id="<%= mode %>-nationality" name="nationality" placeholder="Quốc tịch" size="20">
+                        </td>
+                  </tr>
+                  <% }); %>
+                  <% for (var i=0; i < results.docs.length; i++) { %>
                     <tr class="student-row" 
                         data-student-id="<%= results.docs[i]._id %>" 
                         onclick="onStudentRowClick(this, '<%= results.docs[i]._id %>')">
@@ -443,15 +349,15 @@
                             </div>
                         </td>
                         <td><%= results.docs[i]._id %></td>
-                        <td><%= results.docs[i].name || "Chưa có" %></td>
-                        <td><%= results.docs[i].birthdate || "Chưa có" %></td>
-                        <td><%= results.docs[i].gender || "Chưa có" %></td>
+                        <td><%= results.docs[i].name %></td>
+                        <td><%= results.docs[i].birthdate %></td>
+                        <td><%= results.docs[i].gender %></td>
                         <td name="<%=results.docs[i].major?._id || ''%>">
-                            <%= results.docs[i].major?.major_name || "Chưa có" %>
+                            <%= results.docs[i].major?.major_name %>
                         </td>
-                        <td><%= results.docs[i].class_year || "Chưa có" %></td>
-                        <td name="<%=results.docs[i].program?._id || ""%>">
-                            <%= results.docs[i].program?.program_name || "Chưa có" %>
+                        <td><%= results.docs[i].class_year %></td>
+                        <td name="<%=results.docs[i].program?._id%>">
+                            <%= results.docs[i].program?.program_name %>
                         </td>
                         <td >
                             <div class="flex-row-space-between">
@@ -485,6 +391,7 @@
                                     <input type="hidden" name="issue_date" value="<%= results.docs[i].passport?.issue_date || "" %>">
                                     <input type="hidden" name="expiry_date" value="<%= results.docs[i].passport?.expiry_date || "" %>">
                                     <input type="hidden" name="issue_location" value="<%= results.docs[i].passport?.issue_location || "" %>">
+                                    <input type="hidden" name="notes" value="<%= results.docs[i].passport?.notes || "" %>">
                                 </div>                                
                                 <i class="more-info" onclick="onPassportInfoClicked(this)">
                                     ...
@@ -551,11 +458,12 @@
                                 </i>
                             </div>
                         </td>
-                        <td><%= results.docs[i].email || "Chưa có" %></td>
-                        <td><%= results.docs[i].phone_number || "Chưa có" %></td>
+                        <td><%= results.docs[i].email || "" %></td>
+                        <td><%= results.docs[i].phone_number || "" %></td>
                         <td name="<%=results.docs[i].status?._id || ""%>">
-                            <%= results.docs[i].status?.status_name || "Chưa có" %>
+                            <%= results.docs[i].status?.status_name %>
                         </td>
+                        <td><%= results.docs[i].nationality %></td>
                     </tr>
                 <% } %>
             </tbody>

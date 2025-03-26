@@ -11,6 +11,7 @@ import csv from 'csv-parser';
 import fs from 'fs';
 import path from 'path';
 import { writeLog } from '../helpers/logger.js';
+import { stringify } from 'csv-stringify';
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { fileURLToPath } from "url";
@@ -918,22 +919,120 @@ const checkRequiredFields = (student, requiredFields, resultCallback) => {
 
 export const exportAllStudents = async (req, res) => {
   try {
+    const format = req.query.format || 'json'; // Default to JSON if no format specified
     const data = await fetchAndFormatStudents();
     
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const filePath = path.join(__dirname, '../public', 'data.json');
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
-    res.download(filePath, 'data.json', (err) => {
+    if (format === 'csv') {
+      // Flatten student data for CSV
+      const flattenedData = data.docs.map(student => ({
+        '_id': student._id,
+        'name': student.name,
+        'birthdate': student.birthdate,
+        'gender': student.gender,
+        'class_year': student.class_year,
+        'program': student.program?.program_name || '',
+        'address': student.address || '',
+        'email': student.email,
+        'phone_number': student.phone_number,
+        'status': student.status?.status_name || '',
+        'major': student.major?.major_name || '',
+        'nationality': student.nationality,
+        // Permanent address
+        'permanent_address.house_number': student.permanent_address?.house_number || '',
+        'permanent_address.street': student.permanent_address?.street || '',
+        'permanent_address.ward': student.permanent_address?.ward || '',
+        'permanent_address.district': student.permanent_address?.district || '',
+        'permanent_address.city': student.permanent_address?.city || '',
+        'permanent_address.country': student.permanent_address?.country || '',
+        'permanent_address.postal_code': student.permanent_address?.postal_code || '',
+        // Temporary address
+        'temporary_address.house_number': student.temporary_address?.house_number || '',
+        'temporary_address.street': student.temporary_address?.street || '',
+        'temporary_address.ward': student.temporary_address?.ward || '',
+        'temporary_address.district': student.temporary_address?.district || '',
+        'temporary_address.city': student.temporary_address?.city || '',
+        'temporary_address.country': student.temporary_address?.country || '',
+        'temporary_address.postal_code': student.temporary_address?.postal_code || '',
+        // Mailing address
+        'mailing_address.house_number': student.mailing_address?.house_number || '',
+        'mailing_address.street': student.mailing_address?.street || '',
+        'mailing_address.ward': student.mailing_address?.ward || '',
+        'mailing_address.district': student.mailing_address?.district || '',
+        'mailing_address.city': student.mailing_address?.city || '',
+        'mailing_address.country': student.mailing_address?.country || '',
+        'mailing_address.postal_code': student.mailing_address?.postal_code || '',
+        // Identity card
+        'identity_card._id': student.identity_card?._id || '',
+        'identity_card.issue_date': student.identity_card?.issue_date || '',
+        'identity_card.expiry_date': student.identity_card?.expiry_date || '',
+        'identity_card.issue_location': student.identity_card?.issue_location || '',
+        'identity_card.is_digitized': student.identity_card?.is_digitized || false,
+        'identity_card.chip_attached': student.identity_card?.chip_attached || false,
+        // Passport
+        'passport._id': student.passport?._id || '',
+        'passport.type': student.passport?.type || '',
+        'passport.country_code': student.passport?.country_code || '',
+        'passport.issue_date': student.passport?.issue_date || '',
+        'passport.expiry_date': student.passport?.expiry_date || '',
+        'passport.issue_location': student.passport?.issue_location || '',
+        'passport.notes': student.passport?.notes || ''
+      }));
+
+      const filePath = path.join(__dirname, '../public', 'data.csv');
+      const writableStream = fs.createWriteStream(filePath);
+      
+      const stringifier = stringify({ 
+        header: true,
+        columns: Object.keys(flattenedData[0])
+      });
+
+      // Write data to CSV
+      for (const record of flattenedData) {
+        stringifier.write(record);
+      }
+      stringifier.end();
+
+      // Pipe the stringifier to the file
+      stringifier.pipe(writableStream);
+
+      // Wait for the file to be written
+      await new Promise((resolve, reject) => {
+        writableStream.on('finish', resolve);
+        writableStream.on('error', reject);
+      });
+
+      // Write log
+      writeLog('EXPORT', 'SUCCESS', `Export ${data.docs.length} sinh viên sang CSV thành công`);
+
+      res.download(filePath, 'data.csv', (err) => {
         if (err) {
           console.error("Download error:", err);
           res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
-          return
+          return;
         }
-    });
-  } catch (error){
+      });
+    } else {
+      // Original JSON export code
+      const filePath = path.join(__dirname, '../public', 'data.json');
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+      // Write log
+      writeLog('EXPORT', 'SUCCESS', `Export ${data.docs.length} sinh viên sang JSON thành công`);
+
+      res.download(filePath, 'data.json', (err) => {
+        if (err) {
+          console.error("Download error:", err);
+          res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
+          return;
+        }
+      });
+    }
+  } catch (error) {
     console.error("Error exporting students:", error.message);
+    writeLog('EXPORT', 'ERROR', `Export sinh viên thất bại: ${error.message}`);
     res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
   }
 };

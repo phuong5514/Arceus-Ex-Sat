@@ -732,3 +732,8 @@ function onPassportInfoClicked(button) {
 
     passportDialog.showModal();
 }
+
+function exportData() {
+    const format = document.getElementById('export-format').value;
+    window.location.href = `/export-download?format=${format}`;
+}

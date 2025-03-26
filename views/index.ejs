@@ -23,7 +23,13 @@
                         Quản lý danh mục
                 </button>
                 <button class="flex-row-item" onclick="window.location.href='/import'">Import</button>
-                <button class="flex-row-item" id="export-download-button" onclick="window.location.href='/export-download'">Export All</button>
+                <div class="flex-row-item flex-row" style="gap: 0;">
+                    <select id="export-format" class="flex-row-item" style="border-radius: 0;">
+                        <option value="json">JSON</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                    <button class="flex-row-item" id="export-download-button" onclick="exportData()" style="border-radius: 0;">Export All</button>
+                </div>
                 
                 <div class="flex-row-item" style="max-width: 128px;">
                     <a class="reload-button" href="/">

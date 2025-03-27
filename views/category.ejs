@@ -44,64 +44,6 @@
       <%= renderManagementSection("Tình trạng Sinh viên", "status", status, "ID Tình trạng", "Nhập tình trạng mới", "renameStatus", "deleteStatus", "addStatus") %>
       <!-- Quản lý Chương trình -->
       <%= renderManagementSection("Chương trình", "program", programs, "ID Chương trình", "Nhập chương trình mới", "renameProgram", "deleteProgram", "addProgram") %> 
-
-      <!-- Legacy codes -->
-      <!-- Quản lý Khoa -->
-      <!-- <div class="box flex-row-item flex-column gap-4">
-        <h2>Khoa</h2>
-        <list id="major-list" class="flex-column gap-4 scrollable" style="padding: 2px 0;"> 
-          <% majors.forEach(major => { %>
-            <li class="flex-row gap-4">
-              <input type="text" value="<%= major._id %>" data-id="<%= major._id %>" size="5" readonly>
-              <input class="flex-row-item" type="text" value="<%= major.major_name %>" data-id="<%= major._id %>" onkeypress="renameMajor(event, this)">
-              <button class="delete-button" onclick="deleteMajor('<%= major._id %>')"> - </button>
-            </li>
-          <% }) %>
-        </list>
-        <div class="flex-row gap-4">
-          <input type="text" id="new-major-id" placeholder="ID Khoa" size="5">
-          <input class="flex-row-item" type="text" id="new-major" placeholder="Tên Khoa">
-          <button class="add-button" onclick="addMajor()"> + </button>
-        </div>
-      </div> -->
-
-      <!-- Quản lý Tình trạng SV -->
-      <!-- <div class="box flex-row-item flex-column gap-4">
-        <h2>Tình trạng Sinh viên</h2>
-        <div id="status-list" class="flex-column gap-4 scrollable">
-          <% status.forEach(s => { %>
-            <li class="flex-row gap-4">
-              <input type="text" value="<%= s._id %>" data-id="<%= s._id %>" size="5" readonly>
-              <input class="flex-row-item" type="text" value="<%= s.status_name %>" data-id="<%= s._id %>" onkeypress="renameStatus(event, this)">
-              <button class="delete-button" onclick="deleteStatus('<%= s._id %>')"> - </button>
-            </li>
-          <% }) %>
-        </div>
-        <div class="flex-row gap-4">
-          <input type="text" id="new-status-id" placeholder="ID Tình trạng" size="5">
-          <input class="flex-row-item" type="text" id="new-status" placeholder="Nhập tình trạng mới">
-          <button class="add-button" onclick="addStatus()">+</button>
-        </div>
-      </div> -->
-
-      <!-- Quản lý Chương trình -->
-      <!-- <div class="box flex-row-item flex-column gap-4">
-        <h2>Chương trình</h2>
-        <div id="program-list" class="flex-column gap-4 scrollable">
-          <% programs.forEach(p => { %>
-            <div class="flex-row gap-4">
-              <input type="text" value="<%= p._id %>" data-id="<%= p._id %>" size="5" readonly>
-              <input class="flex-row-item" type="text" value="<%= p.program_name %>" data-id="<%= p._id %>" onkeypress="renamceProgram(event, this)">
-              <button class="delete-button" onclick="deleteProgram('<%= p._id %>')"> - </button>
-            </div>
-          <% }) %>
-        </div>
-        <div class="flex-row gap-4">
-          <input type="text" id="new-program-id" placeholder="ID Chương trình" size="5">
-          <input class="flex-row-item" type="text" id="new-program" placeholder="Nhập chương trình mới">
-          <button class="add-button" onclick="addProgram()">+</button>
-        </div> -->
-      </div>
     </div>
   </div>
 </body>

@@ -8,7 +8,7 @@ async function addMajor() {
         setMessage("success", "Thêm khoa thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error || "Thêm khoa thất bại!");
@@ -20,7 +20,7 @@ async function deleteMajor(id) {
         setMessage("success", "Xóa khoa thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error || "Xóa khoa thất bại!");
@@ -30,13 +30,14 @@ async function deleteMajor(id) {
 async function addStatus() {
     const id = document.getElementById("new-status-id").value;
     const name = document.getElementById("new-status").value;
+    if (!id.trim()) return alert("Nhập mã tình trạng!");
     if (!name.trim()) return alert("Nhập tên tình trạng!");
     const response = await fetch("/category/status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, name }) });
     if (response.ok) {
         setMessage("success", "Thêm tình trạng thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error || "Thêm tình trạng thất bại!");
@@ -49,7 +50,7 @@ async function deleteStatus(id) {
         setMessage("success", "Xóa tình trạng thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error || "Xóa tình trạng thất bại!");
@@ -59,14 +60,14 @@ async function deleteStatus(id) {
 async function addProgram() {
     const id = document.getElementById("new-program-id").value;
     const name = document.getElementById("new-program").value;
+    if (!id.trim()) return alert("Nhập mã chương trình!");
     if (!name.trim()) return alert("Nhập tên chương trình!");
-    
     const response = await fetch("/category/program", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, name }) });
     if (response.ok) {
         setMessage("success", "Thêm chương trình thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error || "Thêm chương trình thất bại!");
@@ -79,7 +80,7 @@ async function deleteProgram(id) {
         setMessage("success", "Xóa chương trình thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error || "Xóa chương trình thất bại!");
@@ -95,7 +96,7 @@ async function renameMajor(event, nameInput){
         setMessage("success", "Đổi tên khoa thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error);
@@ -111,7 +112,7 @@ async function renameStatus(event, nameInput){
         setMessage("success", "Đổi tên tình trạng thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error);
@@ -128,7 +129,7 @@ async function renameProgram(event, nameInput){
         setMessage("success", "Đổi tên chương trình thành công!");
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 1000);
     } else {
         const result = await response.json();
         setMessage("error", result.error);

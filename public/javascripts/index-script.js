@@ -38,7 +38,7 @@ function onStudentRowClick(row, studentId) {
         const cells = row.getElementsByTagName("td");
         // first cell for marking
         
-        document.getElementById("edit-student-id").value = cells[1].textContent.trim();
+        document.getElementById("edit-student_id").value = cells[1].textContent.trim();
         const studentName = cells[2].textContent.trim();
         document.getElementById("edit-name").value = studentName;
         
@@ -74,7 +74,7 @@ function onStudentRowClick(row, studentId) {
         selectedStudentId = null;
         setMessage("", "");
         
-        document.getElementById("edit-student-id").value = "";
+        document.getElementById("edit-student_id").value = "";
         document.getElementById("edit-name").value = "";
         document.getElementById("edit-birthdate").value = "";
         document.getElementById("edit-gender").value = "";
@@ -99,7 +99,7 @@ async function onEditStudentSaved() {
     }
 
     const student = {
-        _id: document.getElementById("edit-student-id").value,
+        _id: document.getElementById("edit-student_id").value,
         name: document.getElementById("edit-name").value,
         email: document.getElementById("edit-email").value,
         phone_number: document.getElementById("edit-phone_number").value,

@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Student from "../models/studentModel.js";
 import Major from "../models/majorModel.js";
 import dayjs from "dayjs";
@@ -7,132 +6,16 @@ import Status from "../models/statusModel.js";
 import Address from "../models/addressModel.js";
 import IdentityCard from "../models/identityCardModel.js";
 import Passport from "../models/passportModel.js";
-import fs from 'fs';
-import path from 'path';
+import path, { format } from 'path';
 import { writeLog } from '../helpers/logger.js';
+import * as guidance from '../helpers/guidance-format.js';
+import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/studentDataFormatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { fileURLToPath } from "url";
 
 dayjs.extend(customParseFormat);
 
-
-const importCSVGuidance = {
-  "_id": "22120271",
-  "name": "Dương Hoàng Hồng Phúc",
-  "birthdate": "08/11/2004",
-  "gender": "Nam",
-  "class_year": 2022,
-  "program": "Đại trà",
-  "address": "TP HCM",
-  "email": "phuc21744@gmail.com",
-  "phone_number": "0325740149",
-  "status": "Đang học", // This must be check againts the status collection
-  "major": "Tiếng Anh Thương mại", // This must be check againts the majors collection
-  
-  "nationality": "Việt Nam",
-
-  // Address id is generated from student id + ADDRPMNT + type
-  "permanent_address.house_number": "123",
-  "permanent_address.street": "Nguyễn Văn Cừ",
-  "permanent_address.ward": "Phường 1",
-  "permanent_address.district": "Quận 5",
-  "permanent_address.city": "TP HCM",
-  "permanent_address.country": "Việt Nam",
-  "permanent_address.postal_code": "700000",
-
-  // Address id is generated from student id + ADDRTMP + type
-  "temporary_address.house_number": "456",
-  "temporary_address.street": "Nguyễn Trãi",
-  "temporary_address.ward": "Phường 2",
-  "temporary_address.district": "Quận 5",
-  "temporary_address.city": "TP HCM",
-  "temporary_address.country": "Việt Nam",
-  "temporary_address.postal_code": "700000",
-
-  // Address id is generated from student id + ADDRMAIL + type
-  "mailing_address.house_number": "789",
-  "mailing_address.street": "Lê Lợi",
-  "mailing_address.ward": "Phường 3",
-  "mailing_address.district": "Quận 1",
-  "mailing_address.city": "TP HCM",
-  "mailing_address.country": "Việt Nam",
-  "mailing_address.postal_code": "700000",
-
-  "identity_card._id": "012345678910",
-  "identity_card.issue_date": "26/05/2020",
-  "identity_card.expiry_date": "26/05/2020",
-  "identity_card.issue_location": "TP HCM",
-  "identity_card.is_digitized": true,
-  "identity_card.chip_attached": true,
-
-  "passport._id": "C1234567",
-  "passport.type": "Regular",
-  "passport.country_code": "VNM",
-  "passport.issue_date": "08/11/2021",
-  "passport.expiry_date": "08/11/2026",
-  "passport.issue_location": "TP HCM",
-  "passport.notes": ""
-}
-
-const importJSONGuidance = {
-  "_id": "22120271",
-  "name": "Dương Hoàng Hồng Phúc",
-  "birthdate": "08/11/2004",
-  "gender": "Nam",
-  "class_year": 2022,
-  "program": "Đại trà",
-  "address": "TP HCM",
-  "email": "phuc21744@gmail.com",
-  "phone_number": "0325740149",
-  "status": "Đang học",
-  "major": "Tiếng Anh Thương mại",
-  "nationality": "Việt Nam",
-  "permanent_address": {
-    "house_number": "123",
-    "street": "Nguyễn Văn Cừ",
-    "ward": "Phường 1",
-    "district": "Quận 5",
-    "city": "TP HCM",
-    "country": "Việt Nam",
-    "postal_code": "700000"
-  },
-  "temporary_address": {
-    "house_number": "456",
-    "street": "Nguyễn Trãi",
-    "ward": "Phường 2",
-    "district": "Quận 5",
-    "city": "TP HCM",
-    "country": "Việt Nam",
-    "postal_code": "700000"
-  },
-  "mailing_address": {
-    "house_number": "789",
-    "street": "Lê Lợi",
-    "ward": "Phường 3",
-    "district": "Quận 1",
-    "city": "TP HCM",
-    "country": "Việt Nam",
-    "postal_code": "700000"
-  },
-  "identity_card": {
-    "_id": "012345678910",
-    "issue_date": "26/05/2020",
-    "expiry_date": "26/05/2020",
-    "issue_location": "TP HCM",
-    "is_digitized": true,
-    "chip_attached": true
-  },
-  "passport": {
-    "_id": "C1234567",
-    "type": "Regular",
-    "country_code": "VNM",
-    "issue_date": "08/11/2021",
-    "expiry_date": "08/11/2026",
-    "issue_location": "TP HCM",
-    "notes": ""
-  }
-}
 
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
@@ -159,67 +42,24 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
   // format students data
   results.docs.forEach(student => {
     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-    if (student.permanent_address) {
-      student.permanent_address.text = formatAddress(student.permanent_address);
-    } else {
-      student.permanent_address = emptyAddress();
-      student.permanent_address.text = "";
-    }
-    if (student.temporary_address) {
-      student.temporary_address.text = formatAddress(student.temporary_address);
-    } else {
-      student.temporary_address = emptyAddress();
-      student.temporary_address.text = "";
-    }
-    if (student.mailing_address) {
-      student.mailing_address.text = formatAddress(student.mailing_address);
-    } else {
-      student.mailing_address = emptyAddress();
-      student.mailing_address.text = "";
-    }
-    if (student.identity_card) {
-      student.identity_card.issue_date = dayjs(student.identity_card.issue_date).format('YYYY-MM-DD');
-      student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date).format('YYYY-MM-DD');
-      student.identity_card.text = formatIdentityCard(student.identity_card);
-    } else {
-      student.identity_card = null;
-    }
-    if (student.passport) {
-      student.passport.issue_date = dayjs(student.passport.issue_date).format('YYYY-MM-DD');
-      student.passport.expiry_date = dayjs(student.passport.expiry_date).format('YYYY-MM-DD');
-      student.passport.text = formatPassport(student.passport);
-    } else {
-      student.passport = null;
-    }
+
+    const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
+
+    addresses.forEach(address => {
+      if (address) {
+        address.text = formatAddress(address);
+      } else {
+        address = emptyAddress();
+        address.text = "";
+      }
+    });
+
+    formatIdentificationDocument(student.identity_card, formatIdentityCard);
+    formatIdentificationDocument(student.passport, formatPassport);
   });
 
   return results;
 };
-
-function formatAddress(address) {
-  if (!address) {
-    return "";
-  }
-  return Object.entries(address)
-    .filter(([key, value]) => (key === "city" || key === "country") && typeof value !== "undefined" && value)
-    .map(([key, value]) => value)
-    .join(", ");
-}
-
-function formatIdentityCard(identityCard){
-  if (!identityCard){
-    return "";
-  }
-
-  return identityCard._id;
-}
-
-function formatPassport(passport){
-  if (!passport){
-    return "";
-  }
-  return passport._id;
-}
 
 function emptyAddress(){
   return {
@@ -271,119 +111,150 @@ async function preprocessStudent(student) {
   const genderList = ["Nam", "Nữ"]
 
   // all fields are required
-  if (!student.name || student.name.trim() === "") {
-    throw new Error("Tên không được để trống");
-  }
-  if (!student.email || student.email.trim() === "") {
-    throw new Error("Email không được để trống");
-  } else if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+  const inputFields = [
+    student.name, student.email, student.phone_number, student.address,
+    student.major, student.class_year, student.program, student.gender,
+    student.status, student.birthdate];
+  const texts = ["Tên", "Email", "Số điện thoại", "Địa chỉ", "Ngành học", "Năm học", "Chương trình học", "Giới tính", "Trạng thái", "Ngày sinh"];
+  inputFields.forEach((field, index) => {
+    if (!field || field.trim() === "") {
+      throw new Error(`${texts[index]} không được để trống`);
+    }
+  });
+
+  // validate email
+  if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
     throw new Error("Email không hợp lệ");
   }
-  if (!student.phone_number || student.phone_number.trim() === "") {
-    throw new Error("Số điện thoại không được để trống");
-  } else if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
+
+  // validate phone number
+  if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
     throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
   }
-  // if (!student.address || student.address.trim() === "") {
-  //   throw new Error("Địa chỉ không được để trống");
-  // }
-  if (!student.major || student.major.trim() === "") {
-    throw new Error("Ngành học không được để trống");
-  } else if (!majorList.includes(student.major)) {
-    throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
-  }
-  if (!student.class_year || student.class_year.trim() === "") {
-    throw new Error("Năm học không được để trống");
-  } else if (!student.class_year.match(/^[0-9]{4}$/)) {
+
+  // validate class year
+  if (!student.class_year.match(/^[0-9]{4}$/)) {
     throw new Error("Năm học phải là 4 chữ số");
   }
-  if (!student.program || student.program.trim() === "") {
-    throw new Error("Chương trình học không được để trống");
-  } else if (!programList.includes(student.program)) {
-    throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
+
+  // validate major
+  if (!majorList.includes(student.major)) {
+    throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
   }
-  if (!student.status || student.status.trim() === "") {
-    throw new Error("Trạng thái không được để trống");
-  } else if (!statusList.includes(student.status)) {
+
+  // validate program
+  if (!programList.includes(student.program)) {
+    throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
+  }  
+
+  // validate status
+  if (!statusList.includes(student.status)) {
     throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
   }
-  if (!student.gender || student.gender.trim() === "") {
-    throw new Error("Giới tính không được để trống");
-  } else if (!genderList.includes(student.gender)) {
+
+  // validate gender
+  if (!genderList.includes(student.gender)) {
     throw new Error("Giới tính phải là Nam hoặc Nữ");
   }
-  if (!student.birthdate || student.birthdate.trim() === "") {
-    throw new Error("Ngày sinh không được để trống");
-  }
+
+  // validate addresses
   // addresses are objects that need to be added to the Address collection
-  if (student.permanent_address) {
-    const addressId = student._id + "ADDRPMNT";
-    // check if address existed
-    const address = await Address.findOne({ _id: addressId });
+  const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
+  const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];
+  const addressfields = ["house_number", "street", "ward", "district", "city", "country", "postal_code"];
+  addresses.forEach(async (address, index) => {
     if (address) {
-      address.house_number = student.permanent_address.house_number;
-      address.street = student.permanent_address.street;
-      address.ward = student.permanent_address.ward;
-      address.district = student.permanent_address.district;
-      address.city = student.permanent_address.city;
-      address.country = student.permanent_address.country;
-      address.postal_code = student.permanent_address.postal_code;
-      await address.save();
+      const storedAddress = await Address.findOne({ _id: addressIds[index] }); 
+
+      if (storedAddress) {
+        addressfields.forEach(field => {
+          storedAddress[field] = address[field];
+        });
+        await storedAddress.save();
+      } else {
+        const newAddress = address;
+        newAddress._id = addressIds[index];
+        await Address.insertOne(newAddress);
+      }
+
+      address = addressIds[index];
+    
     } else {
-      const newAddress = student.permanent_address;
-      newAddress._id = addressId;
-      await Address.insertOne(newAddress);
+      address = "";
     }
-    student.permanent_address = addressId;
-  } else {
-    student.permanent_address = "";
-  }
-  if (student.temporary_address) {
-    const addressId = student._id + "ADDRTMP";
-    // check if address existed
-    const address = await Address.findOne({ _id: addressId });
-    if (address) {
-      address.house_number = student.temporary_address.house_number;
-      address.street = student.temporary_address.street;
-      address.ward = student.temporary_address.ward;
-      address.district = student.temporary_address.district;
-      address.city = student.temporary_address.city;
-      address.country = student.temporary_address.country;
-      address.postal_code = student.temporary_address.postal_code;
-      await address.save();
-    }
-    else {
-      const newAddress = student.temporary_address;
-      newAddress._id = addressId;
-      await Address.insertOne(newAddress);
-    }
-    student.temporary_address = addressId;
-  } else {
-    student.temporary_address = "";
-  }
-  if (student.mailing_address) {
-    const addressId = student._id + "ADDRMAIL";
-    // check if address existed
-    const address = await Address.findOne({ _id: addressId });
-    if (address) {
-      address.house_number = student.mailing_address.house_number;
-      address.street = student.mailing_address.street;
-      address.ward = student.mailing_address.ward;
-      address.district = student.mailing_address.district;
-      address.city = student.mailing_address.city;
-      address.country = student.mailing_address.country;
-      address.postal_code = student.mailing_address.postal_code;
-      await address.save();
-    }
-    else {
-      const newAddress = student.mailing_address;
-      newAddress._id = addressId;
-      await Address.insertOne(newAddress);
-    }
-    student.mailing_address = addressId;
-  } else {
-    student.mailing_address = "";
-  }
+  });
+
+  // // addresses are objects that need to be added to the Address collection
+  // if (student.permanent_address) {
+  //   const addressId = student._id + "ADDRPMNT";
+  //   // check if address existed
+  //   const address = await Address.findOne({ _id: addressId });
+  //   if (address) {
+  //     address.house_number = student.permanent_address.house_number;
+  //     address.street = student.permanent_address.street;
+  //     address.ward = student.permanent_address.ward;
+  //     address.district = student.permanent_address.district;
+  //     address.city = student.permanent_address.city;
+  //     address.country = student.permanent_address.country;
+  //     address.postal_code = student.permanent_address.postal_code;
+  //     await address.save();
+  //   } else {
+  //     const newAddress = student.permanent_address;
+  //     newAddress._id = addressId;
+  //     await Address.insertOne(newAddress);
+  //   }
+  //   student.permanent_address = addressId;
+  // } else {
+  //   student.permanent_address = "";
+  // }
+  // if (student.temporary_address) {
+  //   const addressId = student._id + "ADDRTMP";
+  //   // check if address existed
+  //   const address = await Address.findOne({ _id: addressId });
+  //   if (address) {
+  //     address.house_number = student.temporary_address.house_number;
+  //     address.street = student.temporary_address.street;
+  //     address.ward = student.temporary_address.ward;
+  //     address.district = student.temporary_address.district;
+  //     address.city = student.temporary_address.city;
+  //     address.country = student.temporary_address.country;
+  //     address.postal_code = student.temporary_address.postal_code;
+  //     await address.save();
+  //   }
+  //   else {
+  //     const newAddress = student.temporary_address;
+  //     newAddress._id = addressId;
+  //     await Address.insertOne(newAddress);
+  //   }
+  //   student.temporary_address = addressId;
+  // } else {
+  //   student.temporary_address = "";
+  // }
+  // if (student.mailing_address) {
+  //   const addressId = student._id + "ADDRMAIL";
+  //   // check if address existed
+  //   const address = await Address.findOne({ _id: addressId });
+  //   if (address) {
+  //     address.house_number = student.mailing_address.house_number;
+  //     address.street = student.mailing_address.street;
+  //     address.ward = student.mailing_address.ward;
+  //     address.district = student.mailing_address.district;
+  //     address.city = student.mailing_address.city;
+  //     address.country = student.mailing_address.country;
+  //     address.postal_code = student.mailing_address.postal_code;
+  //     await address.save();
+  //   }
+  //   else {
+  //     const newAddress = student.mailing_address;
+  //     newAddress._id = addressId;
+  //     await Address.insertOne(newAddress);
+  //   }
+  //   student.mailing_address = addressId;
+  // } else {
+  //   student.mailing_address = "";
+  // }
+
+
   if (student.identity_card) {
     // check if identity card existed
     const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
@@ -581,7 +452,7 @@ export const importStudents = async (req, res) => {
         }
 
         const headers = lines[0].split(',').map(h => h.trim());
-        const expectedHeaders = Object.keys(importCSVGuidance);
+        const expectedHeaders = Object.keys(guidance.importCSVGuidance);
 
         // Kiểm tra header
         if (!expectedHeaders.every(h => headers.includes(h))) {

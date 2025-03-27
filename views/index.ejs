@@ -6,8 +6,7 @@
     <%= title %>
   </title>
   <link rel="stylesheet" href="/css/styles.css">
-  <script src="javascripts/index_script.js"></script>
-  <script src="javascripts/event_script.js" defer></script>
+  <script src="javascripts/index-script.js" defer></script>
 </head>
 
 <body>
@@ -45,7 +44,7 @@
             viên</button>
           <button class="flex-row-item" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
             viên</button>
-          <button class="flex-row-item" onclick="window.location.href='/manage-dropdowns'">
+          <button class="flex-row-item" onclick="window.location.href='/category'">
               Quản lý danh mục
           </button>
           <button class="flex-row-item" onclick="window.location.href='/import'">Import</button>
@@ -547,10 +546,10 @@
                 </i>
               </div>
             </td>
-            <td><%= results.docs[i].email || "Chưa có" %></td>
-            <td><%= results.docs[i].phone_number || "Chưa có" %></td>
+            <td><%= results.docs[i].email || "" %></td>
+            <td><%= results.docs[i].phone_number || "" %></td>
             <td name="<%=results.docs[i].status?._id || ""%>">
-              <%= results.docs[i].status?.status_name || "Chưa có" %>
+              <%= results.docs[i].status?.status_name || "" %>
             </td>
           </tr>
         <% } %>

@@ -10,7 +10,6 @@ import Passport from "../models/passportModel.js";
 import fs from 'fs';
 import path from 'path';
 import { writeLog } from '../helpers/logger.js';
-import { stringify } from 'csv-stringify';
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { fileURLToPath } from "url";

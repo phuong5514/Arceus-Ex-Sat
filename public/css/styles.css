@@ -358,9 +358,7 @@ tr:nth-child(odd) {
   align-items: center;
 }
 
-.flex-row-top-center {
-  display: flex;
-  justify-content: center;
+.flex-row-top {
   align-items: flex-start;
 }
 
@@ -402,4 +400,10 @@ h1 {
 
 .m-16{
   margin: 16px;
+}
+
+.scrollable {
+  overflow-y: auto;
+  height: 300px;
+  max-height: 300px;
 }

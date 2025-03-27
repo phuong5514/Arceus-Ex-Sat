@@ -16,7 +16,7 @@
   --active: var(--orange);
   --table_row: var(--white);
   --table_row_alt: var(--grey);
-  --toolbar-height: 78px;
+  --toolbar-height: 108px;
 }
 
 * {
@@ -279,10 +279,18 @@ tr:nth-child(odd) {
 }
 
 .flex-row-space-between{
-  display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+}
+
+.flex-column-space-between{
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-row-right{
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .identity-card-dialog-container {
@@ -322,11 +330,76 @@ tr:nth-child(odd) {
   grid-column: 1 / span 2;
 }
 
-
 .gap-8 {
   gap: 8px;
 }
 
+.gap-4 {
+  gap: 4px;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
 .more-info:hover {
   cursor: pointer;
+}
+
+.center-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.flex-row-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-row-top-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.box {
+  border: 1px solid var(--light_grey);
+  padding: 8px;
+}
+
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+.delete-button:hover {
+  background-color: #a71d2a;
+}
+.add-button {
+  background-color: #28a745;
+  color: white;
+}
+.add-button:hover {
+  background-color: #1d6f32;
+}
+
+
+h2 {
+  font-weight: bold;
+  font-size: 16px;
+  padding: 0px;
+  margin: 2px 0px 8px 8px;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 0px;
+  margin: 2px 0px 8px 8px;
+}
+
+.m-16{
+  margin: 16px;
 }

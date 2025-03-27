@@ -11,7 +11,7 @@
         "program_name": "Đại trà",
         "__v": 0
       },
-      "address": "TP HCM",
+      "address": "",
       "email": "phuc21744@gmail.com",
       "phone_number": "0325740149",
       "status": {
@@ -79,6 +79,7 @@
         "expiry_date": "2026-11-08",
         "issue_location": "TP HCM",
         "__v": 0,
+        "notes": "",
         "text": "C1234567"
       },
       "__v": 0,
@@ -95,7 +96,7 @@
         "program_name": "Tiên tiến",
         "__v": 0
       },
-      "address": "TP HCM",
+      "address": "",
       "email": "manhphuong1234@gmail.com",
       "phone_number": "0123456789",
       "status": {
@@ -163,6 +164,7 @@
         "expiry_date": "2026-01-01",
         "issue_location": "TP HCM",
         "__v": 0,
+        "notes": "",
         "text": "C9876543"
       },
       "__v": 0,
@@ -247,6 +249,7 @@
         "expiry_date": "2025-02-02",
         "issue_location": "TP HCM",
         "__v": 0,
+        "notes": "",
         "text": "C1234568"
       },
       "__v": 0,
@@ -331,6 +334,7 @@
         "expiry_date": "2024-03-03",
         "issue_location": "TP HCM",
         "__v": 0,
+        "notes": "",
         "text": "C2345678"
       },
       "__v": 0,

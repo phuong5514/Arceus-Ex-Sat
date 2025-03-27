@@ -7,7 +7,6 @@ import Status from "../models/statusModel.js";
 import Address from "../models/addressModel.js";
 import IdentityCard from "../models/identityCardModel.js";
 import Passport from "../models/passportModel.js";
-import csv from 'csv-parser';
 import fs from 'fs';
 import path from 'path';
 import { writeLog } from '../helpers/logger.js';
@@ -473,7 +472,7 @@ export const updateStudent = async (req, res) => {
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
     writeLog('UPDATE', 'ERROR', `Cập nhật sinh viên ${studentId} thất bại: ${error.message}`);
-    console.error("❌ Error updating student:", error.message);
+    console.error("Error updating student:", error.message);
     res.status(400).json({ ok: false, error: error.message });
   }
 };
@@ -496,7 +495,7 @@ export const deleteStudents = async (req, res) => {
     res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
   } catch (error) {
     writeLog('DELETE', 'ERROR', `Xóa sinh viên thất bại: ${error.message}`);
-    console.error("❌ Error deleting students:", error.message);
+    console.error("Error deleting students:", error.message);
     res.status(400).json({ ok: false, error: error.message });
   }
 }
@@ -922,8 +921,12 @@ export const exportAllStudents = async (req, res) => {
     const format = req.query.format || 'json'; // Default to JSON if no format specified
     const data = await fetchAndFormatStudents();
     
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+    if (data.docs.length === 0) {
+      writeLog('EXPORT', 'ERROR', 'Không có sinh viên nào để xuất');
+      res.status(400).json({ok: false, error: "Không có sinh viên nào để xuất" });
+    }
 
     if (format === 'csv') {
       // Flatten student data for CSV
@@ -980,59 +983,28 @@ export const exportAllStudents = async (req, res) => {
         'passport.issue_location': student.passport?.issue_location || '',
         'passport.notes': student.passport?.notes || ''
       }));
-
-      const filePath = path.join(__dirname, '../public', 'data.csv');
-      const writableStream = fs.createWriteStream(filePath);
       
-      const stringifier = stringify({ 
-        header: true,
-        columns: Object.keys(flattenedData[0])
-      });
-
-      // Write data to CSV
-      for (const record of flattenedData) {
-        stringifier.write(record);
-      }
-      stringifier.end();
-
-      // Pipe the stringifier to the file
-      stringifier.pipe(writableStream);
-
-      // Wait for the file to be written
-      await new Promise((resolve, reject) => {
-        writableStream.on('finish', resolve);
-        writableStream.on('error', reject);
-      });
-
-      // Write log
+      const header =  Object.keys(flattenedData[0]).join(',') + '\n';
+      const rows = flattenedData.map(student => Object.values(student).join(',')).join('\n');
+      
+      res.setHeader('Content-Disposition', 'attachment; filename=students.csv');
+      res.setHeader('Content-Type', 'text/csv', 'charset=utf-8');
+      res.write('\ufeff'); // UTF-8 BOM for Excel
+      res.write(header + rows);
+      res.end();
       writeLog('EXPORT', 'SUCCESS', `Export ${data.docs.length} sinh viên sang CSV thành công`);
-
-      res.download(filePath, 'data.csv', (err) => {
-        if (err) {
-          console.error("Download error:", err);
-          res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
-          return;
-        }
-      });
     } else {
-      // Original JSON export code
-      const filePath = path.join(__dirname, '../public', 'data.json');
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      const jsonData = JSON.stringify(data.docs, null, 2);
 
-      // Write log
+      res.setHeader('Content-Disposition', 'attachment; filename=students.json');
+      res.setHeader('Content-Type', 'application/json');
+      res.write(jsonData);
+      res.end();
       writeLog('EXPORT', 'SUCCESS', `Export ${data.docs.length} sinh viên sang JSON thành công`);
-
-      res.download(filePath, 'data.json', (err) => {
-        if (err) {
-          console.error("Download error:", err);
-          res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
-          return;
-        }
-      });
     }
   } catch (error) {
     console.error("Error exporting students:", error.message);
     writeLog('EXPORT', 'ERROR', `Export sinh viên thất bại: ${error.message}`);
-    res.status(500).json({ error: "Lỗi xuất dữ liệu sinh viên" });
+    res.status(500).json({ok: false, error: "Lỗi xuất dữ liệu sinh viên" });
   }
 };

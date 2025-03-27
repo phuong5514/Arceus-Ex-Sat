@@ -1,6 +1,7 @@
 import express, { query } from 'express';
 import * as studentController from '../controllers/student-controller.js';
 import fileUpload from 'express-fileupload';
+import { validateAddStudent, validateUpdateStudent } from '../middlewares/validator-middleware.js';
 
 const router = express.Router();
 
@@ -19,9 +20,9 @@ router.get("/", studentController.getAllStudents);
 
 router.get("/search", studentController.searchStudents);
 
-router.post("/students", studentController.validateAddStudent, studentController.addStudent);
+router.post("/students", validateAddStudent, studentController.addStudent);
 
-router.put("/students/:student_id", studentController.updateStudent);
+router.put("/students/:student_id", validateUpdateStudent, studentController.updateStudent);
 
 router.delete("/students", studentController.deleteStudents);
 

@@ -13,13 +13,13 @@ import { formatAddress, formatIdentificationDocument, formatIdentityCard, format
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { fileURLToPath } from "url";
-import {body} from "express-validator";
-import { validationResult } from "express-validator";
-import { assert } from "console";
+// import {body} from "express-validator";
+// import { validationResult } from "express-validator";
+// import { assert } from "console";
 // import "../config/business-rule.json";
 
-import fs from "fs";
-const config = JSON.parse(fs.readFileSync(new URL("../config/business-rule.json", import.meta.url), "utf-8"));
+// import fs from "fs";
+// const config = JSON.parse(fs.readFileSync(new URL("../config/business-rule.json", import.meta.url), "utf-8"));
 
 dayjs.extend(customParseFormat);
 
@@ -888,110 +888,110 @@ export const exportAllStudents = async (req, res) => {
 };
 
 
-export const validateAddStudent = [
-  body('_id')
-    .trim().notEmpty().withMessage('MSSV không được để trống').bail()
-    .isNumeric().withMessage('MSSV phải là số').bail()
-    .isLength({ min: 8, max: 8 }).withMessage('MSSV phải có 8 chữ số').bail()
-    .custom(async (value) => { // Check if student id already existed
-      const student = await Student.findOne({ _id: value });
-      if (student) {
-        return Promise.reject('MSSV đã tồn tại');
-      }
-    }).bail(),
+// export const validateAddStudent = [
+//   body('_id')
+//     .trim().notEmpty().withMessage('MSSV không được để trống').bail()
+//     .isNumeric().withMessage('MSSV phải là số').bail()
+//     .isLength({ min: 8, max: 8 }).withMessage('MSSV phải có 8 chữ số').bail()
+//     .custom(async (value) => { // Check if student id already existed
+//       const student = await Student.findOne({ _id: value });
+//       if (student) {
+//         return Promise.reject('MSSV đã tồn tại');
+//       }
+//     }).bail(),
 
-  body('name')
-    .trim().notEmpty().withMessage('Họ tên không được để trống').bail(),
+//   body('name')
+//     .trim().notEmpty().withMessage('Họ tên không được để trống').bail(),
 
-  body('email')
-    .trim().notEmpty().withMessage('Email không được để trống').bail()
-    .isEmail().withMessage('Email không hợp lệ').bail()
-    .custom(async (value) => { // Check if email already existed
-      const student = await Student.findOne({ email: value });
-      if (student) {
-        return Promise.reject('Email đã tồn tại');
-      }
-    }).bail()
-    .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject("Email phải thuộc domain cho phép")),
+//   body('email')
+//     .trim().notEmpty().withMessage('Email không được để trống').bail()
+//     .isEmail().withMessage('Email không hợp lệ').bail()
+//     .custom(async (value) => { // Check if email already existed
+//       const student = await Student.findOne({ email: value });
+//       if (student) {
+//         return Promise.reject('Email đã tồn tại');
+//       }
+//     }).bail()
+//     .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject("Email phải thuộc domain cho phép")),
 
-  body('phone_number')
-    .trim().notEmpty().withMessage('Số điện thoại không được để trống').bail()
-    .isLength({ min: 10, max: 11 }).withMessage('Số điện thoại phải từ 10 đến 11 chữ số').bail()
-    .custom(async (value) => { // Check if phone number already existed
-      const student = await Student.findOne({ phone_number: value });
-      if (student) {
-        return Promise.reject('Số điện thoại đã tồn tại');
-      }
-    }).bail()
-    .matches(config.phoneRegex).withMessage("Số điện thoại phải có định dạng hợp lệ").bail(),
+//   body('phone_number')
+//     .trim().notEmpty().withMessage('Số điện thoại không được để trống').bail()
+//     .isLength({ min: 10, max: 11 }).withMessage('Số điện thoại phải từ 10 đến 11 chữ số').bail()
+//     .custom(async (value) => { // Check if phone number already existed
+//       const student = await Student.findOne({ phone_number: value });
+//       if (student) {
+//         return Promise.reject('Số điện thoại đã tồn tại');
+//       }
+//     }).bail()
+//     .matches(config.phoneRegex).withMessage("Số điện thoại phải có định dạng hợp lệ").bail(),
 
-  body('birthdate')
-    .trim().notEmpty().withMessage('Ngày sinh không được để trống').bail()
-    .isISO8601().withMessage('Ngày sinh không hợp lệ').bail(),
+//   body('birthdate')
+//     .trim().notEmpty().withMessage('Ngày sinh không được để trống').bail()
+//     .isISO8601().withMessage('Ngày sinh không hợp lệ').bail(),
 
-  body('gender')
-    .trim().notEmpty().withMessage('Giới tính không được để trống').bail()
-    .isIn(['Nam', 'Nữ']).withMessage('Giới tính phải là Nam hoặc Nữ').bail(),
+//   body('gender')
+//     .trim().notEmpty().withMessage('Giới tính không được để trống').bail()
+//     .isIn(['Nam', 'Nữ']).withMessage('Giới tính phải là Nam hoặc Nữ').bail(),
 
-  body('class_year')
-    .trim().notEmpty().withMessage('Khóa không được để trống').bail()
-    .isLength({ min: 4, max: 4 }).withMessage('Năm học phải là 4 chữ số').bail(),
+//   body('class_year')
+//     .trim().notEmpty().withMessage('Khóa không được để trống').bail()
+//     .isLength({ min: 4, max: 4 }).withMessage('Năm học phải là 4 chữ số').bail(),
 
-  body('major')
-    .trim().notEmpty().withMessage('Khoa không được để trống').bail()
-    .custom(async (value) => {
-      const major = await Major.findOne({ _id: value });
-      if (!major) {
-        return Promise.reject('Ngành học không nằm trong danh sách ngành học có sẵn');
-      }
-    }).bail(),
+//   body('major')
+//     .trim().notEmpty().withMessage('Khoa không được để trống').bail()
+//     .custom(async (value) => {
+//       const major = await Major.findOne({ _id: value });
+//       if (!major) {
+//         return Promise.reject('Ngành học không nằm trong danh sách ngành học có sẵn');
+//       }
+//     }).bail(),
 
-  body('program')
-    .trim().notEmpty().withMessage('Chương trình học không được để trống').bail()
-    .custom(async (value) => {
-      const program = await Program.findOne({ _id: value });
-      if (!program) {
-        return Promise.reject('Chương trình học không nằm trong danh sách chương trình học có sẵn');
-      }
-    }).bail(),
+//   body('program')
+//     .trim().notEmpty().withMessage('Chương trình học không được để trống').bail()
+//     .custom(async (value) => {
+//       const program = await Program.findOne({ _id: value });
+//       if (!program) {
+//         return Promise.reject('Chương trình học không nằm trong danh sách chương trình học có sẵn');
+//       }
+//     }).bail(),
 
-  body('status')
-    .trim().notEmpty().withMessage('Trạng thái không được để trống').bail()
-    .custom(async (value) => {
-      const status = await Status.findOne({ _id: value });
-      if (!status) {
-        return Promise.reject('Trạng thái không nằm trong danh sách trạng thái có sẵn');
-      }
-    }).bail(),
+//   body('status')
+//     .trim().notEmpty().withMessage('Trạng thái không được để trống').bail()
+//     .custom(async (value) => {
+//       const status = await Status.findOne({ _id: value });
+//       if (!status) {
+//         return Promise.reject('Trạng thái không nằm trong danh sách trạng thái có sẵn');
+//       }
+//     }).bail(),
 
-  body('nationality')
-    .trim().notEmpty().withMessage('Quốc tịch không được để trống').bail(),
+//   body('nationality')
+//     .trim().notEmpty().withMessage('Quốc tịch không được để trống').bail(),
 
-  body('identity_card._id')
-    .optional({ checkFalsy: true }).trim().bail(),
+//   body('identity_card._id')
+//     .optional({ checkFalsy: true }).trim().bail(),
 
-  body('identity_card.issue_date')
-    .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày cấp CCCD/CMND không hợp lệ").bail(),
+//   body('identity_card.issue_date')
+//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày cấp CCCD/CMND không hợp lệ").bail(),
 
-  body('identity_card.expiry_date')
-    .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày hết hạn CCCD/CMND không hợp lệ").bail(),
+//   body('identity_card.expiry_date')
+//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày hết hạn CCCD/CMND không hợp lệ").bail(),
 
-  body('passport._id')
-    .optional({ checkFalsy: true }).trim().bail(),
+//   body('passport._id')
+//     .optional({ checkFalsy: true }).trim().bail(),
 
-  body('passport.issue_date')
-    .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày cấp hộ chiếu không hợp lệ").bail(),
+//   body('passport.issue_date')
+//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày cấp hộ chiếu không hợp lệ").bail(),
 
-  body('passport.expiry_date')
-    .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày hết hạn hộ chiếu không hợp lệ").bail(),
+//   body('passport.expiry_date')
+//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày hết hạn hộ chiếu không hợp lệ").bail(),
 
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error("Validation error:", errors.array());
-      return res.status(400).json({ ok: false, error: errors.array()[0].msg });
-    }
+//   (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       console.error("Validation error:", errors.array());
+//       return res.status(400).json({ ok: false, error: errors.array()[0].msg });
+//     }
 
-    next();
-  }
-];
+//     next();
+//   }
+// ];

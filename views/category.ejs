@@ -6,6 +6,28 @@
   <link rel="stylesheet" href="/css/styles.css">
   <script src="/javascripts/category-script.js" defer></script>
 </head>
+
+<!-- template -->
+<% function renderManagementSection(title, id, list, placeholderId, placeholderName, renameFunction, deleteFunction, addFunction) { %>
+  <div class="box flex-row-item flex-column gap-4">
+    <h2><%= title %></h2>
+    <list id="<%= id %>-list" class="flex-column gap-4 scrollable">
+      <% list.forEach(item => { %>
+        <li class="flex-row gap-4">
+          <input type="text" value="<%= item._id %>" data-id="<%= item._id %>" size="5" readonly>
+          <input class="flex-row-item" type="text" value="<%= item[id + '_name'] %>" data-id="<%= item._id %>" onkeypress="<%= renameFunction %>(event, this)">
+          <button class="delete-button" onclick="<%= deleteFunction %>('<%= item._id %>')"> - </button>
+        </li>
+      <% }) %>
+    </list>
+    <div class="flex-row gap-4">
+      <input type="text" id="new-<%= id %>-id" placeholder="<%= placeholderId %>" size="5">
+      <input class="flex-row-item" type="text" id="new-<%= id %>" placeholder="<%= placeholderName %>">
+      <button class="add-button" onclick="<%= addFunction %>()">+</button>
+    </div>
+  </div>
+<% } %>
+
 <body>
   <div class="flex-column m-16 gap-16">
     <div class="flex-row flex-row-space-between gap-8">
@@ -17,9 +39,17 @@
 
     <div class="flex-row flex-row-top gap-8">
       <!-- Quản lý Khoa -->
-      <div class="box flex-row-item flex-column gap-4">
+      <%= renderManagementSection("Khoa", "major", majors, "ID Khoa", "Tên Khoa", "renameMajor", "deleteMajor", "addMajor") %>
+      <!-- Quản lý Tình trạng SV -->
+      <%= renderManagementSection("Tình trạng Sinh viên", "status", status, "ID Tình trạng", "Nhập tình trạng mới", "renameStatus", "deleteStatus", "addStatus") %>
+      <!-- Quản lý Chương trình -->
+      <%= renderManagementSection("Chương trình", "program", programs, "ID Chương trình", "Nhập chương trình mới", "renameProgram", "deleteProgram", "addProgram") %> 
+
+      <!-- Legacy codes -->
+      <!-- Quản lý Khoa -->
+      <!-- <div class="box flex-row-item flex-column gap-4">
         <h2>Khoa</h2>
-        <div id="major-list" class="flex-column gap-4 scrollable"> 
+        <list id="major-list" class="flex-column gap-4 scrollable" style="padding: 2px 0;"> 
           <% majors.forEach(major => { %>
             <li class="flex-row gap-4">
               <input type="text" value="<%= major._id %>" data-id="<%= major._id %>" size="5" readonly>
@@ -27,16 +57,16 @@
               <button class="delete-button" onclick="deleteMajor('<%= major._id %>')"> - </button>
             </li>
           <% }) %>
-        </div>
+        </list>
         <div class="flex-row gap-4">
           <input type="text" id="new-major-id" placeholder="ID Khoa" size="5">
           <input class="flex-row-item" type="text" id="new-major" placeholder="Tên Khoa">
-          <button class="add-button" onclick="addMajor()">+</button>
+          <button class="add-button" onclick="addMajor()"> + </button>
         </div>
-      </div>
+      </div> -->
 
       <!-- Quản lý Tình trạng SV -->
-      <div class="box flex-row-item flex-column gap-4">
+      <!-- <div class="box flex-row-item flex-column gap-4">
         <h2>Tình trạng Sinh viên</h2>
         <div id="status-list" class="flex-column gap-4 scrollable">
           <% status.forEach(s => { %>
@@ -52,10 +82,10 @@
           <input class="flex-row-item" type="text" id="new-status" placeholder="Nhập tình trạng mới">
           <button class="add-button" onclick="addStatus()">+</button>
         </div>
-      </div>
+      </div> -->
 
       <!-- Quản lý Chương trình -->
-      <div class="box flex-row-item flex-column gap-4">
+      <!-- <div class="box flex-row-item flex-column gap-4">
         <h2>Chương trình</h2>
         <div id="program-list" class="flex-column gap-4 scrollable">
           <% programs.forEach(p => { %>
@@ -70,7 +100,7 @@
           <input type="text" id="new-program-id" placeholder="ID Chương trình" size="5">
           <input class="flex-row-item" type="text" id="new-program" placeholder="Nhập chương trình mới">
           <button class="add-button" onclick="addProgram()">+</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

@@ -1,0 +1,10 @@
+{
+    "emailDomain": "@student.university.edu.vn",
+    "phoneRegex": "^(?:\\+84|0[35789])\\d{8}$",
+    "statusRules": {
+      "Đang học": ["Bảo lưu", "Tốt nghiệp", "Đình chỉ"],
+      "Bảo lưu": ["Đang học", "Đình chỉ"],
+      "Đã tốt nghiệp": [],
+      "Đình chỉ": []
+    }
+}

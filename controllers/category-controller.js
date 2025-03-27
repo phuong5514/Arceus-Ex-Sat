@@ -1,6 +1,6 @@
-import Major from "../models/majorModel.js";
-import Status from "../models/statusModel.js";
-import Program from "../models/programModel.js";
+import Major from "../models/major-model.js";
+import Status from "../models/status-model.js";
+import Program from "../models/program-model.js";
 
 // Load the manage dropdown page
 export const getDropdowns = async (req, res) => {

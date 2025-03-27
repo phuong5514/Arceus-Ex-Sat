@@ -1,18 +1,20 @@
-import Student from "../models/studentModel.js";
-import Major from "../models/majorModel.js";
+import Student from "../models/student-model.js";
+import Major from "../models/major-model.js";
 import dayjs from "dayjs";
-import Program from "../models/programModel.js";
-import Status from "../models/statusModel.js";
-import Address from "../models/addressModel.js";
-import IdentityCard from "../models/identityCardModel.js";
-import Passport from "../models/passportModel.js";
-import path, { format } from 'path';
+import Program from "../models/program-model.js";
+import Status from "../models/status-model.js";
+import Address from "../models/address-model.js";
+import IdentityCard from "../models/identity-card-model.js";
+import Passport from "../models/passport-model.js";
+import path from 'path';
 import { writeLog } from '../helpers/logger.js';
 import * as guidance from '../helpers/guidance-format.js';
-import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/studentDataFormatter.js'; 
+import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/student-data-formatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { fileURLToPath } from "url";
+import {body} from "express-validator";
+import { validationResult } from "express-validator";
 
 dayjs.extend(customParseFormat);
 
@@ -111,51 +113,51 @@ async function preprocessStudent(student) {
   const genderList = ["Nam", "Nữ"]
 
   // all fields are required
-  const inputFields = [
-    student.name, student.email, student.phone_number, student.address,
-    student.major, student.class_year, student.program, student.gender,
-    student.status, student.birthdate];
-  const texts = ["Tên", "Email", "Số điện thoại", "Địa chỉ", "Ngành học", "Năm học", "Chương trình học", "Giới tính", "Trạng thái", "Ngày sinh"];
-  inputFields.forEach((field, index) => {
-    if (!field || field.trim() === "") {
-      throw new Error(`${texts[index]} không được để trống`);
-    }
-  });
+  // const inputFields = [
+  //   student.name, student.email, student.phone_number, student.address,
+  //   student.major, student.class_year, student.program, student.gender,
+  //   student.status, student.birthdate];
+  // const texts = ["Tên", "Email", "Số điện thoại", "Địa chỉ", "Ngành học", "Năm học", "Chương trình học", "Giới tính", "Trạng thái", "Ngày sinh"];
+  // inputFields.forEach((field, index) => {
+  //   if (!field || field.trim() === "") {
+  //     throw new Error(`${texts[index]} không được để trống`);
+  //   }
+  // });
 
   // validate email
-  if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-    throw new Error("Email không hợp lệ");
-  }
+  // if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+  //   throw new Error("Email không hợp lệ");
+  // }
 
-  // validate phone number
-  if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
-    throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
-  }
+  // // validate phone number
+  // if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
+  //   throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
+  // }
 
-  // validate class year
-  if (!student.class_year.match(/^[0-9]{4}$/)) {
-    throw new Error("Năm học phải là 4 chữ số");
-  }
+  // // validate class year
+  // if (!student.class_year.match(/^[0-9]{4}$/)) {
+  //   throw new Error("Năm học phải là 4 chữ số");
+  // }
 
-  // validate major
-  if (!majorList.includes(student.major)) {
-    throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
-  }
+  // // validate major
+  // if (!majorList.includes(student.major)) {
+  //   throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
+  // }
 
-  // validate program
-  if (!programList.includes(student.program)) {
-    throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
-  }  
+  // // validate program
+  // if (!programList.includes(student.program)) {
+  //   throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
+  // }  
 
-  // validate status
-  if (!statusList.includes(student.status)) {
-    throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
-  }
+  // // validate status
+  // if (!statusList.includes(student.status)) {
+  //   throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
+  // }
 
-  // validate gender
-  if (!genderList.includes(student.gender)) {
-    throw new Error("Giới tính phải là Nam hoặc Nữ");
-  }
+  // // validate gender
+  // if (!genderList.includes(student.gender)) {
+  //   throw new Error("Giới tính phải là Nam hoặc Nữ");
+  // }
 
   // validate addresses
   // addresses are objects that need to be added to the Address collection
@@ -353,7 +355,7 @@ export const deleteStudents = async (req, res) => {
   try {
     // Validate input
     if (!studentIds || !Array.isArray(studentIds) || studentIds.length === 0) {
-      throw new Error("Danh sách mã số sinh viên không hợp lệ hoặc rỗng");
+      throw new Error("Danh sách MSSV không hợp lệ hoặc rỗng");
     }
 
     // Delete each student by their student_id
@@ -641,7 +643,7 @@ async function processStudentImport(student, resultCallback) {
   }
 
   if (!/^\d{8}$/.test(student._id)) {
-    resultCallback(new Error("Mã số sinh viên phải là 8 chữ số"));
+    resultCallback(new Error("MSSV phải là 8 chữ số"));
     return;
   }
 
@@ -879,3 +881,81 @@ export const exportAllStudents = async (req, res) => {
     res.status(500).json({ok: false, error: "Lỗi xuất dữ liệu sinh viên" });
   }
 };
+
+
+export const validateAddStudent = [
+  body('_id').notEmpty().trim()
+    .withMessage('MSSV không được để trống')
+    .isNumeric().withMessage('MSSV phải là số')
+    .isLength({ min: 8, max: 8 }).withMessage('MSSV phải có 8 chữ số')
+    // Check if student id already exists
+    .custom(async (value) => {
+      const student = await Student.findOne({ _id: value });
+      if (student) {
+        return Promise.reject('MSSV đã tồn tại');
+      }
+    }),
+  body('name').notEmpty().withMessage('Họ tên không được để trống'),
+  body('email').notEmpty().withMessage('Email không được để trống').isEmail().withMessage('Email không hợp lệ'),
+  body('phone_number').notEmpty().withMessage('Số điện thoại không được để trống').isLength({ min: 10, max: 11 }).withMessage('Số điện thoại phải từ 10 đến 11 chữ số'),
+  body('birthdate').notEmpty().withMessage('Ngày sinh không được để trống').isISO8601().withMessage('Ngày sinh không hợp lệ'),
+  body('gender').notEmpty().withMessage('Giới tính không được để trống').isIn(['Nam', 'Nữ']).withMessage('Giới tính phải là Nam hoặc Nữ'),
+  body('class_year').notEmpty().withMessage('Khóa không được để trống').isLength({ min: 4, max: 4 }).withMessage('Năm học phải là 4 chữ số'),
+  body('major').notEmpty().withMessage('Khoa không được để trống')
+    .custom(async (value) => {
+    const major = await Major.findOne({ _id: value });
+    if (!major) {
+      return Promise.reject('Ngành học không nằm trong danh sách ngành học có sẵn');
+    }
+  }),
+  body('program').notEmpty().withMessage('Chương trình học không được để trống')
+    .custom(async (value) => {
+      const program = await Program.findOne({ _id: value });
+      if (!program) {
+        return Promise.reject('Chương trình học không nằm trong danh sách chương trình học có sẵn');
+      }
+    }),
+  body('status').notEmpty().withMessage('Trạng thái không được để trống')
+    .custom(async (value) => {
+      const status = await Status.findOne({_id : value});
+      if (!status) {
+        return Promise.reject('Trạng thái không nằm trong danh sách trạng thái có sẵn');
+      }
+    }),
+  body('nationality').notEmpty().withMessage('Quốc tịch không được để trống'),
+  body('identity_card._id')
+    .optional({ checkFalsy: true }) 
+    .trim(),
+  body('identity_card.issue_date')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isISO8601()
+    .withMessage("Ngày cấp CCCD/CMND không hợp lệ"),
+  body('identity_card.expiry_date')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isISO8601()
+    .withMessage("Ngày hết hạn CCCD/CMND không hợp lệ"),
+  body('passport._id')
+    .optional({ checkFalsy: true }) 
+    .trim(),
+  body('passport.issue_date')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isISO8601()
+    .withMessage("Ngày cấp hộ chiếu không hợp lệ"),
+  body('passport.expiry_date')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isISO8601()
+    .withMessage("Ngày hết hạn hộ chiếu không hợp lệ"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.error("Validation error:", errors.array());
+      return res.status(400).json({ ok: false, error: errors.array()[0].msg });
+    }
+    
+    next();
+  }
+];

@@ -174,37 +174,6 @@
         <label for="identity-card-chip-attached">Đã gắn chip (nếu là CCCD):</label>
         <input type="checkbox" id="identity-card-chip-attached" name="chip_attached">
       </div>
-  <dialog id="identity-card-dialog">
-    <form method="dialog" class="identity-card-dialog-container" onsubmit="onIdentityCardDialogSubmitted(event)">
-      <div class="identity-card-dialog-header">Thông tin CCCD/CMND:</div>
-      <div class="flex-column gap-8">
-        <label for="identity-card-id">Số CCCD/CMND:</label>
-        <input type="text" id="identity-card-id" name="identity_card_id" placeholder="Số CCCD/CMND" size="20" readonly>
-      </div>
-      <div class="flex-column gap-8">
-        <label for="identity-card-issue-date">Ngày cấp:</label>
-        <input type="date" id="identity-card-issue-date" name="issue_date">
-      </div>
-      <div class="flex-column gap-8">
-        <label for="identity-card-expiry-date">Ngày hết hạn:</label>
-        <input type="date" id="identity-card-expiry-date" name="expiry_date">
-      </div>
-      <div class="flex-column">
-        <label for="identity-card-issue-location">Nơi cấp:</label>
-        <input type="text" id="identity-card-issue-location" name="issue_location" placeholder="Nơi cấp" size="20">
-      </div>
-      <div class="flex-column gap-8">
-        <label for="identity-card-is-digitized">Đã số hóa (là CCCD):</label>
-        <input type="checkbox" id="identity-card-is-digitized" name="is_digitized">
-      </div>
-      <div class="flex-column gap-8">
-        <label for="identity-card-chip-attached">Đã gắn chip (nếu là CCCD):</label>
-        <input type="checkbox" id="identity-card-chip-attached" name="chip_attached">
-      </div>
-
-      <button id="submit-identity-card-button" class="identity-card-dialog-submit-button" type="submit">OK</button>
-    </form>
-  </dialog>
       <button id="submit-identity-card-button" class="identity-card-dialog-submit-button" type="submit">OK</button>
     </form>
   </dialog>
@@ -236,10 +205,10 @@
         <label for="passport-issue-location">Nơi cấp:</label>
         <input type="text" id="passport-issue-location" name="issue_location" placeholder="Nơi cấp" size="20">
       </div>
-            <div class="flex-column gap-8">
-                <label for="passport-notes">Ghi chú:</label>
-                <input type="text" id="passport-notes" name="passport-notes" placeholder="Ghi chú" size="20">
-            </div>
+      <div class="flex-column gap-8">
+          <label for="passport-notes">Ghi chú:</label>
+          <input type="text" id="passport-notes" name="passport-notes" placeholder="Ghi chú" size="20">
+      </div>
             
       <button id="submit-passport-button" class="passport-dialog-submit-button" type="submit">OK</button>
     </form>

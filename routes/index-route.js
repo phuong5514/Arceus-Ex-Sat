@@ -19,7 +19,7 @@ router.get("/", studentController.getAllStudents);
 
 router.get("/search", studentController.searchStudents);
 
-router.post("/students", studentController.addStudent);
+router.post("/students", studentController.validateAddStudent, studentController.addStudent);
 
 router.put("/students/:student_id", studentController.updateStudent);
 

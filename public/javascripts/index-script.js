@@ -187,11 +187,11 @@ async function onAddStudentSaved() {
         body: JSON.stringify(student),
     });
 
-    const result = await response.json();
     if (response.ok) {
         window.location.reload();
     } else {
-        alert(result.error);
+        const result = await response.json();
+        setMessage("error", result.error || "Thêm sinh viên thất bại"); 
     }
 }
 
@@ -446,7 +446,6 @@ function onIdentityCardEditClicked(button) {
 function onIdentityCardDialogSubmitted(event) {
     event.preventDefault();
     const identityCardDialog = document.getElementById("identity-card-dialog");
-
     if (!currentEditIdentityCardDiv) {
         identityCardDialog.close();
         return;

@@ -5,7 +5,7 @@ import Program from "../models/program-model.js";
 import Status from "../models/status-model.js";
 
 import fs from "fs";
-const config = JSON.parse(fs.readFileSync(new URL("../config/business-rule.json", import.meta.url), "utf-8"));
+const config = JSON.parse(fs.readFileSync(new URL("../config/business-rules.json", import.meta.url), "utf-8"));
 
 const validateStudentIdParam = () =>
     param("student_id").trim().notEmpty().isNumeric().isLength({min: 8, max: 8}).withMessage('Có lỗi xảy ra khi truyền dữ liệu');

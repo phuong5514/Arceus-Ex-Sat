@@ -12,15 +12,6 @@ import * as guidance from '../helpers/guidance-format.js';
 import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/student-data-formatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
-import { fileURLToPath } from "url";
-
-// import {body} from "express-validator";
-// import { validationResult } from "express-validator";
-// import { assert } from "console";
-// import "../config/business-rule.json";
-
-// import fs from "fs";
-// const config = JSON.parse(fs.readFileSync(new URL("../config/business-rule.json", import.meta.url), "utf-8"));
 
 dayjs.extend(customParseFormat);
 

@@ -1,13 +1,22 @@
-# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 2)
+# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 3)
+## Giới thiệu
+Là trang web quản lý sinh viên đơn giản, cung cấp các chức năng thêm, xóa, sửa thông tin sinh viên, import, export, v.v
+
+Sử dụng [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), [EJS](https://ejs.co/)
+
 ## Cấu trúc source code
 ```bash
 /
 ├── config 
+│   ├── db.js
+│   └── bussiness_rules.json
 ├── controllers 
 ├── helpers 
-├── logs 
 ├── models 
 ├── node_modules
+├── middlewares
+│   ├── log-middleware.js
+│   └── validator-middleware.js
 ├── public
 │   ├── css
 │   ├── images
@@ -24,76 +33,124 @@
 
 `routes` chứa file xử lý request từ client như GET, POST, PUT, DELETE.
 
-`views` chứa các file html của chương trình. Các file này được viết bằng view engine [EJS](https://ejs.co/).
+`views` chứa các file html của chương trình. Các file này được viết bằng EJS.
 
 `seeder.js` thêm dữ liệu mẫu vào database.
 
-`config` chứa các file cài đặt của chương trình.
+`config` chứa các file cấu hình của chương trình. Gồm:
++ `db.js`: cấu hình và thiết lập kết nối với MongoDB database
++ `bussiness_rules.json`: chứa các quy ước và việc kiểm tra tính hợp lệ của dữ liệu trước khi lưu vào database.
 
 `controllers` chứa các file xử lý các thao tác của business logic.
 
 `helpers` chứa các file hỗ trợ hoạt động chính của chương trình (thay đổi định dạng dữ liệu, log các xử lý,...).
 
-`logs` chứa các file log ghi chép về các xử lý của chương trình.
-
 `models` chứa các model dữ liệu (bảng) của MongoDB.
+
+`middlewares` chứa các file xử lý middleware của chương trình. Bao gồm:
++ log-middleware: để lưu lại các xử lý vào các file log
++ validator-middleware: để kiểm tra tính hợp lệ của dữ liệu trước khi thực hiện các xử lý. Sử dụng `bussiness_rules.json`
 
 ## Hướng dẫn cài đặt & chạy chương trình
 ### Yêu cầu
 
-[Node.js](https://nodejs.org/en/download/) phiên bản từ v20.17.0 trở lên.
-
-Bài tập sử dụng MongoDB, một hệ quản trị cơ sở dữ liệu NoSQL mạnh mẽ và linh hoạt.
-
-Chúng ta có thể tải MongoDB Atlas để trực tiếp nhìn thấy các record dữ liệu của trang web Quản lý học sinh.
+NodeJS phiên bản từ v20.17.0 trở lên.
 
 ### Cài đặt & chạy chương trình
 
-Tiến hành cài đặt các module cần thiết bằng lệnh:  
+Tiến hành cài đặt các module cần thiết:
 
 ```bash
 npm install
 ```
-![image](readme_resources/install_step_1.png)
 
-Thiết lập biến môi trường (có trong file) .env chứa chuỗi kết nối MongoDB:
-
-```bash
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
-```
-
-Sau đó, thêm dữ liệu mẫu vào database. Bộ dữ liệu mẫu bao gồm dữ liệu 4 sinh viên, căn cước công dân / cmnd và hộ chiếu; 6 khoa; 6 chương trình đào tạo; 6 trạng thái; 12 địa chỉ:
-
-```bash
-node seeder.js
-```
-
-![image](readme_resources/install_step_2.png)
-
-Cuối cùng, chạy chương trình bằng lệnh:
+Chạy chương trình:
 
 ```bash
 npm run dev
 ```
 
-![image](readme_resources/starting.png)
-
-## Các trang hiện có trong chương trình
+## Screenshots
 
 ## Trang chính 
 
-Các chức năng: `Các thao tác CRUD thông tin sinh viên`,`Tìm kiếm sinh viên`, `export dữ liệu sinh viên đang hiển thị (json)`
+Trang chính hiển thị danh sách và thông tin chi tiết của tất cả các sinh viên.  
+Có 3 chế độ làm việc trên danh sách và có thể được truy cập qua thanh công cụ phía trên của trang:
++ *Thêm sinh viên*
++ *Sửa thông tin sinh viên*
++ *Xóa sinh viên*
 
-![image](readme_resources/main_page.png)
+Các trường của sinh viên được hiển thị chi tiết ở từng dòng của sinh viên tương ứng. Các trường có nút `(i)` ở bên cạnh là các trường có thể được viết gọn và có thể xem chi tiết khi nhấn vào nút đó.  
+
+Ví dụ, các trường như CMND/CCDD hay Hộ chiếu được viết gọn bằng mã số và có thể xem chi tiết các trường liên quan như *Ngày cấp*, *Nơi cấp*, v.v khi nhấn vào nút `(i)`.
+
+![main_page](readme_resources/main_page.png)
+
+### Thêm sinh viên
+
+Ở chế độ này, người dùng nhập thông tin sinh viên mới qua dòng nhập liệu đầu danh sách. Nhập đầy đủ các trường của sinh viên và nhấn vào nút *Lưu* trên thanh công cụ để thêm sinh viên mới.  
+
+![add_student](readme_resources/main_add.png)
+
+Nhấn *Hủy* để hủy bỏ thao tác thêm sinh viên.
+
+### Xóa sinh viên
+
+Ở chế độ xóa, danh sách sinh viên có thêm một checkbox ở mỗi dòng. Người dùng chọn vào các sinh viên muốn xóa, sau đó nhấn *Xác nhận xóa* trên thanh công cụ để xóa các sinh viên đã chọn.
+
+![delete_student](readme_resources/main_delete.png)
+
+Nhấn *Hủy* để hủy bỏ thao tác xóa sinh viên.
+
+### Sửa thông tin sinh viên
+
+Ở chế độ sửa, người dùng có thể sửa thông tin của sinh viên bằng cách nhấn vào dòng của sinh viên muốn sửa. 
+Thông tin của sinh viên sẽ được hiển thị ở phần nhập liệu đầu danh sách. Người dùng sửa thông tin sinh viên và nhấn *Lưu* để lưu thông tin mới.
+
+![edit_student](readme_resources/main_edit.png)
+
+Nhấn *Hủy* để hủy bỏ thao tác sửa thông tin sinh viên.
 
 ## Trang import
 
-Chức năng: `import dữ liệu (json và csv)`
+Trang import giúp thêm sinh viên từ file `CSV` hoặc `JSON`. Để truy cập trang này, nhấn vào nút *Import* trên thanh công cụ của trang chính.
 
 ![image](readme_resources/import_page.png)
 
+Các bước thêm sinh viên từ file:
++ Chọn *Loại file* import từ menu dropdown
++ Chọn file cần import từ thiết bị
++ Nhấn *Import* để thêm sinh viên từ file
+
+Để quay lại trang chính, nhấn vào nút *Quay lại* ở góc trên bên phải của trang.
+
+**Lưu ý**:
++ Đảm bảo các file theo đúng định dạng được ví dụ ở phần *Format CSV* hoặc *Format JSON* ở phía dưới nút *Import*
++ Các thông báo lỗi sẽ hiển thị ở phía dưới nút *Import* nếu có lỗi xảy ra. Sinh viên có thể không thêm vào danh sách nếu thông tin không hợp lệ hoặc đã tồn tại
+
+
 ## Trang quản lý danh mục
 
-Chức năng: `các thao tác CRUD lên thông tin danh mục (khoa, tình trạng sinh viên, chương trình)`
+Đây là trang giúp thêm, xóa, sửa các danh mục có sẵn cho một số trường của sinh viên, bao gồm: *Tình trạng*, *Khoa* và *Chương trình*.
 
-![image](readme_resources/categories_page.png)
+![image](readme_resources/category_page.png)
+
+Ở mỗi trường, các danh mục có sẵn được liệt kê ở dạng danh sách. Mỗi dòng bao gồm mã danh mục và tên. Ví dụ:
+`KHOATOAN - 'Toán'`, `TTTN - 'Tốt nghiệp'`, `CTDT - 'Đại trà'`.
+
+### Thêm danh mục
+Thêm danh mục bằng cách nhập mã danh mục và tên vào dòng nhập liệu dưới danh sách. Nhấn vào nút **+** bên phải để thêm danh mục mới.
+
+### Xóa danh mục
+Để xóa danh mục, nhấp vào nút **-** bên phải các danh mục được liệt kê
+
+### Đổi tên danh mục
+Tên danh mục có thể đổi trực tiếp bằng cách nhập tên mới vào ô tên của danh mục và nhấn `Enter`.
+
+## Export danh sách sinh viên
+
+![alt text](readme_resources/main_export.png)
+
+Danh sách sinh viên có thể được xuất ra file để lưu trữ bằng cách:
++ Chọn kiểu file muốn xuất ra: `CSV` hoặc `JSON`, từ menu dropdown
++ Nhấn vào nút *Export All* để xuất ra file

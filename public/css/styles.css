@@ -1,14 +1,16 @@
 :root {
   --light_grey: #ddd;
-  --grey: #f0f0f0;
+  --grey: #efefef;
   --white: #fff;
   --dark_grey: #333;
   --light_orange: #fcb69c;
   --orange: #e78d16;
   --red: #f44336;
-  --dark_yellow: #9aa31d;
+  --light-yellow: #d6db9c;
+  --dark_yellow: #b8bd79;
   --green: #04AA6D;
   --light_green: #b6efda;
+  --light_green_2: #33c38e;
 
 
   --table_header: var(--green);
@@ -119,6 +121,9 @@ button {
   align-items: center;
 }
 
+button:hover{
+  opacity: 0.9;
+}
 
 li {
   list-style-type: none;
@@ -342,8 +347,19 @@ tr:nth-child(odd) {
   gap: 16px;
 }
 
+.more-info{
+  border: 1px solid var(--dark_yellow);
+  color: var(--dark_yellow);
+  border-radius: 16px;
+  font-size: 10px;
+  padding: 2px 4px 2px 4px;
+  margin: 0px 0px 0px 8px;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
 .more-info:hover {
   cursor: pointer;
+  background-color: var(--white);
 }
 
 .center-title {

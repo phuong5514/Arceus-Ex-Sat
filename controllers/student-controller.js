@@ -13,6 +13,7 @@ import { formatAddress, formatIdentificationDocument, formatIdentityCard, format
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { fileURLToPath } from "url";
+
 // import {body} from "express-validator";
 // import { validationResult } from "express-validator";
 // import { assert } from "console";
@@ -99,7 +100,7 @@ export const addStudent = async (req, res) => {
   try {
     const newStudent = await preprocessStudent(student);
 
-    await Student.insertOne(student);
+    await Student.insertOne(newStudent);
 
     console.log("Student added successfully");
     writeLog('CREATE', 'SUCCESS', `Thêm sinh viên ${student._id} thành công`);
@@ -117,79 +118,36 @@ async function preprocessStudent(student) {
   const programList = await Program.distinct("_id");
   const genderList = ["Nam", "Nữ"]
 
-  // all fields are required
-  // const inputFields = [
-  //   student.name, student.email, student.phone_number, student.address,
-  //   student.major, student.class_year, student.program, student.gender,
-  //   student.status, student.birthdate];
-  // const texts = ["Tên", "Email", "Số điện thoại", "Địa chỉ", "Ngành học", "Năm học", "Chương trình học", "Giới tính", "Trạng thái", "Ngày sinh"];
-  // inputFields.forEach((field, index) => {
-  //   if (!field || field.trim() === "") {
-  //     throw new Error(`${texts[index]} không được để trống`);
-  //   }
-  // });
-
-  // validate email
-  // if (!student.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-  //   throw new Error("Email không hợp lệ");
-  // }
-
-  // // validate phone number
-  // if (!student.phone_number.match(/^[0-9]{10,11}$/)) {
-  //   throw new Error("Số điện thoại phải từ 10 đến 11 chữ số");
-  // }
-
-  // // validate class year
-  // if (!student.class_year.match(/^[0-9]{4}$/)) {
-  //   throw new Error("Năm học phải là 4 chữ số");
-  // }
-
-  // // validate major
-  // if (!majorList.includes(student.major)) {
-  //   throw new Error("Ngành học không nằm trong danh sách ngành học hợp lệ");
-  // }
-
-  // // validate program
-  // if (!programList.includes(student.program)) {
-  //   throw new Error("Chương trình học không nằm trong danh sách chương trình học hợp lệ");
-  // }  
-
-  // // validate status
-  // if (!statusList.includes(student.status)) {
-  //   throw new Error("Trạng thái không nằm trong danh sách trạng thái hợp lệ");
-  // }
-
-  // // validate gender
-  // if (!genderList.includes(student.gender)) {
-  //   throw new Error("Giới tính phải là Nam hoặc Nữ");
-  // }
-
-  // validate addresses
   // addresses are objects that need to be added to the Address collection
+ // Corrected version using for...of
   const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
   const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];
-  const addressfields = ["house_number", "street", "ward", "district", "city", "country", "postal_code"];
-  addresses.forEach(async (address, index) => {
+  const addressFields = ["house_number", "street", "ward", "district", "city", "country", "postal_code"];
+
+  for (let index = 0; index < addresses.length; index++) {
+    let address = addresses[index];
     if (address) {
-      const storedAddress = await Address.findOne({ _id: addressIds[index] }); 
+      const storedAddress = await Address.findOne({ _id: addressIds[index] });
 
       if (storedAddress) {
-        addressfields.forEach(field => {
+        addressFields.forEach(field => {
           storedAddress[field] = address[field];
         });
         await storedAddress.save();
       } else {
-        const newAddress = address;
-        newAddress._id = addressIds[index];
+        const newAddress = { ...address, _id: addressIds[index] };
         await Address.insertOne(newAddress);
       }
 
-      address = addressIds[index];
-    
+      addresses[index] = addressIds[index];
     } else {
-      address = "";
+      addresses[index] = "";
     }
-  });
+  }
+
+  student.permanent_address = addresses[0];
+  student.temporary_address = addresses[1];
+  student.mailing_address = addresses[2];
 
   // // addresses are objects that need to be added to the Address collection
   // if (student.permanent_address) {
@@ -262,18 +220,14 @@ async function preprocessStudent(student) {
   // }
 
 
-  if (student.identity_card) {
+  if (student.identity_card && student.identity_card._id) {
     // check if identity card existed
     const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
+    
     if (identityCard) {
       identityCard.issue_date = student.identity_card.issue_date;
-      if (!dayjs(identityCard.issue_date).isValid()) {
-        throw new Error("Ngày cấp CCCD/CMND không hợp lệ");
-      }
       identityCard.expiry_date = student.identity_card.expiry_date;
-      if (!dayjs(identityCard.expiry_date).isValid()) {
-        throw new Error("Ngày hết hạn CCCD/CMND không hợp lệ");
-      }
+      
       identityCard.issue_location = student.identity_card.issue_location;
       identityCard.is_digitized = student.identity_card.is_digitized;
       identityCard.chip_attached = student.identity_card.chip_attached;
@@ -287,20 +241,16 @@ async function preprocessStudent(student) {
   } else {
     student.identity_card = "";
   }
-  if (student.passport) {
+  if (student.passport && student.passport._id) {
     // check if passport existed
     const passport = await Passport.findOne({ _id: student.passport._id });
     if (passport) {
       passport.type = student.passport.type;
       passport.country_code = student.passport.country_code;
       passport.issue_date = student.passport.issue_date;
-      if (!dayjs(passport.issue_date).isValid()) {
-        throw new Error("Ngày cấp hộ chiếu không hợp lệ");
-      }
+
       passport.expiry_date = student.passport.expiry_date;
-      if (!dayjs(passport.expiry_date).isValid()) {
-        throw new Error("Ngày hết hạn hộ chiếu không hợp lệ");
-      }
+
       passport.issue_location = student.passport.issue_location;
       console.log("Updating existing passport: ", passport);
       await passport.save();
@@ -342,7 +292,6 @@ export const updateStudent = async (req, res) => {
     studentToUpdate.identity_card = processedStudent.identity_card;
     studentToUpdate.passport = processedStudent.passport;
     studentToUpdate.nationality = processedStudent.national;
-    
     await studentToUpdate.save();
 
     writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
@@ -799,8 +748,6 @@ export const exportAllStudents = async (req, res) => {
     const format = req.query.format || 'json'; // Default to JSON if no format specified
     const data = await fetchAndFormatStudents();
     
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
     if (data.docs.length === 0) {
       writeLog('EXPORT', 'ERROR', 'Không có sinh viên nào để xuất');
       res.status(400).json({ok: false, error: "Không có sinh viên nào để xuất" });
@@ -886,112 +833,3 @@ export const exportAllStudents = async (req, res) => {
     res.status(500).json({ok: false, error: "Lỗi xuất dữ liệu sinh viên" });
   }
 };
-
-
-// export const validateAddStudent = [
-//   body('_id')
-//     .trim().notEmpty().withMessage('MSSV không được để trống').bail()
-//     .isNumeric().withMessage('MSSV phải là số').bail()
-//     .isLength({ min: 8, max: 8 }).withMessage('MSSV phải có 8 chữ số').bail()
-//     .custom(async (value) => { // Check if student id already existed
-//       const student = await Student.findOne({ _id: value });
-//       if (student) {
-//         return Promise.reject('MSSV đã tồn tại');
-//       }
-//     }).bail(),
-
-//   body('name')
-//     .trim().notEmpty().withMessage('Họ tên không được để trống').bail(),
-
-//   body('email')
-//     .trim().notEmpty().withMessage('Email không được để trống').bail()
-//     .isEmail().withMessage('Email không hợp lệ').bail()
-//     .custom(async (value) => { // Check if email already existed
-//       const student = await Student.findOne({ email: value });
-//       if (student) {
-//         return Promise.reject('Email đã tồn tại');
-//       }
-//     }).bail()
-//     .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject("Email phải thuộc domain cho phép")),
-
-//   body('phone_number')
-//     .trim().notEmpty().withMessage('Số điện thoại không được để trống').bail()
-//     .isLength({ min: 10, max: 11 }).withMessage('Số điện thoại phải từ 10 đến 11 chữ số').bail()
-//     .custom(async (value) => { // Check if phone number already existed
-//       const student = await Student.findOne({ phone_number: value });
-//       if (student) {
-//         return Promise.reject('Số điện thoại đã tồn tại');
-//       }
-//     }).bail()
-//     .matches(config.phoneRegex).withMessage("Số điện thoại phải có định dạng hợp lệ").bail(),
-
-//   body('birthdate')
-//     .trim().notEmpty().withMessage('Ngày sinh không được để trống').bail()
-//     .isISO8601().withMessage('Ngày sinh không hợp lệ').bail(),
-
-//   body('gender')
-//     .trim().notEmpty().withMessage('Giới tính không được để trống').bail()
-//     .isIn(['Nam', 'Nữ']).withMessage('Giới tính phải là Nam hoặc Nữ').bail(),
-
-//   body('class_year')
-//     .trim().notEmpty().withMessage('Khóa không được để trống').bail()
-//     .isLength({ min: 4, max: 4 }).withMessage('Năm học phải là 4 chữ số').bail(),
-
-//   body('major')
-//     .trim().notEmpty().withMessage('Khoa không được để trống').bail()
-//     .custom(async (value) => {
-//       const major = await Major.findOne({ _id: value });
-//       if (!major) {
-//         return Promise.reject('Ngành học không nằm trong danh sách ngành học có sẵn');
-//       }
-//     }).bail(),
-
-//   body('program')
-//     .trim().notEmpty().withMessage('Chương trình học không được để trống').bail()
-//     .custom(async (value) => {
-//       const program = await Program.findOne({ _id: value });
-//       if (!program) {
-//         return Promise.reject('Chương trình học không nằm trong danh sách chương trình học có sẵn');
-//       }
-//     }).bail(),
-
-//   body('status')
-//     .trim().notEmpty().withMessage('Trạng thái không được để trống').bail()
-//     .custom(async (value) => {
-//       const status = await Status.findOne({ _id: value });
-//       if (!status) {
-//         return Promise.reject('Trạng thái không nằm trong danh sách trạng thái có sẵn');
-//       }
-//     }).bail(),
-
-//   body('nationality')
-//     .trim().notEmpty().withMessage('Quốc tịch không được để trống').bail(),
-
-//   body('identity_card._id')
-//     .optional({ checkFalsy: true }).trim().bail(),
-
-//   body('identity_card.issue_date')
-//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày cấp CCCD/CMND không hợp lệ").bail(),
-
-//   body('identity_card.expiry_date')
-//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày hết hạn CCCD/CMND không hợp lệ").bail(),
-
-//   body('passport._id')
-//     .optional({ checkFalsy: true }).trim().bail(),
-
-//   body('passport.issue_date')
-//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày cấp hộ chiếu không hợp lệ").bail(),
-
-//   body('passport.expiry_date')
-//     .optional({ checkFalsy: true }).trim().isISO8601().withMessage("Ngày hết hạn hộ chiếu không hợp lệ").bail(),
-
-//   (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       console.error("Validation error:", errors.array());
-//       return res.status(400).json({ ok: false, error: errors.array()[0].msg });
-//     }
-
-//     next();
-//   }
-// ];

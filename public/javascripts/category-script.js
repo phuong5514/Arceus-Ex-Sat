@@ -1,8 +1,14 @@
 async function addMajor() {
     const id = document.getElementById("new-major-id").value;
     const name = document.getElementById("new-major").value;
-    if (!id.trim()) return alert("Nhập mã Khoa!");
-    if (!name.trim()) return alert("Nhập tên Khoa!");
+    if (!id.trim()){
+        setMessage("error", "Vui lòng nhập mã khoa");
+        return;
+    }
+    if (!name.trim()){
+        setMessage("error", "Vui lòng nhập tên khoa");
+        return;
+    }
     const response = await fetch("/category/major", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, name }) });
     if (response.ok) {
         setMessage("success", "Thêm khoa thành công!");

@@ -1,24 +1,22 @@
 :root {
-  --light_grey: #ddd;
+  --light_grey: #eeeeee;
   --grey: #efefef;
   --white: #fff;
   --dark_grey: #333;
-  --light_orange: #fcb69c;
+  --light_orange: #ff9914;
   --orange: #e78d16;
+  --dark_orange: #d68316;
   --red: #f44336;
   --light-yellow: #d6db9c;
   --dark_yellow: #b8bd79;
   --green: #04AA6D;
   --light_green: #b6efda;
-  --light_green_2: #33c38e;
-
+  --dark_green: #1a9668;
 
   --table_header: var(--green);
-  --hover: var(--light_orange);
-  --active: var(--orange);
   --table_row: var(--white);
   --table_row_alt: var(--grey);
-  --toolbar-height: 108px;
+  --toolbar-height: 116px;
 }
 
 * {
@@ -27,7 +25,7 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
+  font-size: x-small;
   margin: 0;
   padding: 0;
 }
@@ -74,6 +72,10 @@ body {
   padding: 8px 32px;
 }
 
+.cancel-button:hover{
+  background-color: var(--dark_orange);
+}
+
 .clear_button:hover {
   opacity: 0.8;
   cursor: pointer;
@@ -85,7 +87,6 @@ input {
   align-self: stretch;
   margin: 0;
   padding: 8px;
-  font-size: inherit;
 }
 
 select {
@@ -94,7 +95,6 @@ select {
   align-self: stretch;
   margin: 0;
   padding: 8px;
-  font-size: inherit;
   padding: 8px 16px;
 }
 
@@ -105,24 +105,12 @@ button {
   cursor: pointer;
   align-self: stretch;
   font-weight: bold;
-  font-size: inherit;
-  padding: 8px 16px;
-}
-
-.button {
-  border: none;
-  background-color: var(--green);
-  color: var(--white);
-  cursor: pointer;
-  align-self: stretch;
-  font-weight: bold;
-  font-size: inherit;
-  display: flex;
-  align-items: center;
+  font-size: x-small;
+  padding: 4px 8px;
 }
 
 button:hover{
-  opacity: 0.9;
+  background-color: var(--dark_green);
 }
 
 li {
@@ -174,7 +162,11 @@ tr:nth-child(odd) {
 }
 
 .active {
-  background-color: var(--active);
+  background-color: var(--orange);
+}
+
+.active:hover {
+  background-color: var(--dark_orange);
 }
 
 .reload-button {
@@ -251,7 +243,7 @@ tr:nth-child(odd) {
 }
 
 .field-hint{
-  font-size: 12px;
+  font-size: x-small;
   color: var(--dark_grey);
   padding: 2px 8px;
 }
@@ -266,7 +258,7 @@ tr:nth-child(odd) {
   color: var(--green);
   font-weight: bold;
   text-align: center;
-  font-size: 20px;
+  font-size: small;
   grid-column: 1 / span 2;
 }
 
@@ -279,7 +271,6 @@ tr:nth-child(odd) {
   color: var(--white);
   cursor: pointer;
   font-weight: bold;
-  font-size: inherit;
   padding: 8px 6px;
 }
 
@@ -308,7 +299,7 @@ tr:nth-child(odd) {
   color: var(--green);
   font-weight: bold;
   text-align: center;
-  font-size: 20px;
+  font-size: small;
   grid-column: 1 / span 2;
 }
 
@@ -327,7 +318,7 @@ tr:nth-child(odd) {
   color: var(--green);
   font-weight: bold;
   text-align: center;
-  font-size: 20px;
+  font-size: small;
   grid-column: 1 / span 2;
 }
 
@@ -348,24 +339,17 @@ tr:nth-child(odd) {
 }
 
 .more-info{
-  border: 1px solid var(--dark_yellow);
-  color: var(--dark_yellow);
-  border-radius: 16px;
-  font-size: 10px;
-  padding: 2px 4px 2px 4px;
-  margin: 0px 0px 0px 8px;
-  font-family: "Lucida Console", "Courier New", monospace;
+  margin: 0px 8px;
 }
 
 .more-info:hover {
   cursor: pointer;
-  background-color: var(--white);
 }
 
 .center-title {
   text-align: center;
   font-weight: bold;
-  font-size: 20px;
+  font-size: medium;
 }
 
 .flex-row-center {
@@ -402,14 +386,14 @@ tr:nth-child(odd) {
 
 h2 {
   font-weight: bold;
-  font-size: 16px;
+  font-size: small;
   padding: 0px;
   margin: 2px 0px 8px 8px;
 }
 
 h1 {
   font-weight: bold;
-  font-size: 20px;
+  font-size: medium;
   padding: 0px;
   margin: 2px 0px 8px 8px;
 }

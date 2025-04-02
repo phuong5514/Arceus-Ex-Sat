@@ -11,15 +11,15 @@
 <% function renderManagementSection(title, id, list, placeholderId, placeholderName, renameFunction, deleteFunction, addFunction) { %>
   <div class="box flex-row-item flex-column gap-4">
     <h2><%= title %></h2>
-    <list id="<%= id %>-list" class="flex-column gap-4 scrollable">
+    <div id="<%= id %>-list" class="flex-column gap-4 scrollable">
       <% list.forEach(item => { %>
-        <li class="flex-row gap-4">
+        <div class="flex-row gap-4">
           <input type="text" value="<%= item._id %>" data-id="<%= item._id %>" size="5" readonly>
           <input class="flex-row-item" type="text" value="<%= item[id + '_name'] %>" data-id="<%= item._id %>" onkeypress="<%= renameFunction %>(event, this)">
           <button class="delete-button" onclick="<%= deleteFunction %>('<%= item._id %>')"> - </button>
-        </li>
+        </div>
       <% }) %>
-    </list>
+    </div>
     <div class="flex-row gap-4">
       <input type="text" id="new-<%= id %>-id" placeholder="<%= placeholderId %>" size="5">
       <input class="flex-row-item" type="text" id="new-<%= id %>" placeholder="<%= placeholderName %>">

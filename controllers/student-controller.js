@@ -11,7 +11,7 @@ import * as guidance from '../helpers/guidance-format.js';
 import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/student-data-formatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
-import { promises as fs }  from 'fs';
+import { promises as fs, stat }  from 'fs';
 import path from 'path';
 import { fileURLToPath } from "url";
 
@@ -662,22 +662,34 @@ async function processStudentImport(student, resultCallback) {
   }
   // Run check on status and change to its id
   if (student.status){
-    const status = await Status.findOne({status_name: student.status});
+    let status = await Status.findOne({status_name: student.status});
     if (!status){
       resultCallback(new Error(`Trạng thái ${student.status} không nằm trong danh sách trạng thái có sẵn`));
       return;
     } else {
-      student.status = status._id;
+      status = await Status.findOne({_id: student.status});
+      if (!status){
+        resultCallback(new Error(`Trạng thái ${student.status} không nằm trong danh sách trạng thái có sẵn`));
+        return;
+      } else {
+        student.status = status._id;
+      }
     }
   }
   // Run check on program and change to its id
   if (student.program){
-    const program = await Program.findOne({program_name: student.program});
+    let program = await Program.findOne({program_name: student.program});
     if (!program){
       resultCallback(new Error(`Chương trình ${student.program} không nằm trong danh sách trạng thái có sẵn`));
       return;
     } else {
-      student.program = program._id;
+      program = await Program.findOne({_id: student.program});
+      if (!program){
+        resultCallback(new Error(`Chương trình ${student.program} không nằm trong danh sách trạng thái có sẵn`));
+        return;
+      } else {
+        student.program = program._id;
+      }
     }
   }
   // Add in new address if needed

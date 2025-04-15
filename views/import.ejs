@@ -7,46 +7,13 @@
   <title>
     <%= title %>
   </title>
-  <style>
-    .sample-format {
-      background-color: #f8f9fa;
-      padding: 15px;
-      border-radius: 5px;
-      margin-top: 20px;
-      font-family: monospace;
-    }
-
-    .format-content {
-      overflow: auto;
-    }
-
-    #message {
-      display: none;
-      margin-top: 15px;
-      padding: 15px;
-    }
-
-    #message.error {
-      display: block;
-      background-color: #f8d7da;
-      border: 1px solid #f5c6cb;
-      color: #721c24;
-    }
-
-    #message.success {
-      display: block;
-      background-color: #d4edda;
-      border: 1px solid #c3e6cb;
-      color: #155724;
-    }
-  </style>
   <link rel="stylesheet" href="/css/styles.css">
   <script src="/javascripts/import-script.js" defer></script>
 </head>
 
 <body>
   <div class="flex-column m-16 gap-16">
-    <div class="flex-row flex-row-space-between">
+    <div class="flex-row space-between">
       <h1>Import Students</h1>
       <button onclick="window.location.href='/'" >Quay lại</button>
     </div>
@@ -67,77 +34,16 @@
           </div>
           <button type="submit">Import</button>
         </form>
-        <div id="message"></div>
+        <div id="message" class="mx-4"></div>
 
         <div id="csvFormat" class="sample-format">
           <h5>Format CSV:</h5>
-          <pre class="format-content">_id,name,birthdate,gender,class_year,program,address,email,phone_number,status,major,nationality,permanent_address.house_number,permanent_address.street,permanent_address.ward,permanent_address.district,permanent_address.city,permanent_address.country,permanent_address.postal_code,temporary_address.house_number,temporary_address.street,temporary_address.ward,temporary_address.district,temporary_address.city,temporary_address.country,temporary_address.postal_code,mailing_address.house_number,mailing_address.street,mailing_address.ward,mailing_address.district,mailing_address.city,mailing_address.country,mailing_address.postal_code,identity_card._id,identity_card.issue_date,identity_card.expiry_date,identity_card.issue_location,identity_card.is_digitized,identity_card.chip_attached,passport._id,passport.type,passport.country_code,passport.issue_date,passport.expiry_date,passport.issue_location,passport.notes
-22120222,Dương Hoàng Hồng Phúc,08/11/2004,Nam,2022,Đại trà,TP HCM,phuc21744@gmail.com,0325740149,Đang học,Tiếng Anh Thương mại,Việt Nam,123,Nguyễn Văn Cừ,Phường 1,Quận 5,TP HCM,Việt Nam,700000,456,Nguyễn Trãi,Phường 2,Quận 5,TP HCM,Việt Nam,700000,789,Lê Lợi,Phường 3,Quận 1,TP HCM,Việt Nam,700000,012345678910,26/05/2020,26/05/2020,TP HCM,true,true,C1234567,Regular,VNM,08/11/2021,08/11/2026,TP HCM,
-          </pre>
+          <pre class="overflow-auto"><%= csv_template%></pre>
         </div>
 
         <div id="jsonFormat" class="sample-format" style="display: none;">
           <h5>Format JSON:</h5>
-          <pre class="format-content" >[
-  {
-    "_id": "22120271",
-    "name": "Dương Hoàng Hồng Phúc",
-    "birthdate": "08/11/2004",
-    "gender": "Nam",
-    "class_year": 2022,
-    "program": "Đại trà",
-    "address": "TP HCM",
-    "email": "phuc21744@gmail.com",
-    "phone_number": "0325740149",
-    "status": "Đang học",
-    "major": "Tiếng Anh Thương mại",
-    "nationality": "Việt Nam",
-    "permanent_address": {
-      "house_number": "123",
-      "street": "Nguyễn Văn Cừ",
-      "ward": "Phường 1",
-      "district": "Quận 5",
-      "city": "TP HCM",
-      "country": "Việt Nam",
-      "postal_code": "700000"
-    },
-    "temporary_address": {
-      "house_number": "456",
-      "street": "Nguyễn Trãi",
-      "ward": "Phường 2",
-      "district": "Quận 5",
-      "city": "TP HCM",
-      "country": "Việt Nam",
-      "postal_code": "700000"
-    },
-    "mailing_address": {
-      "house_number": "789",
-      "street": "Lê Lợi",
-      "ward": "Phường 3",
-      "district": "Quận 1",
-      "city": "TP HCM",
-      "country": "Việt Nam",
-      "postal_code": "700000"
-    },
-    "identity_card": {
-      "_id": "012345678910",
-      "issue_date": "26/05/2020",
-      "expiry_date": "26/05/2020",
-      "issue_location": "TP HCM",
-      "is_digitized": true,
-      "chip_attached": true
-    },
-    "passport": {
-      "_id": "C1234567",
-      "type": "Regular",
-      "country_code": "VNM",
-      "issue_date": "08/11/2021",
-      "expiry_date": "08/11/2026",
-      "issue_location": "TP HCM",
-      "notes": ""
-    }
-  }
-]</pre>
+          <pre class="overflow-auto" ><%= json_template%></pre>
         </div>
       </div>
     </div>

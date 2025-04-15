@@ -19,7 +19,9 @@ document.getElementById('importForm').addEventListener('submit', async (e) => {
 
     const messageDiv = document.getElementById('message');
     messageDiv.textContent = data.message;
-    messageDiv.className = data.success ? 'success' : 'error';
+    messageDiv.classList.remove('success');
+    messageDiv.classList.remove('error');
+    messageDiv.classList.add(data.success ? 'success' : 'error');
     messageDiv.style.display = 'block';
 
     if (data.success) {

@@ -9,20 +9,20 @@
 
 <!-- template -->
 <% function renderManagementSection(title, id, list, placeholderId, placeholderName, renameFunction, deleteFunction, addFunction) { %>
-  <div class="box flex-row-item flex-column gap-4">
+  <div class="box grow flex-column gap-4">
     <h2><%= title %></h2>
     <div id="<%= id %>-list" class="flex-column gap-4 scrollable">
       <% list.forEach(item => { %>
         <div class="flex-row gap-4">
           <input type="text" value="<%= item._id %>" data-id="<%= item._id %>" size="5" readonly>
-          <input class="flex-row-item" type="text" value="<%= item[id + '_name'] %>" data-id="<%= item._id %>" onkeypress="<%= renameFunction %>(event, this)">
+          <input class="grow" type="text" value="<%= item[id + '_name'] %>" data-id="<%= item._id %>" onkeypress="<%= renameFunction %>(event, this)">
           <button class="delete-button" onclick="<%= deleteFunction %>('<%= item._id %>')"> - </button>
         </div>
       <% }) %>
     </div>
     <div class="flex-row gap-4">
       <input type="text" id="new-<%= id %>-id" placeholder="<%= placeholderId %>" size="5">
-      <input class="flex-row-item" type="text" id="new-<%= id %>" placeholder="<%= placeholderName %>">
+      <input class="grow" type="text" id="new-<%= id %>" placeholder="<%= placeholderName %>">
       <button class="add-button" onclick="<%= addFunction %>()">+</button>
     </div>
   </div>
@@ -35,9 +35,9 @@
         <button onclick="window.location.href='/'">Quay lại</button>
     </div>
     
-    <div id="message" class="box message-panel flex-row-item"></div>
+    <div id="message"></div>
 
-    <div class="flex-row flex-row-top gap-8">
+    <div class="flex-row align-left gap-8">
       <!-- Quản lý Khoa -->
       <%= renderManagementSection("Khoa", "major", majors, "ID Khoa", "Tên Khoa", "renameMajor", "deleteMajor", "addMajor") %>
       <!-- Quản lý Tình trạng SV -->

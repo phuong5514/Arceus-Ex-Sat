@@ -127,7 +127,6 @@ async function renameStatus(event, nameInput){
 
 async function renameProgram(event, nameInput){
     if (event.key !== "Enter") return;
-    console.log("renbamoing program");
     const id = nameInput.dataset.id;
     const name = nameInput.value;
     const response = await fetch(`/category/program/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name }) });

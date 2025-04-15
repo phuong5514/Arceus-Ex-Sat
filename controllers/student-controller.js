@@ -6,12 +6,14 @@ import Status from "../models/status-model.js";
 import Address from "../models/address-model.js";
 import IdentityCard from "../models/identity-card-model.js";
 import Passport from "../models/passport-model.js";
-import path from 'path';
 import { writeLog } from '../helpers/logger.js';
 import * as guidance from '../helpers/guidance-format.js';
 import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/student-data-formatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import { promises as fs }  from 'fs';
+import path from 'path';
+import { fileURLToPath } from "url";
 
 dayjs.extend(customParseFormat);
 
@@ -351,8 +353,11 @@ export const searchStudents = async (req, res) => {
   }
 };
 
-export const showImportPage = (req, res) => {
-  res.render("import", { title: "Import Students" });
+export const showImportPage = async (req, res) => {
+  const template_dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../import_templates");
+  const json_template = await fs.readFile(path.join(template_dir, "json-import.txt"), "utf-8");
+  const csv_template = await fs.readFile(path.join(template_dir, "csv-import.txt"), "utf-8");
+  res.render("import", { title: "Import Students", json_template, csv_template});
 };
 
 export const importStudents = async (req, res) => {
@@ -498,7 +503,6 @@ export const importStudents = async (req, res) => {
             } else {
               console.log("Thêm sinh viên", newStudent._id, "thành công");
               students.push(newStudent);
-              console.log(students.length);
             }
           });
         }

@@ -1,26 +1,17 @@
 :root {
-  --light_grey: #eeeeee;
-  --grey: #efefef;
-  --white: #fff;
-  --dark_grey: #333;
-  --light_orange: #ff9914;
-  --orange: #e78d16;
-  --dark_orange: #d68316;
-  --red: #f44336;
-  --light-yellow: #d6db9c;
-  --dark_yellow: #b8bd79;
-  --green: #04AA6D;
-  --light_green: #b6efda;
-  --dark_green: #1a9668;
+  --grey_50: #eeeeee;
+  --grey_100: #efefef;
+  --grey_700: #636363;
+  --orange_200: #ff9914;
+  --orange_400: #e78d16;
+  --orange_500: #d68316;
+  --red_300: #f44336;
+  --yellow_600: #c7c95a;
+  --green_500: #04AA6D;
+  --green_50: #b6efda;
+  --green_600: #1a9668;
 
-  --table_header: var(--green);
-  --table_row: var(--white);
-  --table_row_alt: var(--grey);
-  --toolbar-height: 116px;
-}
-
-* {
-  box-sizing: border-box;
+  --toolbar-height: 124px;
 }
 
 body {
@@ -44,36 +35,30 @@ body {
 
 .flex-row {
   display: flex;
-  align-items: center;
-  gap: 0px;
+  flex-direction: row;
 }
 
 .flex-column {
   display: flex;
   flex-direction: column;
-  gap: 0px;
 }
 
-.flex-row-item {
-  flex-grow: 1;
-}
-
-.flex-column-item {
-  flex-grow: 1;
+.grow{
+  flex-grow: 1
 }
 
 .save-button {
-  background-color: var(--green);
+  background-color: var(--green_500);
   padding: 8px 32px;
 }
 
 .cancel-button {
-  background-color: var(--orange);
+  background-color: var(--orange_400);
   padding: 8px 32px;
 }
 
 .cancel-button:hover{
-  background-color: var(--dark_orange);
+  background-color: var(--orange_500);
 }
 
 .clear_button:hover {
@@ -82,7 +67,7 @@ body {
 }
 
 input {
-  border: 1px solid var(--light_grey);
+  border: 1px solid var(--grey_50);
   border-radius: 0;
   align-self: stretch;
   margin: 0;
@@ -90,7 +75,7 @@ input {
 }
 
 select {
-  border: 1px solid var(--light_grey);
+  border: 1px solid var(--grey_50);
   border-radius: 0;
   align-self: stretch;
   margin: 0;
@@ -100,21 +85,16 @@ select {
 
 button {
   border: none;
-  background-color: var(--green);
-  color: var(--white);
+  background-color: var(--green_500);
+  color: white;
   cursor: pointer;
-  align-self: stretch;
   font-weight: bold;
   font-size: x-small;
   padding: 4px 8px;
 }
 
 button:hover{
-  background-color: var(--dark_green);
-}
-
-li {
-  list-style-type: none;
+  background-color: var(--green_600);
 }
 
 .main_container {
@@ -138,19 +118,19 @@ th, td {
 }
 
 th {
-  background-color: var(--green);
-  color: var(--white);
+  background-color: var(--green_500);
+  color: white;
   font-weight: bold;
   position: sticky;
   top: var(--toolbar-height);
 }
 
 tr:nth-child(even) {
-  background-color: var(--table_row_alt);
+  background-color: var(--grey_50);
 }
 
 tr:nth-child(odd) {
-  background-color: var(--table_row);
+  background-color: white;
 }
 
 .add {
@@ -162,11 +142,11 @@ tr:nth-child(odd) {
 }
 
 .active {
-  background-color: var(--orange);
+  background-color: var(--orange_400);
 }
 
 .active:hover {
-  background-color: var(--dark_orange);
+  background-color: var(--orange_500);
 }
 
 .reload-button {
@@ -174,9 +154,9 @@ tr:nth-child(odd) {
 }
 
 .message-panel {
-  padding: 8px;
+  padding: 4px 8px;
   text-align: center;
-  min-height: 36px;
+  min-height: 24px;
 }
 
 .editable-row{
@@ -185,35 +165,42 @@ tr:nth-child(odd) {
 }
 
 .error{
-  color: var(--red);
   font-weight: bold;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 8px 16px;
 }
 
 .success{
-  color: var(--green);
   font-weight: bold;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 8px 16px
 }
 
 .warning{
-  color: var(--dark_yellow);
+  color: var(--yellow_600);
   font-weight: bold;
+  padding: 8px 16px
 }
 
 .info{
-  color: var(--dark_grey);
+  color: var(--grey_700);
   font-weight: bold;
 }
 
 .student-row:hover {
-  background-color: var(--light_green);
+  background-color: var(--green_50);
 }
 
 .student-row .selected {
-  background-color: var(--light_green);
+  background-color: var(--green_50);
 }
 
 .bg-light {
-  background-color: var(--light_grey);
+  background-color: var(--grey_50);
 }
 
 .remove {
@@ -232,7 +219,7 @@ tr:nth-child(odd) {
 }
 
 .more-search-options-button{
-  background-color: var(--grey);
+  background-color: var(--grey_100);
   padding: 4px 8px;
 }
 
@@ -244,7 +231,7 @@ tr:nth-child(odd) {
 
 .field-hint{
   font-size: x-small;
-  color: var(--dark_grey);
+  color: var(--grey_700);
   padding: 2px 8px;
 }
 
@@ -255,7 +242,7 @@ tr:nth-child(odd) {
 }
 
 .address-dialog-header{
-  color: var(--green);
+  color: var(--green_500);
   font-weight: bold;
   text-align: center;
   font-size: small;
@@ -267,26 +254,23 @@ tr:nth-child(odd) {
 }
 
 .address-edit-button{
-  background-color: var(--green);
-  color: var(--white);
+  background-color: var(--green_500);
+  color: white;
   cursor: pointer;
   font-weight: bold;
   padding: 8px 6px;
 }
 
-.flex-row-space-between{
+.space-between{
   justify-content: space-between;
+}
+
+.align-center{
   align-items: center;
 }
 
-.flex-column-space-between{
-  justify-content: space-between;
-  align-items: center;
-}
-
-.flex-row-right{
+.justify-right{
   justify-content: flex-end;
-  align-items: center;
 }
 
 .identity-card-dialog-container {
@@ -296,7 +280,7 @@ tr:nth-child(odd) {
 }
 
 .identity-card-dialog-header {
-  color: var(--green);
+  color: var(--green_500);
   font-weight: bold;
   text-align: center;
   font-size: small;
@@ -307,7 +291,6 @@ tr:nth-child(odd) {
   grid-column: 1 / span 2;
 }
 
-
 .passport-dialog-container {
   display: grid;
   grid-template-columns: auto auto;
@@ -315,7 +298,7 @@ tr:nth-child(odd) {
 }
 
 .passport-dialog-header {
-  color: var(--green);
+  color: var(--green_500);
   font-weight: bold;
   text-align: center;
   font-size: small;
@@ -352,21 +335,14 @@ tr:nth-child(odd) {
   font-size: medium;
 }
 
-.flex-row-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-row-top {
+.align-left {
   align-items: flex-start;
 }
 
 .box {
-  border: 1px solid var(--light_grey);
+  border: 1px solid var(--grey_50);
   padding: 8px;
-}
-
+} 
 
 .delete-button {
   background-color: #dc3545;
@@ -398,12 +374,50 @@ h1 {
   margin: 2px 0px 8px 8px;
 }
 
+.mt-4{
+  margin-top: 4px;
+}
+
+.mt-8{
+  margin-top: 8px;
+}
+
+.mx-4{
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.mx-8{
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
 .m-16{
   margin: 16px;
+}
+
+.m-8{
+  margin: 8px;
+}
+
+.m-4{
+  margin: 4px;
 }
 
 .scrollable {
   overflow-y: auto;
   height: 300px;
   max-height: 300px;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.sample-format {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+  font-family: monospace;
 }

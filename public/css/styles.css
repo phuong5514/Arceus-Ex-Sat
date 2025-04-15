@@ -4,7 +4,7 @@
   --grey_700: #636363;
   --orange_200: #ff9914;
   --orange_400: #e78d16;
-  --orange_500: #d68316;
+  --orange_300: #f3961c;
   --red_300: #f44336;
   --yellow_600: #c7c95a;
   --green_500: #04AA6D;
@@ -58,7 +58,7 @@ body {
 }
 
 .cancel-button:hover{
-  background-color: var(--orange_500);
+  background-color: var(--orange_300);
 }
 
 .clear_button:hover {
@@ -146,7 +146,7 @@ tr:nth-child(odd) {
 }
 
 .active:hover {
-  background-color: var(--orange_500);
+  background-color: var(--orange_300);
 }
 
 .reload-button {
@@ -166,24 +166,20 @@ tr:nth-child(odd) {
 
 .error{
   font-weight: bold;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
   color: #721c24;
-  padding: 8px 16px;
+  padding: 2px 4px;
 }
 
 .success{
   font-weight: bold;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
   color: #155724;
-  padding: 8px 16px
+  padding: 2px 4px
 }
 
 .warning{
   color: var(--yellow_600);
   font-weight: bold;
-  padding: 8px 16px
+  padding: 2px 4px
 }
 
 .info{
@@ -269,6 +265,10 @@ tr:nth-child(odd) {
   align-items: center;
 }
 
+.justify-center{
+  justify-content: center;
+}
+
 .justify-right{
   justify-content: flex-end;
 }
@@ -347,6 +347,7 @@ tr:nth-child(odd) {
 .delete-button {
   background-color: #dc3545;
   color: white;
+  padding: 0px 16px;
 }
 .delete-button:hover {
   background-color: #a71d2a;
@@ -354,6 +355,7 @@ tr:nth-child(odd) {
 .add-button {
   background-color: #28a745;
   color: white;
+  padding: 0px 16px;
 }
 .add-button:hover {
   background-color: #1d6f32;

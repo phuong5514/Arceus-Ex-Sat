@@ -67,7 +67,9 @@
         <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
         <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()">Lưu</button>
         <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
-        <div id="message" class="message-panel grow">&nbsp;</div>
+        <div class="grow message-panel flex-row align-center justify-center">
+          <div id="message">&nbsp;</div>
+        </div>
       </div>
     </div>
   </nav>
@@ -245,7 +247,7 @@
                       </select>
                     </td>
                     <td id="<%= mode %>-identity_card">
-                      <div class="flex-row-space-between">
+                      <div class="flex-row space-between">
                         <input type="text" class="identity_card-text" name="identity_card" placeholder="CCCD/CMND" size="12" readonly>
                         <button class="identity-card-edit-button" onclick="onIdentityCardEditClicked(this)">Thay đổi</button>
                         <% ["identity_card_id", "issue_date" , "expiry_date" , "issue_location" , "is_digitized" , "chip_attached"].forEach(field=> { %>
@@ -254,7 +256,7 @@
                       </div>
                     </td>
                     <td id="<%= mode %>-passport">
-                      <div class="flex-row-space-between">
+                      <div class="flex-row space-between">
                         <input type="text" class="passport-text" name="passport" placeholder="Hộ chiếu" size="12" readonly>
                         <button class="passport-edit-button" onclick="onPassportEditClicked(this)">Thay đổi</button>
                         <% ["passport_id", "type" , "country_code" , "issue_date" , "expiry_date" , "issue_location" , "notes"].forEach(field=> { %>
@@ -264,7 +266,7 @@
                     </td>
                     <% addressTypes.forEach(addressType=> { %>
                       <td id="<%= mode %>-<%= addressType %>">
-                        <div class="flex-row-space-between">
+                        <div class="space-between">
                           <input class="address-text" type="text" name="<%= addressType %>" placeholder="..." size="20" readonly>
                           <button class="address-edit-button" onclick="onAddressEditClicked(this)">Thay đổi</button>
                           <% ["house_number", "street" , "ward" , "district" , "city" , "country" , "postal_code" ].forEach(field=> { %>
@@ -321,7 +323,7 @@
                         <%= results.docs[i].program?.program_name %>
                     </td>
                     <td >
-                        <div class="flex-row flex-row-space-between">
+                        <div class="flex-row space-between">
                             <div>
                                 <div>
                                     <%= results.docs[i].identity_card?.text || "" %>
@@ -338,7 +340,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex-row flex-row-space-between">
+                        <div class="flex-row space-between">
                             <div>
                                 <%= results.docs[i].passport?.text || "" %>
                             </div>
@@ -356,7 +358,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex-row flex-row-space-between">
+                        <div class="flex-row space-between">
                             <div>
                                 <%= results.docs[i].permanent_address.text %>
                             </div>
@@ -374,7 +376,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex-row flex-row-space-between">
+                        <div class="flex-row space-between">
                             <div>
                                 <%= results.docs[i].temporary_address.text %>
                             </div>
@@ -392,7 +394,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex-row flex-row-space-between">
+                        <div class="flex-row space-between">
                             <div>
                                 <%= results.docs[i].mailing_address.text %>
                             </div>

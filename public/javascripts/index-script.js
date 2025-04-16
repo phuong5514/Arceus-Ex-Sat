@@ -107,7 +107,7 @@ async function onEditStudentSaved() {
         gender: document.getElementById("edit-gender").value,
         birthdate: document.getElementById("edit-birthdate").value,
         major: document.getElementById("edit-major").value,
-        class_year: document.getElementById("edit-class_year").value,
+        class_year: parseInt(document.getElementById("edit-class_year").value),
         program: document.getElementById("edit-program").value,
         status: document.getElementById("edit-status").value,
         permanent_address: null,

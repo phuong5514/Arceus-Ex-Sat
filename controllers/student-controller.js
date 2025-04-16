@@ -11,12 +11,15 @@ import * as guidance from '../helpers/guidance-format.js';
 import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/student-data-formatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
-import { promises as fs, stat }  from 'fs';
+import { promises as fs }  from 'fs';
 import path from 'path';
 import { fileURLToPath } from "url";
 
-dayjs.extend(customParseFormat);
+import {studentAddSchema, studentUpdateSchema} from '../middlewares/zod-validation-middleware.js';
+import { console } from "inspector";
+import { ZodError } from "zod";
 
+dayjs.extend(customParseFormat);
 
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
@@ -43,17 +46,21 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
   // format students data
   results.docs.forEach(student => {
     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-
     const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
-
-    addresses.forEach(address => {
-      if (address) {
-        address.text = formatAddress(address);
+    writeLog("Student:", JSON.stringify(student, null, 2));
+    writeLog("Student", student._id, ":", addresses[0], addresses[1], addresses[2]);
+    for (let index = 0; index < addresses.length; index++) {
+      if (addresses[index] != null){
+        addresses[index].text = formatAddress(addresses[index]);
       } else {
-        address = emptyAddress();
-        address.text = "";
+        addresses[index] = emptyAddress();
+        addresses[index].text = ""
       }
-    });
+    }
+    student.permanent_address = addresses[0];
+    student.temporary_address = addresses[1];
+    student.mailing_address = addresses[2];
+    writeLog("Student", student._id, ":", student.permanent_address, student.temporary_address, student.mailing_address);
 
     formatIdentificationDocument(student.identity_card, formatIdentityCard);
     formatIdentificationDocument(student.passport, formatPassport);
@@ -82,8 +89,8 @@ export const getAllStudents = async (req, res) => {
     const programs = await Program.find().lean();
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
-      console.error("Error getting students:", error.message);
-      res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
+    console.error("Error getting students:", error.message);
+    res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
   }
 };
 
@@ -91,7 +98,7 @@ export const addStudent = async (req, res) => {
   const student = req.body;
 
   try {
-    const newStudent = await preprocessStudent(student);
+    const newStudent = await preprocessStudent(student, studentAddSchema);
 
     await Student.insertOne(newStudent);
 
@@ -105,113 +112,44 @@ export const addStudent = async (req, res) => {
   }
 };
 
-async function preprocessStudent(student) {
-  const majorList = await Major.distinct("_id");
-  const statusList = await Status.distinct("_id");
-  const programList = await Program.distinct("_id");
-  const genderList = ["Nam", "Nữ"]
+async function preprocessStudent(studentToProcess, validator) {
+  let student;
+  try {
+    student = await validator.parseAsync(studentToProcess);
+  } catch (error) {
+    if (error instanceof  ZodError) {
+      console.error("Validation error:", error.issues);
+      throw new Error(error.issues.map(issue => `${issue.message}`).join(", "));  
+    }
+  }
 
-  // addresses are objects that need to be added to the Address collection
- // Corrected version using for...of
+  writeLog("f u", JSON.stringify(student, null, 2));
+  
   const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
   const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];
   const addressFields = ["house_number", "street", "ward", "district", "city", "country", "postal_code"];
 
   for (let index = 0; index < addresses.length; index++) {
     let address = addresses[index];
-    if (address) {
-      const storedAddress = await Address.findOne({ _id: addressIds[index] });
 
-      if (storedAddress) {
-        addressFields.forEach(field => {
-          storedAddress[field] = address[field];
-        });
-        await storedAddress.save();
-      } else {
-        const newAddress = { ...address, _id: addressIds[index] };
-        await Address.insertOne(newAddress);
-      }
+    const storedAddress = await Address.findOne({ _id: addressIds[index] });
 
-      addresses[index] = addressIds[index];
+    if (storedAddress) {
+      addressFields.forEach(field => {
+        storedAddress[field] = address[field];
+      });
+      await storedAddress.save();
     } else {
-      addresses[index] = "";
+      const newAddress = { ...address, _id: addressIds[index] };
+      await Address.insertOne(newAddress);
     }
+
+    addresses[index] = addressIds[index];
   }
 
   student.permanent_address = addresses[0];
   student.temporary_address = addresses[1];
   student.mailing_address = addresses[2];
-
-  // // addresses are objects that need to be added to the Address collection
-  // if (student.permanent_address) {
-  //   const addressId = student._id + "ADDRPMNT";
-  //   // check if address existed
-  //   const address = await Address.findOne({ _id: addressId });
-  //   if (address) {
-  //     address.house_number = student.permanent_address.house_number;
-  //     address.street = student.permanent_address.street;
-  //     address.ward = student.permanent_address.ward;
-  //     address.district = student.permanent_address.district;
-  //     address.city = student.permanent_address.city;
-  //     address.country = student.permanent_address.country;
-  //     address.postal_code = student.permanent_address.postal_code;
-  //     await address.save();
-  //   } else {
-  //     const newAddress = student.permanent_address;
-  //     newAddress._id = addressId;
-  //     await Address.insertOne(newAddress);
-  //   }
-  //   student.permanent_address = addressId;
-  // } else {
-  //   student.permanent_address = "";
-  // }
-  // if (student.temporary_address) {
-  //   const addressId = student._id + "ADDRTMP";
-  //   // check if address existed
-  //   const address = await Address.findOne({ _id: addressId });
-  //   if (address) {
-  //     address.house_number = student.temporary_address.house_number;
-  //     address.street = student.temporary_address.street;
-  //     address.ward = student.temporary_address.ward;
-  //     address.district = student.temporary_address.district;
-  //     address.city = student.temporary_address.city;
-  //     address.country = student.temporary_address.country;
-  //     address.postal_code = student.temporary_address.postal_code;
-  //     await address.save();
-  //   }
-  //   else {
-  //     const newAddress = student.temporary_address;
-  //     newAddress._id = addressId;
-  //     await Address.insertOne(newAddress);
-  //   }
-  //   student.temporary_address = addressId;
-  // } else {
-  //   student.temporary_address = "";
-  // }
-  // if (student.mailing_address) {
-  //   const addressId = student._id + "ADDRMAIL";
-  //   // check if address existed
-  //   const address = await Address.findOne({ _id: addressId });
-  //   if (address) {
-  //     address.house_number = student.mailing_address.house_number;
-  //     address.street = student.mailing_address.street;
-  //     address.ward = student.mailing_address.ward;
-  //     address.district = student.mailing_address.district;
-  //     address.city = student.mailing_address.city;
-  //     address.country = student.mailing_address.country;
-  //     address.postal_code = student.mailing_address.postal_code;
-  //     await address.save();
-  //   }
-  //   else {
-  //     const newAddress = student.mailing_address;
-  //     newAddress._id = addressId;
-  //     await Address.insertOne(newAddress);
-  //   }
-  //   student.mailing_address = addressId;
-  // } else {
-  //   student.mailing_address = "";
-  // }
-
 
   if (student.identity_card && student.identity_card._id) {
     // check if identity card existed
@@ -267,7 +205,7 @@ export const updateStudent = async (req, res) => {
     if (!studentToUpdate) {
       throw new Error("Không tìm thấy sinh viên cần cập nhật");
     }
-    const processedStudent = await preprocessStudent(student);
+    const processedStudent = await preprocessStudent(student, studentUpdateSchema);
     
     studentToUpdate.name = processedStudent.name;
     studentToUpdate.email = processedStudent.email;
@@ -285,6 +223,7 @@ export const updateStudent = async (req, res) => {
     studentToUpdate.identity_card = processedStudent.identity_card;
     studentToUpdate.passport = processedStudent.passport;
     studentToUpdate.nationality = processedStudent.national;
+
     await studentToUpdate.save();
 
     writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
@@ -425,7 +364,7 @@ export const importStudents = async (req, res) => {
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',').map(v => v.trim());
           if (values.length !== headers.length) {
-            console.log(`Bỏ qua dòng ${i + 1} vì số cột không khớp`);
+            console.log(`Bỏ qua dòng ${i + 1}: Số cột không khớp`);
             continue;
           }
           
@@ -492,7 +431,7 @@ export const importStudents = async (req, res) => {
 
           await processStudentImport(newStudent, (err)=>{
             if (err){
-              console.error("Bỏ qua dòng", i + 1, "vì dữ liệu không hợp lệ: ", err.message);
+              console.error("Bỏ qua dòng", i + 1, ": ", err.message);
             } else {
               console.log("Thêm sinh viên", newStudent._id, "thành công");
               students.push(newStudent);
@@ -511,16 +450,16 @@ export const importStudents = async (req, res) => {
             });
           }
           for (let i = 0; i < jsonData.length; i++) {
-            await processStudentImport(jsonData[i], (err)=>{
+            await processStudentImport(jsonData[i], (student, err)=>{
               let msg = "";
               if (err){
-                msg = `Bỏ qua dòng ${i + 1} vì dữ liệu không hợp lệ: ${err.message}`;
+                msg = `Bỏ qua dòng ${i + 1}: ${err.message}`;
                 extra_error_logs.push(msg);
                 console.error(msg);
               } else {
-                msg = `Thêm sinh viên ${jsonData[i]._id} thành công`;
+                msg = `Thêm sinh viên ${student._id} thành công`;
+                students.push(student);
                 console.log(msg);
-                students.push(jsonData[i]);
               }
             });
           }
@@ -538,7 +477,7 @@ export const importStudents = async (req, res) => {
     if (students.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Không có dữ liệu nào được import:' + '\n\t' + extra_error_logs.join('\n\t')
+        message: 'Không có dữ liệu nào được import:\n ' + extra_error_logs.join('\n ')
       });
     }
 
@@ -564,173 +503,13 @@ export const importStudents = async (req, res) => {
 
 
 // This function validates and alter the student data before inserting into the database
-async function processStudentImport(student, resultCallback) {
-  const requiredFields = [
-    "_id", "name", "birthdate", "gender", "class_year", "program", // "address", old address field 
-    "email", "phone_number", "status", "major", "nationality",
-    // {"permanent_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
-    // {"temporary_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
-    // {"mailing_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
-    {"identity_card": ["_id", "issue_date", "expiry_date", "issue_location", "is_digitized", "chip_attached"]},
-    {"passport": ["_id", "type", "country_code", "issue_date", "expiry_date", "issue_location"]},
-    // passport_notes is optional
-  ];
-
-  // Check if all required fields are present
-  if (!checkRequiredFields(student, requiredFields, resultCallback)) {
-    return;
+async function processStudentImport(studentToProcess, resultCallback) {
+  try {
+    const student = await preprocessStudent(studentToProcess, studentAddSchema);
+    resultCallback(student, null);
+  } catch (error) {
+    resultCallback(null, error);
   }
-
-  // Check if student id is new
-  const studentExist = await Student.findOne({ _id: student._id });
-  if (studentExist) {
-    resultCallback(new Error(`Sinh viên ${student._id} đã tồn tại trong hệ thống`));
-    return;
-  }
-
-  if (!/^\d{8}$/.test(student._id)) {
-    resultCallback(new Error("MSSV phải là 8 chữ số"));
-    return;
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.email)) {
-    resultCallback(new Error("Định dạng email không hợp lệ"));
-    return;
-  }
-
-  if (!["Nam", "Nữ"].includes(student.gender)) {
-    resultCallback(new Error("Giới tính phải là Nam hoặc Nữ"));
-    return;
-  }
-
-  if (!/^\d{4}$/.test(student.class_year)) {
-    resultCallback(new Error("Năm học phải là 4 chữ số"));
-    return;
-  }
-
-  if (!dayjs(student.birthdate, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày sinh không hợp lệ"));
-    return;
-  } else {
-    student.birthdate = dayjs(student.birthdate, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.identity_card.issue_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày cấp CCCD/CMND phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.identity_card.issue_date = dayjs(student.identity_card.issue_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.identity_card.expiry_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày hết hạn CCCD/CMND phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.passport.issue_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày cấp hộ chiếu phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.passport.issue_date = dayjs(student.passport.issue_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-  
-  if (!dayjs(student.passport.expiry_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày hết hạn hộ chiếu phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.passport.expiry_date = dayjs(student.passport.expiry_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  // Run check on major and change to its id 
-  if (student.major){
-    // Find by name first
-    let major = await Major.findOne({major_name: student.major});
-    if (major){
-      student.major = major._id;
-    } else {
-      // Then find by id
-      major = await Major.findOne({_id: student.major});
-      if (major){
-        student.major = major._id;
-      } else {
-        resultCallback(new Error(`Khoa ${student.major} không nằm trong danh sách khoa có sẵn`));
-        return;
-      }
-    }
-  }
-  // Run check on status and change to its id
-  if (student.status){
-    let status = await Status.findOne({status_name: student.status});
-    if (!status){
-      resultCallback(new Error(`Trạng thái ${student.status} không nằm trong danh sách trạng thái có sẵn`));
-      return;
-    } else {
-      status = await Status.findOne({_id: student.status});
-      if (!status){
-        resultCallback(new Error(`Trạng thái ${student.status} không nằm trong danh sách trạng thái có sẵn`));
-        return;
-      } else {
-        student.status = status._id;
-      }
-    }
-  }
-  // Run check on program and change to its id
-  if (student.program){
-    let program = await Program.findOne({program_name: student.program});
-    if (!program){
-      resultCallback(new Error(`Chương trình ${student.program} không nằm trong danh sách trạng thái có sẵn`));
-      return;
-    } else {
-      program = await Program.findOne({_id: student.program});
-      if (!program){
-        resultCallback(new Error(`Chương trình ${student.program} không nằm trong danh sách trạng thái có sẵn`));
-        return;
-      } else {
-        student.program = program._id;
-      }
-    }
-  }
-  // Add in new address if needed
-  if (student.permanent_address){
-    const addressId = student._id + "ADDRPMNT";
-    const address = await Address.findOne({ _id: addressId });
-    if (!address){
-      student.permanent_address._id = addressId;
-      console.log(`Adding new address ${addressId}`);
-      await Address.insertOne(student.permanent_address);
-    } else {
-      console.log(`Address already existed ${addressId}`);
-    }
-    student.permanent_address = addressId;
-  }
-  if (student.temporary_address){
-    const addressId = student._id + "ADDRTMP";
-    const address = await Address.findOne({ _id: addressId });
-    if (!address){
-      student.temporary_address._id = addressId;
-      console.log(`Adding new address ${addressId}`);
-      await Address.insertOne(student.temporary_address);
-    } else {
-      console.log(`Address already existed ${addressId}`);
-    }
-    student.temporary_address = addressId;
-  }
-  if (student.mailing_address){
-    const addressId = student._id + "ADDRMAIL";
-    const address = await Address.findOne({ _id: addressId });
-    if (!address){
-      student.mailing_address._id = addressId;
-      console.log(`Adding new address ${addressId}`);
-      await Address.insertOne(student.mailing_address);
-    } else {
-      console.log(`Address already existed ${addressId}`);
-    }
-    student.mailing_address = addressId;
-  }
-
-  resultCallback(null);
 }
 
 const checkRequiredFields = (student, requiredFields, resultCallback) => {

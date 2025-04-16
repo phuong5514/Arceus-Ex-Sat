@@ -122,7 +122,7 @@ async function preprocessStudent(studentToProcess, validator) {
   } catch (error) {
     if (error instanceof  ZodError) {
       console.error("Validation error:", error.issues);
-      throw new Error(error.issues.map(issue => `${issue.message}`).join(", "));  
+      throw new Error(error.issues.map(issue => `${issue.message} at  ${issue.path}`).join(", "));  
     }
   }
 

@@ -126,8 +126,6 @@ async function preprocessStudent(studentToProcess, validator) {
     }
   }
 
-  writeLog("f u", JSON.stringify(student, null, 2));
-  
   const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
   const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];
   const addressFields = ["house_number", "street", "ward", "district", "city", "country", "postal_code"];
@@ -158,6 +156,7 @@ async function preprocessStudent(studentToProcess, validator) {
     // check if identity card existed
     const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
     
+    writeLog("IdentityCard" + JSON.stringify(student.identityCard));
     if (identityCard) {
       identityCard.issue_date = student.identity_card.issue_date;
       identityCard.expiry_date = student.identity_card.expiry_date;
@@ -310,7 +309,7 @@ export const importStudents = async (req, res) => {
     // Kiểm tra file
     if (!req.files || !req.files.file) {
       res.status(400).json({
-        success: false,
+        ok: false,
         message: 'Vui lòng chọn file để import'
       });
     }
@@ -321,14 +320,14 @@ export const importStudents = async (req, res) => {
     // Kiểm tra định dạng file
     if (fileType === 'csv' && !file.name.toLowerCase().endsWith('.csv')) {
       return res.status(400).json({
-        success: false,
+        ok: false,
         message: 'File phải có định dạng .csv'
       });
     }
     // HOTFIX: Somehow file extension will change from "".json" to "j.son"
     if (fileType === 'json' && !file.name.toLowerCase().endsWith('.json') && !file.name.toLowerCase().endsWith('j.son')) {
       return res.status(400).json({
-        success: false,
+        ok: false,
         message: 'File phải có định dạng .json'
       });
     }
@@ -344,7 +343,7 @@ export const importStudents = async (req, res) => {
         const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line);
         if (lines.length < 2) {
           return res.status(400).json({
-            success: false,
+            ok: false,
             message: 'File CSV phải có ít nhất header và một dòng dữ liệu'
           });
         }
@@ -355,7 +354,7 @@ export const importStudents = async (req, res) => {
         // Kiểm tra header
         if (!expectedHeaders.every(h => headers.includes(h))) {
           return res.status(400).json({
-            success: false,
+            ok: false,
             message: `File CSV phải có đầy đủ các cột: ${expectedHeaders.join(', ')}`
           });
         }
@@ -451,11 +450,12 @@ export const importStudents = async (req, res) => {
           const jsonData = JSON.parse(fileContent);
           if (!Array.isArray(jsonData)) {
             return res.status(400).json({
-              success: false,
+              ok: false,
               message: 'File JSON phải chứa một mảng các sinh viên'
             });
           }
           for (let i = 0; i < jsonData.length; i++) {
+            writeLog("Student", JSON.stringify(jsonData[i]) );
             await processStudentImport(jsonData[i], (student, err)=>{
               let msg = "";
               if (err){
@@ -472,7 +472,7 @@ export const importStudents = async (req, res) => {
         } catch (error) {
           console.error(error.message || error);
           return res.status(400).json({
-            success: false,
+            ok: false,
             message: 'File JSON không hợp lệ'
           });
         }
@@ -482,7 +482,7 @@ export const importStudents = async (req, res) => {
     // Kiểm tra dữ liệu trống
     if (students.length === 0) {
       return res.status(400).json({
-        success: false,
+        ok: false,
         message: 'Không có dữ liệu nào được import:\n ' + extra_error_logs.join('\n ')
       });
     }
@@ -493,7 +493,7 @@ export const importStudents = async (req, res) => {
     // Ghi log và trả về kết quả
     writeLog('IMPORT', 'SUCCESS', `Import ${students.length} sinh viên thành công`);
     return res.status(200).json({
-      success: true,
+      ok: true,
       message: `Import thành công ${students.length} sinh viên:\n ` + extra_error_logs.join('\n ')
     });
 
@@ -501,7 +501,7 @@ export const importStudents = async (req, res) => {
     console.error('Import error:', error);
     writeLog('IMPORT', 'ERROR', `Import sinh viên thất bại: ${error.message}`);
     return res.status(500).json({
-      success: false,
+      ok: false,
       message: 'Có lỗi xảy ra khi import: ' + error.message
     });
   }

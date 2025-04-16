@@ -24,7 +24,7 @@ document.getElementById('importForm').addEventListener('submit', async (e) => {
     messageDiv.classList.add(data.success ? 'success' : 'error');
     messageDiv.style.display = 'block';
 
-    if (data.success) {
+    if (data.ok) {
       // Nếu import thành công, reset form sau 2 giây
       setTimeout(() => {
         document.getElementById('importForm').reset();

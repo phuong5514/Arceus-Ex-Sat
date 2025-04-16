@@ -64,6 +64,9 @@ export const studentBaseSchema = z.object({
       _id: z.string().trim().min(9).max(12),
       issue_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày cấp CMND/CCCD').optional(),
       expiry_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày hết hạn CMND/CCCD').optional(),
+      issue_location: z.string().trim().optional(),
+      is_digitized: z.boolean().optional(),
+      chip_attached: z.boolean().optional(),
     })
     .optional().nullable(),
   passport: z
@@ -71,6 +74,8 @@ export const studentBaseSchema = z.object({
       _id: z.string().trim().min(8).max(12),
       issue_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày cấp hộ chiếu').optional(),
       expiry_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày hết hạn hộ chiếu').optional(),
+      issue_location: z.string().trim().optional(),
+      notes: z.string().trim().optional(),
     })
     .optional().nullable(),
   permanent_address: zodAddress().optional().nullable(),

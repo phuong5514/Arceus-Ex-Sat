@@ -71,6 +71,19 @@
           <div id="message">&nbsp;</div>
         </div>
       </div>
+      <div class="grow flex-row align-center justify-right gap-8">
+        <button 
+          class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
+          onclick="onPageChange(<%= results.page - 1 %>)"> 
+          <
+        </button>
+        <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+        <button 
+          class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
+          onclick="onPageChange(<%= results.page + 1 %>)">
+          >
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -420,12 +433,19 @@
                   </tr>
                 <% } %>
             </tbody>
-            
-    
         </table>
+        
+        <script>
+          function onPageChange(page) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            url.searchParams.set('limit', '<%= results.limit %>');
+            window.location.href = url.toString();
+          }
+        </script>
         <% if (results.docs.length == 0) { %>
-            <div class="empty-table">(Không có sinh viên)</div>
-            <% } %>
+          <div class="empty-table">(Không có sinh viên)</div>
+        <% } %>
     </div>
 
 </body>

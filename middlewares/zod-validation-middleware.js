@@ -138,7 +138,7 @@ export const studentUpdateSchema = zodMergeSchemas(studentBaseSchema, studentCat
     if (studentWithSameEmail) {
       ctx.addIssue({
         path: ['email'],
-        message: 'Email đã tồn tại',
+        message: `Email đã tồn tại cho sinh viên ${studentWithSameEmail._id}`,
         code: z.ZodIssueCode.custom,
       });
     }
@@ -151,7 +151,7 @@ export const studentUpdateSchema = zodMergeSchemas(studentBaseSchema, studentCat
       if (studentWithSameIdCard){
         ctx.addIssue({
           path: ['identity_card'],
-          message: 'Số CMND/CCCD đã tồn tại',
+          message: `Số CMND/CCCD đã tồn tại cho sinh viên ${studentWithSameIdCard._id}`,
           code: z.ZodIssueCode.custom,
         })
       }
@@ -165,7 +165,7 @@ export const studentUpdateSchema = zodMergeSchemas(studentBaseSchema, studentCat
       if (studentWithSamePassport) {
         ctx.addIssue({
         path: ['passport'],
-        message: 'Số hộ chiếu đã tồn tại',
+        message: `Số hộ chiếu đã tồn tại cho sinh viên ${studentWithSamePassport._id}`,
         code: z.ZodIssueCode.custom,
         });
       }

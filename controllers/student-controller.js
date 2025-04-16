@@ -21,9 +21,11 @@ import { ZodError } from "zod";
 
 dayjs.extend(customParseFormat);
 
+const defaultPageLimit = 20; 
+
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
-    pagination: false,
+    pagination: true,
     page: 1,
     limit: 100,
     sort: "_id",
@@ -47,8 +49,6 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
   results.docs.forEach(student => {
     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
     const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
-    writeLog("Student:", JSON.stringify(student, null, 2));
-    writeLog("Student", student._id, ":", addresses[0], addresses[1], addresses[2]);
     for (let index = 0; index < addresses.length; index++) {
       if (addresses[index] != null){
         addresses[index].text = formatAddress(addresses[index]);
@@ -83,7 +83,10 @@ function emptyAddress(){
 
 export const getAllStudents = async (req, res) => {
   try {
-    const results = await fetchAndFormatStudents();
+    const results = await fetchAndFormatStudents({}, {
+      page: req.query.page || 1,
+      limit: req.query.limit || defaultPageLimit,
+    });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
@@ -282,7 +285,10 @@ export const searchStudents = async (req, res) => {
     }
 
     console.log("Search completed!")
-    const results = await fetchAndFormatStudents(query);
+    const results = await fetchAndFormatStudents(query, {
+      page: queryData.page || 1,
+      limit: queryData.limit || defaultPageLimit
+    });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
@@ -488,7 +494,7 @@ export const importStudents = async (req, res) => {
     writeLog('IMPORT', 'SUCCESS', `Import ${students.length} sinh viên thành công`);
     return res.status(200).json({
       success: true,
-      message: `Import thành công ${students.length} sinh viên`
+      message: `Import thành công ${students.length} sinh viên:\n ` + extra_error_logs.join('\n ')
     });
 
   } catch (error) {

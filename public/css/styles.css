@@ -230,8 +230,8 @@ tr:nth-child(odd) {
 
 .search-label{
   text-align: center;
-  padding-left: 16px;
-  padding-right: 2px;
+  padding-left: 24px;
+  padding-right: 16px;
 }
 
 .field-hint{
@@ -480,4 +480,9 @@ h1 {
   background-color: var(--grey_700);
   pointer-events: none;
   cursor: default;
+}
+
+.search-button{
+  padding-left: 16px;
+  padding-right: 16px;
 }

@@ -15,12 +15,13 @@
       <div class="grow">
         <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
           <label for="search-term" class="search-label">Tìm kiếm:</label>
-          <input id="search-term" type="text" class="input" placeholder="Tìm kiếm..." size="30"
+          <input id="search-term" type="text" class="input" placeholder="Nhập từ khóa" size="30"
             value="<%= queryData ? queryData.search : '' %>">
           <select id="search-by">
             <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
             <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
           </select>
+          <button type="submit" class="search-button h-full">Tìm</button>
           
           <div id="more-search-options" class="h-full" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
             <label for="search-by-major" class="search-label">Khoa:</label>

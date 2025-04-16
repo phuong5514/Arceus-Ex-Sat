@@ -159,7 +159,7 @@ tr:nth-child(odd) {
   padding: 4px 8px;
   text-align: center;
   min-height: 30px;
-  overflow: auto;
+  text-overflow: ellipsis;
   white-space: pre-line;
 }
 
@@ -224,7 +224,8 @@ tr:nth-child(odd) {
 
 .more-search-options-button{
   background-color: var(--grey_100);
-  padding: 4px 8px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .search-label{
@@ -464,9 +465,15 @@ h1 {
   width: 64px;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .pagination-button{
   text-align: center;
-  padding: 4px 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 100%;
 }
 
 .pagination-button.disabled {

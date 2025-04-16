@@ -13,7 +13,7 @@
   <nav>
     <div class="toolbar flex-column">
       <div class="grow">
-        <form class="flex-row align-center justify-right" onsubmit="onSearchSubmitted(event)" id = "search-form">
+        <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
           <label for="search-term" class="search-label">Tìm kiếm:</label>
           <input id="search-term" type="text" class="input" placeholder="Tìm kiếm..." size="30"
             value="<%= queryData ? queryData.search : '' %>">
@@ -22,9 +22,9 @@
             <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
           </select>
           
-          <div id="more-search-options" class="more-search-options" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
+          <div id="more-search-options" class="h-full" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
             <label for="search-by-major" class="search-label">Khoa:</label>
-            <select id="search-by-major">
+            <select id="search-by-major" class="h-full">
               <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>--Tất cả--</option>
               <% for (var i = 0; i < majors.length; i++) { %>
                 <option value="<%= majors[i]._id %>" <%= queryData && queryData.search_by_major === majors[i]._id ? "selected" : "" %>><%= majors[i].major_name %></option>
@@ -32,7 +32,7 @@
             </select>
           </div>
 
-          <div id="more-search-options-button" class="button more-search-options-button" onclick="onSearchOptionsButtonClicked()">
+          <div id="more-search-options-button" class="more-search-options-button h-full flex-row justify-center align-center" onclick="onSearchOptionsButtonClicked()">
             <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#33363F"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 6L15 12L9 18" stroke="#33363F" stroke-width="2"></path> </g></svg>
           </div>
         </form>
@@ -70,19 +70,19 @@
         <div class="grow message-panel flex-row align-center justify-center">
           <div id="message">&nbsp;</div>
         </div>
-      </div>
-      <div class="grow flex-row align-center justify-right gap-8">
-        <button 
-          class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
-          onclick="onPageChange(<%= results.page - 1 %>)"> 
-          <
-        </button>
-        <span>Trang <%= results.page %> / <%= results.totalPages %></span>
-        <button 
-          class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
-          onclick="onPageChange(<%= results.page + 1 %>)">
-          >
-        </button>
+        <div class="flex-row align-center justify-right gap-8">
+          <button 
+            class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
+            onclick="onPageChange(<%= results.page - 1 %>)"> 
+            <
+          </button>
+          <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+          <button 
+            class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
+            onclick="onPageChange(<%= results.page + 1 %>)">
+            >
+          </button>
+        </div>
       </div>
     </div>
   </nav>

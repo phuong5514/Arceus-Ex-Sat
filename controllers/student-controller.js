@@ -304,6 +304,14 @@ export const showImportPage = async (req, res) => {
   res.render("import", { title: "Import Students", json_template, csv_template});
 };
 
+function formatExtraLogs(extra_logs){
+  if (extra_logs.length > 0){
+    return `Chi tiết:\n ${extra_logs.join('\n')}`
+  } else {
+    return `Chi tiết:\n (Không có)`
+  }
+}
+
 export const importStudents = async (req, res) => {
   try {
     // Kiểm tra file
@@ -483,7 +491,7 @@ export const importStudents = async (req, res) => {
     if (students.length === 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Không có dữ liệu nào được import:\n ' + extra_error_logs.join('\n ')
+        message: 'Không có dữ liệu nào được import\n' + formatExtraLogs(extra_error_logs)
       });
     }
 
@@ -494,7 +502,7 @@ export const importStudents = async (req, res) => {
     writeLog('IMPORT', 'SUCCESS', `Import ${students.length} sinh viên thành công`);
     return res.status(200).json({
       ok: true,
-      message: `Import thành công ${students.length} sinh viên:\n ` + extra_error_logs.join('\n ')
+      message: `Import thành công ${students.length} sinh viên\n ` + formatExtraLogs(extra_error_logs)
     });
 
   } catch (error) {

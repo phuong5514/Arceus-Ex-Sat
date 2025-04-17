@@ -116,6 +116,12 @@ export const addStudent = async (req, res) => {
 };
 
 async function preprocessStudent(studentToProcess, validator) {
+  
+  const existingStudent = await Student.findOne({ _id: studentToProcess._id });
+  if (existingStudent) {
+    throw new Error('Duplicate ID');
+  }
+  
   let student;
   try {
     student = await validator.parseAsync(studentToProcess);
@@ -125,6 +131,7 @@ async function preprocessStudent(studentToProcess, validator) {
       throw new Error(error.issues.map(issue => `${issue.message} at  ${issue.path}`).join(", "));  
     }
   }
+  
 
   const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
   const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];
@@ -642,3 +649,4 @@ export const exportAllStudents = async (req, res) => {
     res.status(500).json({ok: false, error: "Lỗi xuất dữ liệu sinh viên" });
   }
 };
+export { preprocessStudent };

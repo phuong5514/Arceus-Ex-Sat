@@ -14,7 +14,7 @@
         <div class="flex-row w-full grow">
             <button class="grow" onclick="window.location.href='/course'">Khóa học</button>
             <button class="grow" onclick="window.location.href='/class'">Lớp học</button>
-            <button class="grow">Học phần sinh viên</button>
+            <button class="grow" onclick="window.location.href='/'"">Học phần sinh viên</button>
         </div>
     </nav>
 
@@ -51,7 +51,7 @@
 
           <tbody>
               <% for (var i=0; i < results.docs.length; i++) { %>
-              <tr>
+              <tr class="table-row" onclick="window.location.href='/class/<%= results.docs[i]._id %>'">
                   <td></td>
                   <td><%= results.docs[i]._id %></td>
                   <td><%= results.docs[i].course_id %></td>

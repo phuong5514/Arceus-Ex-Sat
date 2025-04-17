@@ -30,7 +30,8 @@ export const getClassDetail = async (req, res) => {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
         if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
-        res.render('class-detail', { current_class });
+        const formatted_created_at = dayjs(current_class.created_at).format("DD/MM/YYYY");
+        res.render('class-detail', { current_class, formatted_created_at });
 
     } catch (err) {
         console.error(err);

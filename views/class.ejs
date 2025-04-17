@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    Quản lý lớp học
+  </title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- <script src="javascripts/index-script.js" defer></script> -->
+</head>
+
+<body>
+    <nav>
+        <div class="flex-row w-full grow">
+            <button class="grow">Khóa học</button>
+            <button class="grow" onclick="window.location.href='/class'">Lớp học</button>
+            <button class="grow">Học phần sinh viên</button>
+        </div>
+    </nav>
+
+  <nav>
+    <div class="toolbar flex-column">
+      <div class="grow">
+        <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
+          <label for="search-term" class="search-label">Tìm kiếm:</label>
+          <input id="search-term" type="text" class="input" placeholder="Nhập từ khóa" size="30"
+            value="<%= queryData ? queryData.search : '' %>">
+          <select id="search-by">
+            <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
+            <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
+          </select>
+          <button type="submit" class="search-button h-full">Tìm</button>
+          
+          <div id="more-search-options" class="h-full" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
+            <label for="search-by-major" class="search-label">Khoa:</label>
+            <select id="search-by-major" class="h-full">
+              <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>--Tất cả--</option>
+              <% for (var i = 0; i < majors.length; i++) { %>
+                <option value="<%= majors[i]._id %>" <%= queryData && queryData.search_by_major === majors[i]._id ? "selected" : "" %>><%= majors[i].major_name %></option>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- <div id="more-search-options-button" class="more-search-options-button h-full flex-row justify-center align-center" onclick="onSearchOptionsButtonClicked()">
+            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#33363F"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 6L15 12L9 18" stroke="#33363F" stroke-width="2"></path> </g></svg>
+          </div> -->
+        </form>
+      </div>
+      <!-- <div class="grow flex-row">
+        <button class="grow" id="add-student-btn" onclick="onAddStudentClicked()">Thêm sinh viên</button>
+        <button class="grow" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh
+          viên</button>
+        <button class="grow" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
+          viên</button>
+
+        <div class="grow" style="display: none;">
+          <a class="reload-button" href="/">
+            Reloading...
+          </a>
+        </div>
+      </div> -->
+
+      <!--  -->
+      <div class="grow flex-row">
+        <!-- <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
+        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận
+          xóa</button>
+        <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
+        <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
+        <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()">Lưu</button>
+        <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
+        <div class="grow message-panel flex-row align-center justify-center">
+          <div id="message">&nbsp;</div>
+        </div> -->
+        <!-- Pagination -->
+        <div class="flex-row align-center justify-right gap-8">
+          <button 
+            class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
+            onclick="onPageChange(<%= results.page - 1 %>)"> 
+            <
+          </button>
+          <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+          <button 
+            class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
+            onclick="onPageChange(<%= results.page + 1 %>)">
+            >
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="toolbar-fill-empty"></div>
+  <div class="main_container flex-column">
+      <table class="w-full">
+          <thead>
+              <tr>
+                  <th></th>
+                  <th>Mã lớp học</th>
+                  <th>Mã môn học</th>
+                  <th>Năm học</th>
+                  <th>Học kì</th>
+                  <th>Giảng viên</th>
+                  <th>Số sinh viên tối đa</th>
+                  <th>Lịch học</th>
+                  <th>Phòng học</th>
+                  <th>Ngày tạo</th>
+              </tr>
+          </thead>
+
+          <tbody>
+              <% for (var i=0; i < results.docs.length; i++) { %>
+              <tr>
+                  <td></td>
+                  <td><%= results.docs[i]._id %></td>
+                  <td><%= results.docs[i].course_id %></td>
+                  <td><%= results.docs[i].academic_year %></td>
+                  <td><%= results.docs[i].semester %></td>
+                  <td><%= results.docs[i].lecturer %></td>
+                  <td><%= results.docs[i].max_students %></td>
+                  <td><%= results.docs[i].schedule %></td>
+                  <td><%= results.docs[i].classroom %></td>
+                  <td><%= results.docs[i].created_at %></td>
+                </tr>
+              <% } %>
+          </tbody>
+      </table>
+      <% if (results.docs.length == 0) { %>
+        <div class="empty-table">(Không có lớp học)</div>
+      <% } %>
+  </div>
+  <!-- Pagination Script -->
+  <script>
+    function onPageChange(page) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('page', page);
+      url.searchParams.set('limit', '<%= results.limit %>');
+      window.location.href = url.toString();
+    }
+  </script>
+</body>
+</html>

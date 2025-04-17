@@ -352,7 +352,7 @@ tr:nth-child(odd) {
 .box {
   border: 1px solid var(--grey_500);
   padding: 8px;
-} 
+}
 
 .delete-button {
   background-color: #dc3545;
@@ -371,6 +371,9 @@ tr:nth-child(odd) {
   background-color: #1d6f32;
 }
 
+.w-fit {
+  width: fit-content;
+}
 
 h2 {
   font-weight: bold;
@@ -529,6 +532,26 @@ a:hover {
   max-width: 800px;
 }
 
+.max-w-1000 {
+  max-width: 1000px;
+}
+
+.min-w-300 {
+  min-width: 300px;
+}
+.min-w-400 {
+  min-width: 400px;
+}
+.min-w-500 {
+  min-width: 500px;
+}
+.min-w-600 {
+  min-width: 600px;
+}
+.min-w-800 {
+  min-width: 800px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -548,6 +571,10 @@ a:hover {
 
 .grid-colspan-8 {
   grid-column: span 8;
+}
+
+.grid-colspan-9 {
+  grid-column: span 9;
 }
 
 .grid-colspan-2 {
@@ -689,6 +716,10 @@ a:hover {
   padding: 4px;
 }
 
+.p-8 {
+  padding: 8px;
+}
+
 .p-16 {
   padding: 16px;
 }
@@ -752,4 +783,92 @@ input[readonly], textarea[readonly] {
 
 .border-right {
   border-right: 1px solid var(--grey_700);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.max-h-300 {
+  max-height: 300px;
+}
+
+.max-h-400 {
+  max-height: 400px;
+}
+
+.max-h-500 {
+  max-height: 500px;
+}
+
+.max-h-600 {
+  max-height: 600px;
+}
+
+.max-h-800 {
+  max-height: 800px;
+}
+
+.max-h-1000 {
+  max-height: 1000px;
+}
+
+.min-h-300 {
+  min-height: 300px;
+}
+
+.min-h-400 {
+  min-height: 400px;
+}
+
+.min-h-500 {
+  min-height: 500px;
+}
+
+.min-h-600 {
+  min-height: 600px;
+}
+
+.min-h-800 {
+  min-height: 800px;
+}
+
+.min-h-1000 {
+  min-height: 1000px;
+}
+
+.h-300 {
+  height: 300px;
+}
+
+.h-400 {
+  height: 400px;
+}
+
+.h-500 {
+  height: 500px;
+}
+
+.h-600 {
+  height: 600px;
+}
+
+.h-800 {
+  height: 800px;
+}
+
+.h-1000 {
+  height: 1000px;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.font-italic {
+  font-style: italic;
 }

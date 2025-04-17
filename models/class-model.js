@@ -6,7 +6,7 @@ const ClassSchema = new mongoose.Schema({
   _id: { type: String, required: true },
   course_id: { type: String, ref: "Course", required: true },
   academic_year: { type: String, required: true }, // e.g., "2024-2025"
-  semester: { type: String, required: true }, // e.g., "1", "2", "Summer"
+  semester: { type: String, required: true }, // e.g., "1", "2", "summer"
   lecturer: { type: String },
   max_students: { type: Number, required: true },
   schedule: { type: String }, // optional text for simplicity, e.g., "Mon 7-9 Room A"

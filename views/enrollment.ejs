@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Đăng ký học phần
+  </title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <!-- Pagination -->
+  <div class="flex-row align-center justify-right gap-8">
+    <button 
+      class="pagination-button <%= !students.hasPrevPage ? 'disabled' : '' %>"
+      onclick="onPageChange(<%= students.page - 1 %>)"> 
+      <
+    </button>
+    <span>Trang <%= students.page %> / <%= students.totalPages %></span>
+    <button 
+      class="pagination-button <%= !students.hasNextPage ? 'disabled' : '' %>"
+      onclick="onPageChange(<%= students.page + 1 %>)">
+      >
+    </button>
+  </div>
+  <!-- Danh sách sinh viên để chọn -->
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th>MSSV</th>
+        <th>Tên</th>
+        <th>Ngày sinh</th>
+        <th>Giới tính</th>
+        <th>Chương trình</th>
+        <th>Ngành học</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (var i = 0; i < students.docs.length; i++) { %>
+        <tr>
+          <td>
+            <a href="/enrollment/student/<%= students.docs[i]._id %>">
+              <%= students.docs[i]._id %>
+            </a>
+          </td>
+          <td>
+            <a href="/enrollment/student/<%= students.docs[i]._id %>">
+              <%= students.docs[i].name %>
+            </a>
+          </td>
+          <td><%= students.docs[i].birthdate.toLocaleDateString('vi-VN') %></td>
+          <td><%= students.docs[i].gender %></td>
+          <td><%= students.docs[i].program ? `${students.docs[i].program._id} - ${students.docs[i].program.program_name}` : 'N/A' %></td>
+          <td><%= students.docs[i].major ? `${students.docs[i].major._id} - ${students.docs[i].major.major_name}` : 'N/A' %></td>
+          <td><%= students.docs[i].status ? `${students.docs[i].status._id} - ${students.docs[i].status.status_name}` : 'N/A' %></td>
+        </tr>
+      <%}%>
+    </tbody>
+  </table>
+
+  <script>
+    function onPageChange(page) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('page', page);
+      url.searchParams.set('limit', '<%= students.limit %>');
+      window.location.href = url.toString();
+    }
+  </script>
+</body>
+</html>

@@ -1,9 +1,17 @@
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat.js";
+// import dayjs from "dayjs";
+// import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import Class from "../models/class-model.js";
+import Course from "../models/course-model.js";
 
-dayjs.extend(customParseFormat);
+// dayjs.extend(customParseFormat);
 const DEFAULT_PAGE_LIMIT = 10;
+
+const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
 
 export const getAllClasses = async (req, res) => {
     try {
@@ -16,7 +24,7 @@ export const getAllClasses = async (req, res) => {
         });
 
         result.docs.forEach(current_class => {
-            current_class.created_at.text = dayjs(current_class.created_at).format("DD/MM/YYYY");
+            current_class.created_at.text = current_class.created_at.toLocaleString('vi-VN', options);
         });
 
         res.render('class', { title: 'Classes', results: result });
@@ -30,7 +38,7 @@ export const getClassDetail = async (req, res) => {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
         if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
-        const formatted_created_at = dayjs(current_class.created_at).format("DD/MM/YYYY");
+        const formatted_created_at =current_class.created_at.toLocaleString('vi-VN', options);
         res.render('class-detail', { current_class, formatted_created_at });
 
     } catch (err) {
@@ -44,8 +52,17 @@ export const getClassDetailEdit = async (req, res) => {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
         if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
-        res.render('class-detail-edit', { current_class });
+        res.render('class-detail-editor', { current_class });
 
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, message: err.message });
+    }
+}
+
+export const getClassDetailAdd = async (req, res) => {
+    try {
+        res.render('class-detail-editor', { current_class: null });
     } catch (err) {
         console.error(err);
         res.status(500).json({ ok: false, message: err.message });
@@ -61,14 +78,7 @@ export const createClass = async (req, res) => {
             throw new Error("Mã lớp học đã tồn tại.");
         }
 
-        if (max_students < 1) {
-            throw new Error("Số lượng sinh viên tối đa phải >= 1.");
-        }
-
-        const courseExists = await Class.findOne({ _id: course_id });
-        if (!courseExists) {
-            throw new Error("Khóa học không tồn tại.");
-        }
+        await checkData(req.body);
 
         const newClass = new Class({
             _id,
@@ -83,7 +93,7 @@ export const createClass = async (req, res) => {
         });
 
         await newClass.save();
-        res.status(201).json(newClass);
+        res.status(200).json({ ok: true, message: "" });;
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message });
         // res.status(500).json({ success: false, message: err.message });
@@ -99,6 +109,8 @@ export const updateClass = async (req, res) => {
         if (!classToUpdate) {
             throw new Error(`Không tìm thấy lớp học với mã ${id}`);
         }
+
+        await checkData(req.body);
 
         classToUpdate.course_id = course_id || classToUpdate.course_id;
         classToUpdate.academic_year = academic_year || classToUpdate.academic_year;
@@ -132,3 +144,27 @@ export const deleteClass = async (req, res) => {
     }
 }
 
+async function checkData(data) {
+    if (!data.course_id || !data.academic_year || !data.semester || !data.lecturer || !data.max_students) {
+        throw new Error("Vui lòng điền đầy đủ thông tin.");
+    }
+
+    if (data.max_students < 1) {
+        throw new Error("Số lượng sinh viên tối đa phải >= 1.");
+    }
+
+    if (data.academic_year.length !== 9 || !/^\d{4}-\d{4}$/.test(data.academic_year)) {
+        throw new Error("Năm học không hợp lệ. Vui lòng nhập theo định dạng YYYY-YYYY.");
+    }
+
+    if (!["1", "2", "Hè"].includes(data.semester)) {
+        throw new Error("Học kỳ không hợp lệ. Vui lòng nhập 1, 2, hoặc Hè.");
+    }
+
+    const courseExists = await Course.findOne({ _id: data.course_id });
+    if (!courseExists) {
+        throw new Error(`Khóa học ${data.course_id} không tồn tại.`);
+    }
+
+    return true;
+}

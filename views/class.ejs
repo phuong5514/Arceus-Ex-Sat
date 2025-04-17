@@ -64,6 +64,9 @@
                   <td><%= results.docs[i].created_at %></td>
                 </tr>
               <% } %>
+              <tr class="table-row" onclick="window.location.href='/class/create'">
+                  <td colspan="10" class="text-center">Thêm lớp học mới</td>
+              </tr>
           </tbody>
       </table>
       <% if (results.docs.length == 0) { %>

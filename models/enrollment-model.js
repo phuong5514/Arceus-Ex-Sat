@@ -3,6 +3,7 @@ import paginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 
 const EnrollmentSchema = new mongoose.Schema({
+  _id: { type: String, required: true },
   student_id: { type: String, ref: "Student", required: true },
   class_id: { type: String, ref: "Class", required: true },
   enrolled_at: { type: Date, default: Date.now },

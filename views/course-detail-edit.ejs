@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Thay đổi: <%= course.course_name %>
+  </title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="/javascripts/course-detail-edit.js" defer></script>
+</head>
+
+<body>
+  <div class="flex-column m-16 gap-16">
+    <div class="flex-row space-between">
+      <h1> <%= course._id %> - <%= course.course_name %></h1>
+      <button onclick="window.location.href='/course'">Quay lại</button>
+    </div>
+    <form class="grid box grid-gap-16 bg-grey-100 align-center px-64 pt-16 pb-32" onsubmit="onEditCourseSubmitted(event)">
+      <h2 class="grid-colspan-12 text-center">Thông tin khóa học</h2>
+      <div id="message" class="grid-colspan-12 message-panel" style="display: none;"></div>
+      <label for="id" class="grid-colspan-2 text-right font-bold">Mã khóa học</label>
+      <div class="grid-colspan-10">
+        <input id="id" class="grid-colspan-10 w-full border-box" type="text" name="id" value="<%= course._id %>" readonly />
+      </div>
+      <label for="name" class="grid-colspan-2 text-right font-bold">Tên khóa học</label>
+      <div class="grid-colspan-10">
+        <input id="course_name" class="grid-colspan-10 w-full border-box" type="text" name="name" value="<%= course.course_name %>" />
+      </div>
+      <label for="department" class="grid-colspan-2 text-right font-bold">Khoa</label>
+      <div class="grid-colspan-10">
+        <select id="department" class="w-full border-box" name="department">
+          <option value="" disabled <%= course.department === '' ? 'selected' : ''%>>-- Chọn khoa --</option>
+          <% for (let i = 0; i < departments.length; i++) { %>
+            <option value="<%= departments[i]._id %>" <%= course.department === departments[i]._id ? 'selected' : '' %>>
+              <%= `${departments[i]._id} - ${departments[i].department_name}` %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+      <label for="description" class="grid-colspan-2 text-right font-bold align-self-start mt-10">Mô tả</label>
+      <div class="grid-colspan-10">
+        <textarea id="description" class="w-full border-box" name="description" rows="3"><%= course.description %></textarea>
+      </div>
+      <label for="credits" class="grid-colspan-2 text-right font-bold">Số tín chỉ</label>
+      <div class="grid-colspan-10">
+        <input class="border-box w-full" id="credits" name="credits" type="number" value="<%= course.credits || ''%>" min="2"/>
+      </div>
+      <label for="prerequisite_course" class="grid-colspan-2 text-right font-bold">Mã môn tiên quyết</label>
+      <div class="grid-colspan-10">
+        <select id="prerequisite_course" class="w-full border-box" name="prerequisite_course">
+          <option value="" disabled <%= course.prerequisite_course === '' ? 'selected' : ''%>>-- Chọn môn tiên quyết --</option>
+          <% for (let i = 0; i < prerequisite_courses.length; i++) { %>
+            <option value="<%= prerequisite_courses[i]._id %>" <%= course.prerequisite_course === prerequisite_courses[i]._id ? 'selected' : '' %>>
+              <%= `${prerequisite_courses[i]._id} - ${prerequisite_courses[i].course_name}` %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+      <label for="is_active" class="grid-colspan-2 text-right font-bold">Trạng thái</label>
+      <div class="grid-colspan-10">
+        <select id="is_active" class="w-full border-box" name="is_active">
+          <option value="" disabled selected>-- Chọn trạng thái --</option>
+          <option value="true" <%= course.is_active ? 'selected' : '' %>>Đang mở</option>
+          <option value="false" <%= !course.is_active ? 'selected' : '' %>>Đã ngừng mở</option>
+        </select>
+      </div>
+      <label for="created_at" class="grid-colspan-2 text-right font-bold">Ngày tạo</label>
+      <div class="grid-colspan-10">
+        <input id="created_at" class="w-full border-box" type="text" name="created_at"
+          value="<%= course.created_at.toLocaleString('vi-VN') %>" readonly />
+      </div>
+      
+      <div class="grid-colspan-12 flex-row justify-right">
+        <button type="submit" class="px-32">Lưu thay đổi</button>
+        <button type="button" class="px-32" onclick="onDeleteCourseClicked('<%= course._id %>')">Xóa khóa học</button>
+        <button type="button" class="px-32" onclick="window.location.href='/course'">Hủy</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    new Choices('#department', {
+      searchEnabled: true,
+      shouldSort: true,
+      itemSelectText: '',
+      noChoicesText: 'Không có kết quả nào',
+    });
+    new Choices('#prerequisite_course', {
+      searchEnabled: true,
+      shouldSort: true,
+      itemSelectText: '',
+      noChoicesText: 'Không có kết quả nào',
+    });
+  </script>
+</body>

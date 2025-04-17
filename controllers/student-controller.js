@@ -15,7 +15,7 @@ import { promises as fs }  from 'fs';
 import path from 'path';
 import { fileURLToPath } from "url";
 
-import {studentAddSchema, studentUpdateSchema} from '../middlewares/zod-validation-middleware.js';
+import {studentAddSchema, studentUpdateSchema} from '../validators/student-validator.js';
 import { console } from "inspector";
 import { ZodError } from "zod";
 

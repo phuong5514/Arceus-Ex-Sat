@@ -165,7 +165,7 @@ async function onAddStudentSaved() {
         gender: document.getElementById("add-gender").value,
         birthdate: document.getElementById("add-birthdate").value,
         major: document.getElementById("add-major").value, 
-        class_year: document.getElementById("add-class_year").value,
+        class_year: parseInt(document.getElementById("add-class_year").value),
         program: document.getElementById("add-program").value,
         status: document.getElementById("add-status").value,
         permanent_address: null,

@@ -54,14 +54,14 @@ export const studentBaseSchema = z.object({
   phone_number: z.string().trim().regex(new RegExp(config.phoneRegex), 'Số điện thoại không thuộc định dạng hợp lệ'),
   birthdate: zodDateTimeFormat('YYYY-MM-DD', 'Ngày sinh'),
   gender: z.enum(['Nam', 'Nữ']),
-  class_year: z.number().int('Khóa phải là số nguyên').gte(2000, 'Khóa phải lớn hơn hoặc bằng 2000').lte(2100, 'Khóa phải nhỏ hơn hoặc bằng 2100'),
+  class_year: z.coerce.number().int('Khóa phải là số nguyên').gte(2000, 'Khóa phải lớn hơn hoặc bằng 2000').lte(2100, 'Khóa phải nhỏ hơn hoặc bằng 2100'),
   major: z.string().trim(),
   program: z.string().trim(),
   status: z.string().trim(),
   nationality: z.string().trim(),
   identity_card: z
     .object({
-      _id: z.string().trim().min(9).max(12),
+      _id: z.string().trim().min(9).max(12).optional(),
       issue_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày cấp CMND/CCCD').optional(),
       expiry_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày hết hạn CMND/CCCD').optional(),
       issue_location: z.string().trim().optional(),
@@ -71,7 +71,7 @@ export const studentBaseSchema = z.object({
     .optional().nullable(),
   passport: z
     .object({
-      _id: z.string().trim().min(8).max(12),
+      _id: z.string().trim().min(8).max(12).optional(),
       issue_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày cấp hộ chiếu').optional(),
       expiry_date: zodDateTimeFormat('YYYY-MM-DD', 'Ngày hết hạn hộ chiếu').optional(),
       issue_location: z.string().trim().optional(),

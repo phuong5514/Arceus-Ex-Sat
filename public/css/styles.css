@@ -1,6 +1,9 @@
 :root {
   --grey_50: #eeeeee;
   --grey_100: #efefef;
+  --grey_200: #d9d9d9;
+  --grey_300: #b3b3b3;
+  --grey_500: #8a8a8a;
   --grey_700: #636363;
   --orange_200: #ff9914;
   --orange_400: #e78d16;
@@ -67,21 +70,12 @@ body {
   cursor: pointer;
 }
 
-input {
-  border: 1px solid var(--grey_50);
+input, textarea, select {
+  border: 1px solid var(--grey_700);
   border-radius: 0;
   align-self: stretch;
   margin: 0;
   padding: 8px;
-}
-
-select {
-  border: 1px solid var(--grey_50);
-  border-radius: 0;
-  align-self: stretch;
-  margin: 0;
-  padding: 8px;
-  padding: 8px 16px;
 }
 
 button {
@@ -122,7 +116,6 @@ th {
   background-color: var(--green_500);
   color: white;
   font-weight: bold;
-  position: sticky;
   top: var(--toolbar-height);
   z-index: 200;
 }
@@ -160,11 +153,19 @@ tr:nth-child(odd) {
   text-align: center;
   min-height: 30px;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pre-line {
   white-space: pre-line;
 }
 
 .text-left{
   text-align: left;
+}
+
+.text-right{
+  text-align: right;
 }
 
 .editable-row{
@@ -349,7 +350,7 @@ tr:nth-child(odd) {
 }
 
 .box {
-  border: 1px solid var(--grey_50);
+  border: 1px solid var(--grey_500);
   padding: 8px;
 } 
 
@@ -469,6 +470,10 @@ h1 {
   height: 100%;
 }
 
+.w-full {
+  width: 100%;
+}
+
 .pagination-button{
   text-align: center;
   padding-left: 16px;
@@ -485,4 +490,266 @@ h1 {
 .search-button{
   padding-left: 16px;
   padding-right: 16px;
+}
+
+.sticky{
+  position: sticky;
+}
+
+a {
+  color: #3a88db;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #2166b1;
+  text-decoration: underline;
+}
+
+.text-overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.max-w-300 {
+  max-width: 300px;
+}
+
+.max-w-400 {
+  max-width: 400px;
+}
+
+.max-w-500 {
+  max-width: 500px;
+}
+
+.max-w-800 {
+  max-width: 800px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.grid-colspan-6 {
+  grid-column: span 6;
+}
+
+.grid-colspan-12 {
+  grid-column: span 12;
+}
+
+.grid-colspan-4 {
+  grid-column: span 4;
+}
+
+.grid-colspan-8 {
+  grid-column: span 8;
+}
+
+.grid-colspan-2 {
+  grid-column: span 2;
+}
+
+.grid-colspan-10 {
+  grid-column: span 10;
+}
+
+.grid-colspan-1 {
+  grid-column: span 1;
+}
+
+.grid-colspan-11 {
+  grid-column: span 11;
+}
+
+.grid-colspan-3 {
+  grid-column: span 3;
+}
+
+.grid-colspan-5 {
+  grid-column: span 5;
+}
+
+.grid-colspan-7 {
+  grid-column: span 7;
+}
+
+
+.align-self-center{
+  align-self: center;
+}
+
+.text-center{
+  text-align: center;
+}
+
+.grid-gap-8 {
+  gap: 8px;
+}
+
+.grid-gap-16 {
+  gap: 16px;
+}
+
+.border-box {
+  box-sizing: border-box;
+}
+
+.bg-grey-100 {
+  background-color: var(--grey_100);
+}
+
+.bg-grey-200 {
+  background-color: var(--grey_200);
+}
+
+.pt-4 {
+  padding-top: 4px;
+}
+
+.pt-8 {
+  padding-top: 8px;
+}
+
+.pt-16 {
+  padding-top: 16px;
+}
+
+.pb-4 {
+  padding-bottom: 4px;
+}
+
+.pb-8 {
+  padding-bottom: 8px;
+}
+
+.pb-16 {
+  padding-bottom: 16px;
+}
+
+.pb-32 {
+  padding-bottom: 32px;
+}
+
+.px-4 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.px-8 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.px-16 {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.px-32 {
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.px-64 {
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.px-128 {
+  padding-left: 128px;
+  padding-right: 128px;
+}
+
+.py-4 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.py-8 {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.py-16 {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.py-32 {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.p-4 {
+  padding: 4px;
+}
+
+.p-16 {
+  padding: 16px;
+}
+
+.p-32 {
+  padding: 32px;
+}
+
+.border-radius-4 {
+  border-radius: 4px;
+}
+
+.border-radius-8 {
+  border-radius: 8px;
+}
+
+.border-radius-16 {
+  border-radius: 16px;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+input[readonly], textarea[readonly] {
+  background-color: var(--grey_200);
+  color: var(--grey_700);
+  pointer-events: none;
+  cursor: default;
+}
+
+.align-self-start {
+  align-self: self-start;
+}
+
+.choices__inner {
+  box-sizing: border-box;
+  border: 1px solid var(--grey_700) !important;
+  border-radius: 0 !important;
+}
+
+.mt-4 {
+  margin-top: 4px;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.border-left {
+  border-left: 1px solid var(--grey_700);
+}
+
+.border-right {
+  border-right: 1px solid var(--grey_700);
 }

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Chi tiết: <%= course.course_name %>
+  </title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <div class="flex-column m-16 gap-16">
+    <div class="flex-row space-between">
+      <h1> <%= course._id %> - <%= course.course_name %></h1>
+      <button onclick="window.location.href='/course'">Quay lại</button>
+    </div>
+    <div class="grid box grid-gap-8 bg-grey-100 align-self-center align-center px-32 pt-16 pb-32 max-w-500">
+      <div class="grid-colspan-3"></div>
+      <h2 class="grid-colspan-6 text-center">Thông tin khóa học</h2>
+      <button type="button" class="grid-colspan-3 h-full" onclick="window.location.href='/course/edit/<%= course._id%>'" >Thay đổi</button>
+      <div class="grid-colspan-12 message-panel" id="message" style="display: none;"></div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Mã khóa học</label>
+      <div class="grid-colspan-8">
+        <p class="grid-colspan-8 w-full border-box"><%= course._id %></p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Tên khóa học</label>
+      <div class="grid-colspan-8">
+        <p class="grid-colspan-8 w-full border-box"><%= course.course_name %></p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Khoa</label>
+      <div class="grid-colspan-8">
+        <p class="w-full border-box">
+          <% if (course.department) { %>
+            <%= `${course.department} - ${departments.find(d => d._id === course.department)?.department_name || ''}` %>
+          <% } else { %>
+            Không có
+          <% } %>
+        </p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Mô tả</label>
+      <div class="grid-colspan-8">
+        <p class="w-full border-box"><%= course.description || 'Không có' %></p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Số tín chỉ</label>
+      <div class="grid-colspan-8">
+        <p class="border-box w-full"><%= course.credits || 'Không có' %></p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Mã môn tiên quyết</label>
+      <div class="grid-colspan-8">
+        <p class="w-full border-box">
+          <% if (course.prerequisite_course) { %>
+            <%= `${course.prerequisite_course} - ${prerequisite_courses.find(c => c._id === course.prerequisite_course)?.course_name || ''}` %>
+          <% } else { %>
+            Không có
+          <% } %>
+        </p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right ">Trạng thái</label>
+      <div class="grid-colspan-8">
+        <p class="w-full border-box">
+          <%= course.is_active ? 'Đang mở' : 'Đã ngừng mở' %>
+        </p>
+      </div>
+      <label class="grid-colspan-4 text-left font-bold border-right">Ngày tạo</label>
+      <div class="grid-colspan-8">
+        <p class="w-full border-box"><%= course.created_at.toLocaleString('vi-VN') %></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

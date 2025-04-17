@@ -614,6 +614,10 @@ a:hover {
   text-align: center;
 }
 
+.grid-gap-4 {
+  gap: 4px;
+}
+
 .grid-gap-8 {
   gap: 8px;
 }
@@ -871,4 +875,12 @@ input[readonly], textarea[readonly] {
 
 .font-italic {
   font-style: italic;
+}
+
+.ml-4 {
+  margin-left: 4px;
+}
+
+.column-gap-4 {
+  column-gap: 4px;
 }

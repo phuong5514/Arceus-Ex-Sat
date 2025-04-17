@@ -10,7 +10,9 @@
   <link rel="stylesheet" href="/css/styles.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="/javascripts/enrollment-student.js" defer></script>
 </head>
+
 <body>
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
@@ -20,7 +22,7 @@
     <div class="max-w-1000 align-self-center flex-column gap-16">
       <div class="flex-column gap-16 align-center">
         <!-- Student Academic Info -->
-        <div class="grow grid grid-gap-8 border-box w-full box bg-grey-200 px-32 pt-16 pb-16">
+        <div class="grid grid-gap-8 border-box w-full box bg-grey-200 px-32 pt-16 pb-16">
           <h2 class="grid-colspan-12 text-center">Thông tin học tập</h2>
           <div class="grid-colspan-4 border-right font-bold">MSSV</div>
           <div class="grid-colspan-8"><%= student._id %></div>
@@ -38,51 +40,74 @@
           <div class="grid-colspan-8"><%= student.status ? `${student.status._id} - ${student.status.status_name}` : 'N/A' %></div>
         </div>
         <!-- Enrolled Classes -->
-        <% renderClassList(
-          "Danh sách học phần đã đăng ký",
-          enrolledClasses
-        ) %>
+        <div class="box flex-column w-full border-box p-16 gap-4">
+          <% renderClassList(
+            "Danh sách học phần đã đăng ký",
+            enrolledClasses,
+            false
+          ) %>
+          <span class="message-panel" id="message-enrolled" style="display: none;"></span>
+          <div class="flex-row justify-right">
+            <button type="button" class="w-200" onclick="onRemoveClassesClick()">Hủy đăng ký</button>
+          </div>
         </div>
         <!-- Available Classes -->
-        <%= renderClassList(
-          "Danh sách học phần có thể đăng ký",
-          availableClasses
-        ) %>
+        <div class="box flex-column w-full border-box p-16 gap-8">
+          <div class="grow flex-column">
+            <%= renderClassList(
+              "Danh sách học phần có thể đăng ký",
+              availableClasses,
+              true
+            ) %>
+          </div>
+          <span class="message-panel" id="message-available" style="display: none;"></span>
+          <div class="flex-row justify-right">
+            <button type="button" class="w-200" onclick="onAddClassesClick()">Thêm nợ</button>
+          </div>
+        </div>
         </div>
       </div>
     </div>
-
-
   </div>
   
 </body>
 
-<% function renderClassList(title, classes) { %>
-  <div class="grow box flex-column w-full h-300 border-box p-16">
-    <h2 class="text-center"><%= title %></h2>
-    <!-- Headers -->
-    <div class="grid grid-colspan-12 grid-gap-8 border-bottom p-8 min-w-800">
-      <div class="grid-colspan-2 font-bold">Mã lớp</div>
-      <div class="grid-colspan-4 font-bold">Tên học phần</div>
-      <div class="grid-colspan-2 font-bold">Số tín chỉ</div>
-      <div class="grid-colspan-2 font-bold">Học kỳ</div>
-      <div class="grid-colspan-2 font-bold">Năm học</div>
-    </div>
-    <div class="grid grid-gap-8 overflow-y-auto">
-      <% if (classes.length > 0) { %>
-        <% classes.forEach(classItem => { %>
-          <div class="grid grid-colspan-12 grid-gap-8 border-bottom p-8 min-w-800">
-            <div class="grid-colspan-2"><%= classItem._id %></div>
-            <div class="grid-colspan-4"><%= classItem.course_id.course_name %></div>
-            <div class="grid-colspan-2"><%= classItem.course_id.credits %> TC</div>
-            <div class="grid-colspan-2"><%= classItem.semester.toLowerCase() === 'summer' ? 'HK Hè' : `HK ${classItem.semester}` %></div>
-            <div class="grid-colspan-2"><%= classItem.academic_year %></div>
+<% function renderClassList(title, classes, addClasses) { %>
+  <h2 class="text-center"><%= title %></h2>
+  <!-- Headers -->
+  <div class="grid grid-colspan-12 grid-gap-8 border-bottom p-8 min-w-800">
+    <div class="grid-colspan-1"></div>
+    <div class="grid-colspan-2 font-bold">Mã lớp</div>
+    <div class="grid-colspan-3 font-bold">Tên học phần</div>
+    <div class="grid-colspan-1 font-bold">Sỉ số</div>
+    <div class="grid-colspan-1 font-bold text-center">Số tín chỉ</div>
+    <div class="grid-colspan-2 font-bold text-center">Học kỳ</div>
+    <div class="grid-colspan-2 font-bold">Năm học</div>
+  </div>
+  <div class="grid grid-gap-8 max-h-300 overflow-auto">
+    <% if (classes.length > 0) { %>
+      <% classes.forEach(classItem => { %>
+        <div class="grid grid-colspan-12 column-gap-4 border-bottom p-8 min-w-800">
+          <!-- Thêm checkbox để đa chọn -->
+          <div class="grid-colspan-1">
+              <% if (addClasses) { %>
+                <input type="checkbox" class="add-class-checkbox checkbox" value="<%= classItem._id %>" />
+              <% } else {%>
+                <input type="checkbox" class="remove-class-checkbox checkbox" value="<%= classItem._id %>" />
+              <% } %>
           </div>
-        <% }) %>
-      <% } else { %>
-        <p class="grid-colspan-12 text-center font-italic">(Không có dữ liệu)</p>
-      <% } %>
-    </div>
+          
+          <div class="grid-colspan-2"><%= classItem._id %></div>
+          <div class="grid-colspan-3"><%= classItem.course_id.course_name %></div>
+          <div class="grid-colspan-1"><%= `${classItem.student_count}/${classItem.max_students}`%></div>
+          <div class="grid-colspan-1 text-center"><%= classItem.course_id.credits %> TC</div>
+          <div class="grid-colspan-2 text-center"><%= classItem.semester.toLowerCase() === 'summer' ? 'HK Hè' : `HK ${classItem.semester}` %></div>
+          <div class="grid-colspan-2"><%= classItem.academic_year %></div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="grid-colspan-12 text-center font-italic">(Không có dữ liệu)</p>
+    <% } %>
   </div>
 <% } %>
 

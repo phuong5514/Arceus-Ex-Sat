@@ -474,7 +474,6 @@ export const importStudents = async (req, res) => {
               } else {
                 msg = `Thêm sinh viên ${student._id} thành công`;
                 students.push(student);
-                console.log(msg);
               }
             });
           }

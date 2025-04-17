@@ -37,7 +37,7 @@
     <thead>
       <tr>
         <th>Mã</th>
-        <th>Tên</th>
+        <th>Tên khóa học</th>
         <th>Khoa</th>
         <th>Mô tả</th>
         <th>Mã môn tiên quyết</th>
@@ -49,7 +49,11 @@
     <tbody>
       <% for (var i=0; i < results.docs.length; i++) { %>
         <tr>
-          <td><%= results.docs[i]._id %></td>
+          <td>
+            <a href="/course/<%= results.docs[i]._id %>">
+              <%= results.docs[i]._id %>
+            </a>
+          </td>
           <td>
             <a href="/course/<%= results.docs[i]._id %>">
               <%= results.docs[i].course_name %>

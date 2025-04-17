@@ -5,7 +5,7 @@ import Department from "../models/department-model.js";
 
 dayjs.extend(customParseFormat);
 
-const defaultPageLimit = 2; 
+const defaultPageLimit = 20; 
 
 export const createCourse = async (req, res) => {
   try {
@@ -170,6 +170,52 @@ export const getCourseDetailEdit = async (req, res) => {
     res.render('course-detail-edit', {course, status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
     console.error(err);
+    res.status(500).json({ ok: false, message: err.message });
+  }
+}
+
+export const getCourseAdd = async (req, res) => {
+  try {
+    const availableDepartments = await getAvailableDepartments(); 
+    const availableStatus = getAvailableStatus();
+    const availableCourses = await getAvailableCourses();
+
+    res.render('course-detail-add', {status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
+  } catch {
+    console.error(err);
+    res.status(500).json({ ok: false, message: err.message });
+  }
+}
+
+export const addCourse = async (req, res) => {
+  try {
+    const { _id, course_name, credits, department, description, prerequisite_course} = req.body;
+
+    if (credits < 2) {
+      return res.status(400).json({ ok: false, message: "Số tín chỉ phải >= 2." });
+    }
+
+    if (prerequisite_course) {
+      const exists = await Course.findOne({ _id: prerequisite_course });
+      if (!exists) {
+        return res.status(400).json({ ok: false, message: `Môn tiên quyết với mã ${prerequisite_course} không tồn tại.` });
+      }
+    }
+
+    const course = new Course({
+      _id,
+      course_name,
+      credits,
+      department,
+      description,
+      prerequisite_course: prerequisite_course || null,
+      is_active: true,
+      created_at: new Date()
+    });
+
+    await course.save();
+    res.status(201).json({ ok: true, message: "" });
+  } catch (err) {
     res.status(500).json({ ok: false, message: err.message });
   }
 }

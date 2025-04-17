@@ -130,3 +130,4 @@ export const deleteClass = async (req, res) => {
         console.error(err);
     }
 }
+

@@ -95,7 +95,7 @@ export const updateClass = async (req, res) => {
     try {
         const { id } = req.params;
         const { course_id, academic_year, semester, lecturer, max_students, schedule, classroom } = req.body;
-        let classToUpdate = await Class.findOne({ id });
+        let classToUpdate = await Class.findOne({ _id: id });
         if (!classToUpdate) {
             throw new Error(`Không tìm thấy lớp học với mã ${id}`);
         }

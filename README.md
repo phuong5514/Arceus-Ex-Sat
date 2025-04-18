@@ -198,3 +198,18 @@ Kéo xuống dưới trang để xem danh sách các lớp học sinh viên đã
 *Lưu ý*:
 + Giáo vụ chỉ có thể đăng ký các lớp học chưa đầy 
 + Các lớp đăng ký phải thuộc khóa mà sinh viên đã thỏa học phần tiên quyết
+
+## Unit testing
+- **Công cụ sử dụng**
+Nhóm sử dụng Jest, một công cụ test JavaScript phổ biến, để thực hiện các testcase. Jest cung cấp một môi trường test linh hoạt và mạnh mẽ, cho phép viết và chạy các testcase một cách dễ dàng.
+- **Phương pháp test**
+Nhóm đã thực hiện các testcase theo phương pháp sau:
+Viết các testcasetrong file `student.test.js` cho từng chức năng của hệ thống, bao gồm thêm mới sinh viên, tìm kiếm sinh viên, cập nhật thông tin sinh viên, xóa sinh viên, nhập dữ liệu từ JSON.Sử dụng Jest để chạy các testcase và kiểm tra kết quả.
+- **Cách thực hiện**:
+ ```bash
+  npm install #(để cài đặt các package cần thiết trong `package.json`)
+
+  npm run test (để chạy các testcase)
+```
+-  **Kết quả**
+  ![image](https://github.com/user-attachments/assets/ff996206-ae83-47c1-8705-d8602d5960cf)

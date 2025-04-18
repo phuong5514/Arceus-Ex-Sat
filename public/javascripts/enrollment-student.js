@@ -88,3 +88,9 @@ function setMessage(message_panel_id, tag, msg){
   messageDiv.style.display = 'block';
   messageDiv.textContent = msg;
 }
+
+
+function onPrintGradesClicked(){
+  const student_id = window.location.pathname.split('/').pop();
+  window.open(`/enrollment/student/transcript/${student_id}`, '_blank');
+}

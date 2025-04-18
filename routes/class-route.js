@@ -12,5 +12,3 @@ router.delete('/:id', classController.deleteClass);
 router.post('/', classController.createClass);
 
 export default router;
-
-const DEFAULT_PAGE_LIMIT = 99;

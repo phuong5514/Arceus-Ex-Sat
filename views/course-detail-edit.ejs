@@ -55,7 +55,7 @@
       <label for="prerequisite_course" class="grid-colspan-2 text-right font-bold">Mã môn tiên quyết</label>
       <div class="grid-colspan-10">
         <select id="prerequisite_course" class="w-full border-box" name="prerequisite_course">
-          <option value="" disabled <%= course.prerequisite_course === '' ? 'selected' : ''%>>-- Chọn môn tiên quyết --</option>
+          <option value="" <%= course.prerequisite_course === '' ? 'selected' : ''%>>-- Không có (Mặc định) --</option>
           <% for (let i = 0; i < prerequisite_courses.length; i++) { %>
             <option value="<%= prerequisite_courses[i]._id %>" <%= course.prerequisite_course === prerequisite_courses[i]._id ? 'selected' : '' %>>
               <%= `${prerequisite_courses[i]._id} - ${prerequisite_courses[i].course_name}` %>

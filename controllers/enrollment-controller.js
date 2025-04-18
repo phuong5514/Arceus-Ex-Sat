@@ -45,6 +45,8 @@ export const getEnrolledClasses = async (studentId) => {
       enrolledClass.student_count = studentCount;
     }
 
+    console.log(filteredClasses);
+
     return filteredClasses;
   } catch (error) {
     console.error(error);
@@ -61,7 +63,7 @@ export const getAvailableClasses = async (studentId) => {
       .populate("course_id")
       .lean();
 
-    const filteredClasses = availableClasses.filter(availableClass => availableClass.course_id !== null);
+    const filteredClasses = availableClasses.filter(availableClass => availableClass.course_id !== null && availableClass.course_id.is_active);
     
     for (const enrolledClass of filteredClasses) {
       const studentCount = await getEnrolledStudentCount(enrolledClass._id);
@@ -108,8 +110,8 @@ export const registerClasses = async (req, res) => {
 
     for (const classId of classes) {
       const classIdx = availableClasses.findIndex(availableClass => availableClass._id === classId);
-      if (!classIdx) {
-        return res.status(400).json({ok: false, message: `Lớp học ${classId} không khả dụng`});
+      if (classIdx < 0) {
+        return res.status(400).json({ok: false, message: `Lớp học ${classId} không nằm trong danh sách lớp học có thể đăng ký`});
       }
       classesToRegister.push(availableClasses[classIdx]);
     }
@@ -124,7 +126,7 @@ export const registerClasses = async (req, res) => {
     }
 
     // Enrolled courses of this guy
-    const enrolledCourses = (await getEnrolledClasses(studentId)).map(c => c.course_id);
+    const enrolledCourses = (await getEnrolledClasses(studentId)).map(c => c.course_id._id);
 
     // Create new enrollments
     for (const c of classesToRegister) {
@@ -132,7 +134,7 @@ export const registerClasses = async (req, res) => {
       const student_count = await getEnrolledStudentCount(c._id);
       const max_students = c.max_students;
       if (student_count >= max_students) {
-        return res.status(400).json({ok: false, message: `Lớp học ${classId} đã đầy`});
+        return res.status(400).json({ok: false, message: `Lớp học ${c._id} đã đầy`});
       }
 
       // Check prerequisites

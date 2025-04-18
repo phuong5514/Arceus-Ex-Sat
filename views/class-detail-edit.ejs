@@ -36,7 +36,15 @@
 
                 <label for="course_id" class="grid-colspan-2 text-right font-bold">Mã khóa học</label>
                 <div class="grid-colspan-10">
-                    <input id="course_id" class="grid-colspan-10 w-full border-box" type="text" name="course_id" value="<%= mode ? current_class.course_id : "" %>" />
+                    <!-- <input id="course_id" class="grid-colspan-10 w-full border-box" type="text" name="course_id" value="<%= mode ? current_class.course_id : "" %>" /> -->
+                    <select id="course_id" class="w-full border-box" name="course_id">
+                        <option value="" disabled selected>-- Chọn khóa học --</option>
+                        <% for (let i = 0; i < courses.length; i++) { %>
+                            <option value="<%= courses[i]._id %>" <%= mode && current_class.course_id === courses[i]._id ? 'selected' : '' %>>
+                                <%= `${courses[i]._id} - ${courses[i].course_name}` %>
+                            </option>
+                        <% } %> 
+                    </select>
                 </div>
 
                 <label for="academic_year" class="grid-colspan-2 text-right font-bold">Năm học</label>
@@ -46,7 +54,13 @@
 
                 <label for="semester" class="grid-colspan-2 text-right font-bold align-self-start mt-10">Học kì</label>
                 <div class="grid-colspan-10">
-                    <input id="semester" class="grid-colspan-10 w-full border-box" type="text" name="semester" value="<%= mode ? current_class.semester : "" %>" />
+                    <!-- <input id="semester" class="grid-colspan-10 w-full border-box" type="text" name="semester" value="<%= mode ? current_class.semester : "" %>" /> -->
+                    <select id="semester" class="w-full border-box" name="semester">
+                        <option value="" disabled selected>-- Chọn học kì --</option>
+                        <option value="1" <%= mode && current_class.semester === '1' ? 'selected' : '' %>>Học kì 1</option>
+                        <option value="2" <%= mode && current_class.semester === '2' ? 'selected' : '' %>>Học kì 2</option>
+                        <option value="summer" <%= mode && current_class.semester.toLowerCase()  === 'summer' ? 'selected' : '' %>>Học kì Hè</option>
+                    </select>
                 </div>
 
                 <label for="lecturer" class="grid-colspan-2 text-right font-bold">Giảng viên</label>
@@ -56,7 +70,7 @@
 
                 <label for="max_students" class="grid-colspan-2 text-right font-bold">Tổng số sinh viên</label>
                 <div class="grid-colspan-10">
-                    <input id="max_students" class="grid-colspan-10 w-full border-box" type="text" name="max_students" value="<%= mode ? current_class.max_students : "" %>" />
+                    <input id="max_students" class="grid-colspan-10 w-full border-box" type="number" min="1" name="max_students" value="<%= mode ? current_class.max_students : "" %>" />
                 </div>
 
                 <label for="schedule" class="grid-colspan-2 text-right font-bold">Lịch học</label>
@@ -79,4 +93,12 @@
             </form>
         </div>
     </body>
+    <script>
+        new Choices('#course_id', {
+            searchEnabled: true,
+            shouldSort: true,
+            removeItemButton: true,
+            itemSelectText: '',
+        });
+    </script>
 </html>

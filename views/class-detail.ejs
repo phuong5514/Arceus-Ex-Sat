@@ -39,7 +39,15 @@
                 </div>
                 <label class="grid-colspan-4 text-left font-bold border-right ">Học kì</label>
                 <div class="grid-colspan-8">
-                    <p class="w-full border-box"><%= current_class.semester %></p>
+                    <p class="w-full border-box">
+                        <% if (current_class.semester === "1") { %>
+                            Học kỳ 1
+                        <% } else if (current_class.semester === "2") { %>
+                            Học kỳ 2
+                        <% } else if (current_class.semester === "summer") { %>
+                            Học kỳ Hè
+                        <% } %>
+                    </p>
                 </div>
                 <label class="grid-colspan-4 text-left font-bold border-right ">Giảng viên</label>
                 <div class="grid-colspan-8">

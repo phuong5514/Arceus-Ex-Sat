@@ -220,7 +220,7 @@ tr:nth-child(odd) {
 .empty-table{
   text-align: center;
   padding: 16px;
-  font-weight: bold;
+  font-style: italic;
 }
 
 .more-search-options-button{

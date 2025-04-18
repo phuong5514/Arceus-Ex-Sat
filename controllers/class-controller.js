@@ -1,8 +1,8 @@
 // import dayjs from "dayjs";
 // import customParseFormat from "dayjs/plugin/customParseFormat.js";
-import { populate } from "dotenv";
 import Class from "../models/class-model.js";
 import Course from "../models/course-model.js";
+import * as courseController from "./course-controller.js";
 
 const defaultPageLimit = 20;
 
@@ -53,7 +53,9 @@ export const getClassDetailEdit = async (req, res) => {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
         if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
-        res.render('class-detail-editor', { current_class });
+        const courses = await courseController.getAvailableCourses();
+
+        res.render('class-detail-edit', { current_class, courses });
 
     } catch (err) {
         console.error(err);
@@ -63,7 +65,8 @@ export const getClassDetailEdit = async (req, res) => {
 
 export const getClassDetailAdd = async (req, res) => {
     try {
-        res.render('class-detail-editor', { current_class: null });
+        const courses = await courseController.getAvailableCourses();
+        res.render('class-detail-edit', { current_class: null, courses });
     } catch (err) {
         console.error(err);
         res.status(500).json({ ok: false, message: err.message });
@@ -158,8 +161,8 @@ async function checkData(data) {
         throw new Error("Năm học không hợp lệ. Vui lòng nhập theo định dạng YYYY-YYYY.");
     }
 
-    if (!["1", "2", "Hè"].includes(data.semester)) {
-        throw new Error("Học kỳ không hợp lệ. Vui lòng nhập 1, 2, hoặc Hè.");
+    if (!["1", "2", "summer"].includes(data.semester)) {
+        throw new Error(`Học kỳ ${data.semester} không nằm trong danh sách học kỳ hợp lệ`);
     }
 
     const courseExists = await Course.findOne({ _id: data.course_id });

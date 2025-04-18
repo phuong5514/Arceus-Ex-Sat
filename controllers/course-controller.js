@@ -51,7 +51,7 @@ export const updateCourse = async (req, res) => {
     course.course_name = course_name || course.course_name;  
     course.description = description || course.description;
     course.department = department || course.department;
-    course.prerequisite_course = req.body.prerequisite_course || course.prerequisite_course;
+    course.prerequisite_course = req.body.prerequisite_course ?? course.prerequisite_course;
     course.credits = req.body.credits || course.credits;
     
     course.is_active = is_active ?? course.is_active;
@@ -138,7 +138,7 @@ function getAvailableStatus() {
   ];
 }
 
-function getAvailableCourses() {
+export function getAvailableCourses() {
   return Course.find({}).lean();
 }
 

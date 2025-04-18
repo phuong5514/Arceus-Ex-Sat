@@ -49,7 +49,7 @@ export const updateCourse = async (req, res) => {
     if (!course) return res.status(404).json({ message: `Không tìm thấy khóa học với mã ${id}` });
 
     course.course_name = course_name || course.course_name;  
-    course.description = description || course.description;
+    course.description = description ?? course.description;
     course.department = department || course.department;
     course.prerequisite_course = req.body.prerequisite_course ?? course.prerequisite_course;
     course.credits = req.body.credits || course.credits;

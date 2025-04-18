@@ -1,4 +1,4 @@
-# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 3)
+# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 5)
 ## Giới thiệu
 Là trang web quản lý sinh viên đơn giản, cung cấp các chức năng thêm, xóa, sửa thông tin sinh viên, import, export, v.v
 
@@ -147,6 +147,7 @@ Thêm danh mục bằng cách nhập mã danh mục và tên vào dòng nhập l
 ### Đổi tên danh mục
 Tên danh mục có thể đổi trực tiếp bằng cách nhập tên mới vào ô tên của danh mục và nhấn `Enter`.
 
+
 ## Export danh sách sinh viên
 
 ![alt text](readme_resources/main_export.png)
@@ -154,3 +155,19 @@ Tên danh mục có thể đổi trực tiếp bằng cách nhập tên mới v�
 Danh sách sinh viên có thể được xuất ra file để lưu trữ bằng cách:
 + Chọn kiểu file muốn xuất ra: `CSV` hoặc `JSON`, từ menu dropdown
 + Nhấn vào nút *Export All* để xuất ra file
+
+## Unit testing
+- **Công cụ sử dụng**
+Nhóm sử dụng Jest, một công cụ test JavaScript phổ biến, để thực hiện các testcase. Jest cung cấp một môi trường test linh hoạt và mạnh mẽ, cho phép viết và chạy các testcase một cách dễ dàng.
+- **Phương pháp test**
+Nhóm đã thực hiện các testcase theo phương pháp sau:
+Viết các testcasetrong file `student.test.js` cho từng chức năng của hệ thống, bao gồm thêm mới sinh viên, tìm kiếm sinh viên, cập nhật thông tin sinh viên, xóa sinh viên, nhập dữ liệu từ JSON.Sử dụng Jest để chạy các testcase và kiểm tra kết quả.
+- **Cách thực hiện**:
+ ```bash
+  npm install #(để cài đặt các package cần thiết trong `package.json`)
+
+  npm run test (để chạy các testcase)
+```
+-  **Kết quả**
+  ![image](https://github.com/user-attachments/assets/ff996206-ae83-47c1-8705-d8602d5960cf)
+

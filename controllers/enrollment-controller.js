@@ -130,21 +130,34 @@ export const getTranscript = async (req, res) => {
     const courseIds = classes.map(enrolledClass => enrolledClass.course_id);
     const courses = await Course.find({ _id: { $in: courseIds } }).lean();
 
+    let totalCredits = 0;
+    let totalGradePoints = 0;
+
     const gradeInfos = grades.map(grade => {
       const enrolledClass = classes.find(enrolledClass => enrolledClass._id.toString() === grade.class_id.toString());
       const course = courses.find(course => course._id.toString() === enrolledClass.course_id.toString());
+      totalGradePoints += (grade.grade || 0) * course.credits;
+      totalCredits += course.credits;
       return {
         class_id: enrolledClass._id,
         course_id: course._id,
         course_name: course.course_name,
         grade: grade.grade,
         recorded_at: grade.recorded_at,
+        credits: course.credits
       };
     });
+
+    const gpa = totalGradePoints / totalCredits || 0;
+    const gpaFormatted = gpa.toFixed(2);
+
+    const gpa_base_4 = (gpa / 10) * 4;
+    const gpa_base_4_formatted = gpa_base_4.toFixed(2);
 
     if (!student) {
       return res.status(404).send("Student not found");
     }
+
 
     const generatedHTML = `
       <!DOCTYPE html>
@@ -174,6 +187,10 @@ export const getTranscript = async (req, res) => {
                 <div class="grid-colspan-8">${student.major ? `${student.major._id} - ${student.major.major_name}` : 'N/A'}</div>
                 <div class="grid-colspan-4 border-right font-bold">Trạng thái</div>
                 <div class="grid-colspan-8">${student.status ? `${student.status._id} - ${student.status.status_name}` : 'N/A'}</div>
+                <div class="grid-colspan-4 border-right font-bold">Điểm trung bình tích lũy</div>
+                <div class="grid-colspan-8">${gpaFormatted} / 10  ---  ${gpa_base_4_formatted} / 4</div>
+                <div class="grid-colspan-4 border-right font-bold">Tổng số tín chỉ</div>
+                <div class="grid-colspan-8">${totalCredits}</div>
               </div>
               <div class="grid grid-gap-8 border-box w-full box bg-grey-200 px-32 pt-16 pb-16">
                 <h2 class="grid-colspan-12 text-center">Bảng điểm các học phần</h2>
@@ -184,16 +201,19 @@ export const getTranscript = async (req, res) => {
                       <th class="font-bold text-left">Mã học phần</th>
                       <th class="font-bold text-left">Tên học phần</th>
                       <th class="font-bold text-left">Điểm</th>
+                      <th class="font-bold text-left">Số tín chỉ</th>
                       <th class="font-bold text-left">Ngày ghi điểm</th>
                     </tr>
                   </thead>
                   <tbody>
                     ${gradeInfos.length > 0 ? gradeInfos.map(grade => `
+
                       <tr>
                         <td style="width: 20%;">${grade.class_id}</td>
                         <td style="width: 20%;">${grade.course_id}</td>
                         <td style="width: 20%;">${grade.course_name}</td>
-                        <td style="width: 20%;">${grade.grade || 'Chưa có điểm'}</td>
+                        <td style="width: 10%;">${grade.grade || 'Chưa có'}</td>
+                        <td style="width: 10%;">${grade.credits}</td>
                         <td style="width: 20%;">${new Date(grade.recorded_at).toLocaleDateString("vi-VN")}</td>
                       </tr>
                     `).join('') : `

@@ -117,15 +117,22 @@ export const addStudent = async (req, res) => {
 };
 
 async function preprocessStudent(studentToProcess, validator) {
+  
+  const existingStudent = await Student.findOne({ _id: studentToProcess._id });
+  if (existingStudent) {
+    throw new Error('Duplicate ID');
+  }
+  
   let student;
   try {
     student = await validator.parseAsync(studentToProcess);
   } catch (error) {
     if (error instanceof  ZodError) {
       console.error("Validation error:", error.issues);
-      throw new Error(error.issues.map(issue => `${issue.message}`).join(", "));  
+      throw new Error(error.issues.map(issue => `${issue.message} at  ${issue.path}`).join(", "));  
     }
   }
+  
 
   const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
   const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];

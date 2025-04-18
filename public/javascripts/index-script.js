@@ -496,8 +496,11 @@ function applyIdentityCardEdit(identityCardData, identityCardCell) {
 }
 
 function getIdentityCardFromDiv(identityCardDiv) {
+    const id = identityCardDiv.querySelector("input[name='identity_card_id']").value;
+    if (!id) return null;
+    
     return {
-        _id: identityCardDiv.querySelector("input[name='identity_card_id']").value,
+        _id: id,
         issue_date: identityCardDiv.querySelector("input[name='issue_date']").value,
         expiry_date: identityCardDiv.querySelector("input[name='expiry_date']").value,
         issue_location: identityCardDiv.querySelector("input[name='issue_location']").value,
@@ -627,8 +630,10 @@ function applyPassportEdit(passportData, passportCell) {
 }
 
 function getPassportFromDiv(passportDiv) {
+    const id = passportDiv.querySelector("input[name='passport_id']").value;
+    if (!id) return null;
     return {
-        _id: passportDiv.querySelector("input[name='passport_id']").value,
+        _id: id,
         type: passportDiv.querySelector("input[name='type']").value,
         country_code: passportDiv.querySelector("input[name='country_code']").value,
         issue_date: passportDiv.querySelector("input[name='issue_date']").value,

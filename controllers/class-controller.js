@@ -1,10 +1,10 @@
 // import dayjs from "dayjs";
 // import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import { populate } from "dotenv";
 import Class from "../models/class-model.js";
 import Course from "../models/course-model.js";
 
-// dayjs.extend(customParseFormat);
-const DEFAULT_PAGE_LIMIT = 10;
+const defaultPageLimit = 20;
 
 const options = {
     weekday: "long",
@@ -15,19 +15,20 @@ const options = {
 
 export const getAllClasses = async (req, res) => {
     try {
-        const result = await Class.paginate({}, {
+        const results = await Class.paginate({}, {
             pagination: true,
             page: req.query.page || 1,
-            limit: req.query.limit || DEFAULT_PAGE_LIMIT,
+            limit: req.query.limit || defaultPageLimit,
             sort: { created_at: -1 },
             lean: true,
+            populate: [
+                "course_id",
+            ]
         });
 
-        result.docs.forEach(current_class => {
-            current_class.created_at.text = current_class.created_at.toLocaleString('vi-VN', options);
-        });
-
-        res.render('class', { title: 'Classes', results: result });
+        results.docs = results.docs.filter((result) => result.course_id !== null);
+        console.log(results.docs);
+        res.render('class', { title: 'Classes', results });
     } catch (err) {
         res.status(500).json({ ok: false, message: err.message });
     }
@@ -38,7 +39,7 @@ export const getClassDetail = async (req, res) => {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
         if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
-        const formatted_created_at =current_class.created_at.toLocaleString('vi-VN', options);
+        const formatted_created_at = current_class.created_at.toLocaleString('vi-VN', options);
         res.render('class-detail', { current_class, formatted_created_at });
 
     } catch (err) {

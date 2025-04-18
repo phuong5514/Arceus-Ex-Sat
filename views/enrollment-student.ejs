@@ -14,6 +14,9 @@
 </head>
 
 <body>
+  <nav>
+    <%- include('./partials/nav-bar.ejs') %>
+  </nav>
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
       <h1><%= student._id %> - <%= student.name %></h1>

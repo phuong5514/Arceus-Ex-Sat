@@ -11,27 +11,27 @@
 </head>
 
 <body>
-  <nav>
-    <div class="flex-row w-full grow">
-      <button class="grow">Khóa học</button>
-      <button class="grow" onclick="window.location.href='/class'">Lớp học</button>
-      <button class="grow">Học phần sinh viên</button>
+  <nav >
+    <%- include('./partials/nav-bar.ejs') %>
+    <div class="flex-row">
+      <button onclick="window.location.href='/course/add'">Thêm khóa học</button>
+      <div class="grow"></div>
+      <!-- Pagination -->
+      <div class="flex-row align-center justify-right gap-8">
+        <button 
+          class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
+          onclick="onPageChange(<%= results.page - 1 %>)"> 
+          <
+        </button>
+        <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+        <button 
+          class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
+          onclick="onPageChange(<%= results.page + 1 %>)">
+          >
+        </button>
+      </div>
     </div>
   </nav>
-  <!-- Pagination -->
-  <div class="flex-row align-center justify-right gap-8">
-    <button 
-      class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
-      onclick="onPageChange(<%= results.page - 1 %>)"> 
-      <
-    </button>
-    <span>Trang <%= results.page %> / <%= results.totalPages %></span>
-    <button 
-      class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
-      onclick="onPageChange(<%= results.page + 1 %>)">
-      >
-    </button>
-  </div>
 
   <table class="w-full">
     <thead>

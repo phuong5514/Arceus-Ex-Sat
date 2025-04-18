@@ -14,7 +14,7 @@
   --green_50: #b6efda;
   --green_600: #1a9668;
 
-  --toolbar-height: 150px;
+  --toolbar-height: 120px;
 }
 
 body {
@@ -85,7 +85,7 @@ button {
   cursor: pointer;
   font-weight: bold;
   font-size: x-small;
-  padding: 4px 8px;
+  padding: 8px 16px;
 }
 
 button:hover{

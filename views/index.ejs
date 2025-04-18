@@ -12,7 +12,9 @@
 <body>
   <nav>
     <div class="toolbar flex-column">
-      <div class="grow">
+      <div class="grow flex-row">
+        <button type="button" onclick="window.location.href='/course'">Chuyển đến Giáo vụ</button>
+        <div class="grow"></div>
         <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
           <label for="search-term" class="search-label">Tìm kiếm:</label>
           <input id="search-term" type="text" class="input" placeholder="Nhập từ khóa" size="30"
@@ -200,9 +202,9 @@
       <table>
           <thead>
               <tr>
-                  <th></th>
-                  <th>MSSV</th>
-                  <th>Họ tên</th>
+                  <th class="sticky"></th>
+                  <th class="sticky">MSSV</th>
+                  <th class="sticky">Họ tên</th>
                   <th class="sticky">Ngày sinh</th>
                   <th class="sticky">Giới tính</th>
                   <th class="sticky">Khoa</th>

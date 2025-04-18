@@ -11,7 +11,6 @@ import { studentAddSchema, studentUpdateSchema } from './middlewares/zod-validat
 import { jest } from '@jest/globals';
 import { preprocessStudent } from './controllers/student-controller.js';
 import {z} from 'zod';
-import dayjs from "dayjs";
 // Set up the testing environment
 beforeAll(async () => await connect());
 afterEach(async () => await clearDatabase());
@@ -60,13 +59,13 @@ describe('Student Management System Tests', () => {
   
   const sampleStudent = {
     _id: '22120271',
-    name: 'Dương Hoàng Hồng Phúc',
+    name: 'Lê Võ Minh Phương',
     birthdate: new Date('2004-11-08T00:00:00.000Z'),
     gender: 'Nam',
     class_year: 2022,
     program: 'DT',
     address: 'TP HCM',
-    email: 'phuc21744@hcmus.edu.vn',
+    email: 'phuc21744@student.university.edu.vn',
     phone_number: '0325740149',
     status: 'DH',
     major: 'TATM',
@@ -91,8 +90,8 @@ describe('Student Management System Tests', () => {
     // Assert
     expect(newStudent).toBeDefined();
     expect(newStudent._id).toBe('22120271');
-    expect(newStudent.name).toBe('Dương Hoàng Hồng Phúc');
-    expect(newStudent.email).toBe('phuc21744@hcmus.edu.vn');
+    expect(newStudent.name).toBe('Lê Võ Minh Phương');
+    expect(newStudent.email).toBe('phuc21744@student.university.edu.vn');
   });
 
   // Test 2: Finding a student by ID
@@ -111,7 +110,7 @@ describe('Student Management System Tests', () => {
     // Assert
     expect(foundStudent).toBeDefined();
     expect(foundStudent._id).toBe('22120271');
-    expect(foundStudent.name).toBe('Dương Hoàng Hồng Phúc');
+    expect(foundStudent.name).toBe('Lê Võ Minh Phương');
   });
 
   // Test 3: Finding students by name
@@ -125,11 +124,11 @@ describe('Student Management System Tests', () => {
     await Student.create(sampleStudent);
     
     // Act
-    const students = await Student.find({ name: { $regex: 'Phúc', $options: 'i' } });
+    const students = await Student.find({ name: { $regex: 'Phương', $options: 'i' } });
     
     // Assert
     expect(students).toHaveLength(1);
-    expect(students[0].name).toBe('Dương Hoàng Hồng Phúc');
+    expect(students[0].name).toBe('Lê Võ Minh Phương');
   });
 
   // Test 4: Finding students by major
@@ -164,7 +163,7 @@ describe('Student Management System Tests', () => {
       ...sampleStudent, 
       _id: '22120272',
       name: 'Nguyễn Văn A',
-      email: 'a.nv@hcmus.edu.vn',
+      email: 'a.nv@student.university.edu.vn',
       phone_number: '0987654321'
     };
     await Student.create(anotherStudent);
@@ -172,12 +171,12 @@ describe('Student Management System Tests', () => {
     // Act
     const students = await Student.find({ 
       major: 'TATM',
-      name: { $regex: 'Phúc', $options: 'i' }
+      name: { $regex: 'Phương', $options: 'i' }
     });
     
     // Assert
     expect(students).toHaveLength(1);
-    expect(students[0].name).toBe('Dương Hoàng Hồng Phúc');
+    expect(students[0].name).toBe('Lê Võ Minh Phương');
   });
 
   // Test 6: Updating student information
@@ -223,7 +222,7 @@ describe('Student Management System Tests', () => {
   });
 
   // Test 8: Adding a student with invalid data should fail
-  const validator = z.object({
+   global.validator = z.object({
     _id: z.string(),
     name: z.string(),
     email: z.string().email(),
@@ -386,7 +385,7 @@ describe('Student Management System Tests', () => {
     const sampleStudent2 = {
       ...sampleStudent,
       _id: '22120272',
-      email: 'student2@hcmus.edu.vn',
+      email: 'student2@student.university.edu.vn',
       phone_number: '0987654321'
     };
     

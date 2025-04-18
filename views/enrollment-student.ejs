@@ -42,6 +42,42 @@
           <div class="grid-colspan-4 border-right font-bold">Trạng thái</div>
           <div class="grid-colspan-8"><%= student.status ? `${student.status._id} - ${student.status.status_name}` : 'N/A' %></div>
         </div>
+
+
+        <!-- Grades -->
+        <div class="grid grid-gap-8 border-box w-full box bg-grey-200 px-32 pt-16 pb-16">
+          <h2 class="grid-colspan-10 text-center">Bảng điểm các học phần</h2>
+          <button type="button" class="grid-colspan-2" onclick="onPrintGradesClicked()">In bảng điểm</button>
+          <table class="table grid-colspan-12 border-box">
+            <thead>
+              <tr>
+                <th class="font-bold text-left">Mã lớp</th>
+                <th class="font-bold text-left">Mã học phần</th>
+                <th class="font-bold text-left">Tên học phần</th>
+                <th class="font-bold text-left">Điểm</th>
+                <th class="font-bold text-left">Ngày ghi điểm</th>
+              </tr> 
+            </thead>
+            <tbody>
+              <% if (gradeInfos.length > 0) { %>
+              <% gradeInfos.forEach(grade => { %>
+                <tr>
+                  <td style="width: 20%;"><%= grade.class_id %></td>
+                  <td style="width: 20%;"><%= grade.course_id %></td>
+                  <td style="width: 20%;"><%= grade.course_name %></td>
+                  <td style="width: 20%;"><%= grade.grade ? grade.grade : 'Chưa có điểm' %></td>
+                  <td style="width: 20%;"><%= grade.recorded_at.toLocaleDateString("vi-Vn") %></td>
+                </tr> 
+              <% }) %>
+              <% } else { %>
+              <tr class="text-center font-italic">
+                <td colspan="3" class="text-center">(Không có dữ liệu)</td>
+              </tr> 
+              <% } %>
+            </tbody>
+            </table>
+        </div> 
+
         <!-- Enrolled Classes -->
         <div class="box flex-column w-full border-box p-16 gap-4">
           <% renderClassList(

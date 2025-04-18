@@ -4,6 +4,7 @@ import Transcript from "../models/transcript-model.js";
 import Course from "../models/course-model.js";
 import Class from "../models/class-model.js";
 import puppeteer from "puppeteer";
+import fs from "fs";
 
 const defaultPageLimit = 20;
 
@@ -149,10 +150,9 @@ export const getTranscript = async (req, res) => {
       <!DOCTYPE html>
       <html lang="vi">
       <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Đăng ký học phần</title>
-        <link rel="stylesheet" href="/public/css/styles.css"/>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Đăng ký học phần</title>
       </head>
       <body class="bg-grey-100">
         <div class="flex-column m-16 gap-16">
@@ -208,6 +208,141 @@ export const getTranscript = async (req, res) => {
           </div>
         </div>
       </body>
+      <style>
+      :root {
+      --grey_50: #eeeeee;
+      --grey_100: #efefef;
+      --grey_200: #d9d9d9;
+      --grey_700: #636363;
+      --green_500: #04AA6D;
+      --green_600: #1a9668;
+      }
+
+      body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: x-small;
+      margin: 0;
+      padding: 0;
+      }
+
+      .flex-column {
+      display: flex;
+      flex-direction: column;
+      }
+
+      .gap-16 {
+      gap: 16px;
+      }
+
+      .align-center {
+      align-items: center;
+      }
+
+      .align-self-center {
+      align-self: center;
+      }
+
+      .m-16 {
+      margin: 16px;
+      }
+
+      .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      }
+
+      .grid-gap-8 {
+      gap: 8px;
+      }
+
+      .grid-colspan-12 {
+      grid-column: span 12;
+      }
+
+      .grid-colspan-8 {
+      grid-column: span 8;
+      }
+
+      .grid-colspan-4 {
+      grid-column: span 4;
+      }
+
+      .border-box {
+      box-sizing: border-box;
+      }
+
+      .w-full {
+      width: 100%;
+      }
+
+      .box {
+      border: 1px solid var(--grey_700);
+      padding: 8px;
+      }
+
+      .bg-grey-100 {
+      background-color: var(--grey_100);
+      }
+
+      .bg-grey-200 {
+      background-color: var(--grey_200);
+      }
+
+      .px-32 {
+      padding-left: 32px;
+      padding-right: 32px;
+      }
+
+      .pt-16 {
+      padding-top: 16px;
+      }
+
+      .pb-16 {
+      padding-bottom: 16px;
+      }
+
+      .font-bold {
+      font-weight: bold;
+      }
+
+      .border-right {
+      border-right: 1px solid var(--grey_700);
+      }
+
+      .text-center {
+      text-align: center;
+      }
+
+      .table {
+      border-collapse: collapse;
+      }
+
+      th, td {
+      text-align: left;
+      padding: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      }
+
+      th {
+      background-color: var(--green_500);
+      color: white;
+      font-weight: bold;
+      }
+
+      tr:nth-child(even) {
+      background-color: var(--grey_50);
+      }
+
+      tr:nth-child(odd) {
+      background-color: white;
+      }
+
+      .font-italic {
+      font-style: italic;
+      }
+      </style>
       </html>
     `;
 

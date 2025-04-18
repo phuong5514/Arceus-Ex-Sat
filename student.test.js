@@ -7,7 +7,6 @@ import Status from './models/status-model.js';
 import Address from './models/address-model.js';
 import IdentityCard from './models/identity-card-model.js';
 import Passport from './models/passport-model.js';
-import { studentAddSchema, studentUpdateSchema } from './middlewares/zod-validation-middleware.js';
 import { jest } from '@jest/globals';
 import { preprocessStudent } from './controllers/student-controller.js';
 import {z} from 'zod';
@@ -18,8 +17,8 @@ afterEach(async () => await clearDatabase());
 afterAll(async () => await closeDatabase());
 
 // Mock the necessary functions for validation testing
-jest.mock('./middlewares/zod-validation-middleware.js', () => {
-  const originalModule = jest.requireActual('./middlewares/zod-validation-middleware.js');
+jest.mock('./validators/student-validator.js', () => {
+  const originalModule = jest.requireActual('./validators/student-validator.js');
   
   return {
     ...originalModule,

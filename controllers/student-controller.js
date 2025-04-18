@@ -116,7 +116,7 @@ export const addStudent = async (req, res) => {
   }
 };
 
-async function preprocessStudent(studentToProcess, validator) {
+export async function preprocessStudent(studentToProcess, validator) {
   
   const existingStudent = await Student.findOne({ _id: studentToProcess._id });
   if (existingStudent) {

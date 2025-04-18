@@ -26,6 +26,7 @@
     "mongoose-paginate-v2": "^1.9.0",
     "nodemon": "^3.1.9",
     "pocketbase": "^0.25.2",
+    "puppeteer": "^24.6.1",
     "zod": "^3.24.2"
   },
   "repository": {
@@ -42,10 +43,11 @@
     "supertest": "^7.1.0"
   },
   "jest": {
-    "extensionsToTreatAsEsm": [".js"],
+    "extensionsToTreatAsEsm": [
+      ".js"
+    ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     }
   }
-
 }

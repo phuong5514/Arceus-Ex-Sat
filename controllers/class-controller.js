@@ -27,7 +27,6 @@ export const getAllClasses = async (req, res) => {
         });
 
         results.docs = results.docs.filter((result) => result.course_id !== null);
-        console.log(results.docs);
         res.render('class', { title: 'Classes', results });
     } catch (err) {
         return_error(res, 500, err.message)

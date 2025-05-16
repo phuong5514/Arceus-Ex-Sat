@@ -44,7 +44,7 @@ export const createCourse = async (req, res) => {
 export const updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { course_name, description, department, is_active, prerequisite_course} = req.body;
+    const { course_name, credits, description, department, is_active, prerequisite_course} = req.body;
 
     const course = await Course.findOne({ _id : id });
     if (!course) return res.status(404).json({ message: `Không tìm thấy khóa học với mã ${id}` });

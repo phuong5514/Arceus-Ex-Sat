@@ -18,7 +18,6 @@ import { fileURLToPath } from "url";
 import {studentAddSchema, studentUpdateSchema} from '../validators/student-validator.js';
 import { console } from "inspector";
 import { ZodError } from "zod";
-import { populate } from "dotenv";
 
 import QueryValuesEnum from "../helpers/query-values.js";
 
@@ -95,7 +94,7 @@ export const getAllStudents = async (req, res) => {
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
     console.error("Error getting students:", error.message);
-    res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
+    res.status(500).json({ ok: false, message: "Lỗi lấy danh sách sinh viên: " + error.message });
   }
 };
 
@@ -157,9 +156,11 @@ export async function preprocessStudent(studentToProcess, validator) {
     addresses[index] = addressIds[index];
   }
 
-  student.permanent_address = addresses[0];
-  student.temporary_address = addresses[1];
-  student.mailing_address = addresses[2];
+  Object.assign(student, {
+    permanent_address: addresses[0],
+    temporary_address: addresses[1],
+    mailing_address: addresses[2]
+  });
 
   if (student.identity_card && student.identity_card._id) {
     // check if identity card existed

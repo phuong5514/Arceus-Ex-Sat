@@ -45,8 +45,6 @@ export const getEnrolledClasses = async (studentId) => {
       enrolledClass.student_count = studentCount;
     }
 
-    console.log(filteredClasses);
-
     return filteredClasses;
   } catch (error) {
     console.error(error);
@@ -139,7 +137,7 @@ export const registerClasses = async (req, res) => {
 
       // Check prerequisites
       if (c.course_id.prerequisite_course && !enrolledCourses.includes(c.course_id.prerequisite_course)) {
-        return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký lớp học này`});
+        return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký khoá ${c.course_id._id}`});
       }
 
       const newEnrollment = new Enrollment({

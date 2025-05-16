@@ -14,7 +14,8 @@
   --green_50: #b6efda;
   --green_600: #1a9668;
 
-  --toolbar-height: 120px;
+  --toolbar-height: 118px;
+  --table-header-height: 24px;
 }
 
 body {
@@ -118,6 +119,7 @@ th {
   font-weight: bold;
   top: var(--toolbar-height);
   z-index: 200;
+  height: var(--table-header-height);
 }
 
 tr:nth-child(even) {
@@ -151,7 +153,7 @@ tr:nth-child(odd) {
 .message-panel {
   padding: 4px 8px;
   text-align: center;
-  min-height: 30px;
+  min-height: 24px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -170,7 +172,8 @@ tr:nth-child(odd) {
 
 .editable-row{
   position: sticky;
-  top: 116px;
+  /* This made no sense to me but it worked */
+  top: calc(var(--toolbar-height) + 2.0 * var(--table-header-height));
 }
 
 .error{

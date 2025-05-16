@@ -1,5 +1,3 @@
-import { response } from "express";
-
 async function onRemoveClassesClick(){
   const classesToRemove = document.querySelectorAll(".remove-class-checkbox");
   const selectedClasses = [];

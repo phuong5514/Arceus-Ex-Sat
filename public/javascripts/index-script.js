@@ -1,11 +1,58 @@
-import { setValues, clearValues, toggleReadOnly, setReadOnly } from "../../helpers/dom-node-value-setter";
-
 let mode = "view";
 let dataChanged = false;
 let selectedRow = null;
 let searchOptionsExpanded = false;
 let currentEditAddressDiv = null;
 let selectedStudentId = null;
+
+function setValues(parentNode, valuesObj) {
+    if (!parentNode || typeof parentNode.getElementById !== "function") {
+        throw new Error("Invalid parentNode provided");
+    }
+    if (typeof valuesObj !== "object" || valuesObj === null || Array.isArray(valuesObj)) {
+        throw new Error("valuesObj must be a non-null object");
+    }
+
+    Object.entries(valuesObj).forEach(([id, value]) => {
+        if (typeof id !== "string") return;
+        const childElement = parentNode.getElementById(id);
+        if (childElement && "value" in childElement) {
+            childElement.value = value;
+        }
+    });
+};
+
+function clearValues(parentNode, ids) {
+    if (!parentNode || typeof parentNode.getElementById !== "function") {
+        throw new Error("Invalid parentNode provided");
+    }
+    if (!Array.isArray(ids)) {
+        throw new Error("ids must be an array");
+    }
+
+    ids.forEach((id) => {
+        if (typeof id !== "string") return;
+        const childElement = parentNode.getElementById(id);
+        if (childElement && "value" in childElement) {
+            childElement.value = "";
+        }
+    });
+};
+
+function toggleReadOnly(parentNode, ids) {
+    if (!parentNode || typeof parentNode.getElementById !== "function") {
+        throw new Error("Invalid parentNode provided");
+    }
+    if (!Array.isArray(ids)) {
+        throw new Error("ids must be an array");
+    }
+
+    ids.forEach((id) => {
+        const childElement = parentNode.getElementById(id);
+        const readOnlyValue = !childElement.readOnly;
+        childElement.readOnly = !readOnlyValue;
+    })
+}
 
 function onAddStudentClicked() {
     changeToMode("add");
@@ -186,7 +233,7 @@ async function onAddStudentSaved() {
     student.identity_card = getIdentityCardFromDiv(document.getElementById("add-identity_card"));
     student.passport = getPassportFromDiv(document.getElementById("add-passport"));
 
-    setMessage("error", "Đang thêm...")
+    setMessage("info", "Đang thêm...")
     
     const response = await fetch("/students", {
         method: "POST",

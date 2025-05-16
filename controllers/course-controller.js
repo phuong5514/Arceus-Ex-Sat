@@ -220,11 +220,3 @@ export const addCourse = async (req, res) => {
     return_error(res, 500, err.message)
   }
 }
-
-function checkCreditsValue(credits) {
-  if (credits < 2) {
-    return true, "Số tín chỉ phải >= 2."
-  }
-
-  return false, ""
-}

@@ -3,11 +3,12 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import Department from "../models/department-model.js";
 
+import QueryValuesEnum from "../helpers/query-values.js";
+import return_error from "../helpers/error-handler.js";
+
 dayjs.extend(customParseFormat);
-
-const defaultPageLimit = 20; 
-
 export const createCourse = async (req, res) => {
+  let error_status = 500
   try {
     const { _id, course_name, credits, department, description, prerequisite_course} = req.body;
 
@@ -36,30 +37,33 @@ export const createCourse = async (req, res) => {
     await course.save();
     res.status(201).json(course);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    return_error(res, 500, err.message)
   }
 };
 
 export const updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { course_name, description, department, is_active} = req.body;
+    const { course_name, description, department, is_active, prerequisite_course} = req.body;
 
     const course = await Course.findOne({ _id : id });
     if (!course) return res.status(404).json({ message: `Không tìm thấy khóa học với mã ${id}` });
 
-    course.course_name = course_name || course.course_name;  
-    course.description = description || course.description;
-    course.department = department || course.department;
-    course.prerequisite_course = req.body.prerequisite_course ?? course.prerequisite_course;
-    course.credits = req.body.credits || course.credits;
+    course.set({
+      course_name: course_name ?? course.course_name,
+      description: description ?? course.description,
+      department: department ?? course.department,
+      prerequisite_course: prerequisite_course ?? course.prerequisite_course,
+      credits: credits ?? course.credits
+
+    })
     
     course.is_active = is_active ?? course.is_active;
 
     await course.save();
     res.status(200).json({ok: true, message: ""});
   } catch (err) {
-    res.status(500).json({ ok: false, message: err.message });
+    return_error(res, 500, err.message)
   }
 };
 
@@ -87,7 +91,7 @@ export const deleteCourse = async (req, res) => {
     await Course.deleteOne({ code });
     res.json({ ok: true, message: "" });
   } catch (err) {
-    res.status(500).json({ ok: false, message: err.message });
+    return_error(res, 500, err.message)
   }
 };
 
@@ -103,7 +107,7 @@ export const deactivateCourse = async (req, res) => {
 
     res.status(200).json({ok: true, message: "" });
   } catch (err) {
-    res.status(500).json({ok: false, message: err.message });
+    return_error(res, 500, err.message)
   }
 };
 
@@ -111,9 +115,9 @@ export const getAllCourses = async (req, res) => {
   try {
     const results = await Course.paginate({}, {
       pagination: true,
-      page: req.query.page || 1,
-      limit: req.query.limit || defaultPageLimit,
-      sort: { created_at: -1 },
+      page: req.query.page || QueryValuesEnum.DEFAULT_QUERY_PAGE,
+      limit: req.query.limit || QueryValuesEnum.DEFAULT_PAGE_LIMIT,
+      sort: { created_at: QueryValuesEnum.DEFAULT_SORT_ORDER },
       lean: true,
     });
 
@@ -153,8 +157,7 @@ export const getCourseDetail = async (req, res) => {
     if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
     res.render('course-detail', {course, status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, message: err.message });
+    return_error(res, 500, err.message, true)
   }
 }
 
@@ -169,8 +172,7 @@ export const getCourseDetailEdit = async (req, res) => {
     if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
     res.render('course-detail-edit', {course, status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, message: err.message });
+    return_error(res, 500, err.message, true)
   }
 }
 
@@ -182,8 +184,7 @@ export const getCourseAdd = async (req, res) => {
 
     res.render('course-detail-add', {status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch {
-    console.error(err);
-    res.status(500).json({ ok: false, message: err.message });
+    return_error(res, 500, err.message, true)
   }
 }
 
@@ -216,6 +217,14 @@ export const addCourse = async (req, res) => {
     await course.save();
     res.status(201).json({ ok: true, message: "" });
   } catch (err) {
-    res.status(500).json({ ok: false, message: err.message });
+    return_error(res, 500, err.message)
   }
+}
+
+function checkCreditsValue(credits) {
+  if (credits < 2) {
+    return true, "Số tín chỉ phải >= 2."
+  }
+
+  return false, ""
 }

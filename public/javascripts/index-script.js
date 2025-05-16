@@ -1,3 +1,5 @@
+import { setValues, clearValues, toggleReadOnly } from "../../helpers/dom-node-value-setter";
+
 let mode = "view";
 let dataChanged = false;
 let selectedRow = null;
@@ -38,22 +40,31 @@ function onStudentRowClick(row, studentId) {
         const cells = row.getElementsByTagName("td");
         // first cell for marking
         
-        document.getElementById("edit-student_id").value = cells[1].textContent.trim();
-        const studentName = cells[2].textContent.trim();
-        document.getElementById("edit-name").value = studentName;
-        
+        setValues(document, {
+            "edit-student_id": cells[1].textContent.trim(),
+            "edit-name": cells[2].textContent.trim(),
+            "edit-gender": cells[4].textContent.trim(),
+            "edit-major": cells[5].getAttribute("name"),
+            "edit-class_year": cells[6].textContent.trim(),
+            "edit-program": cells[7].getAttribute("name"),
+            "edit-email": cells[13].textContent.trim(),
+            "edit-phone_number": cells[14].textContent.trim(),
+            "edit-status": cells[15].getAttribute("name"),
+            "edit-nationality": cells[16].textContent.trim()
+        });
+
+
         const birthdate = cells[3].textContent.trim();
         if (birthdate && birthdate !== 'Invalid Date') {
             const [day, month, year] = birthdate.split('/');
-            document.getElementById("edit-birthdate").value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            setValues(document, {
+                "edit-birthdate": `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            });
         } else {
-            document.getElementById("edit-birthdate").value = '';
+            clearValues(document, ["edit-birthdate"]);
         }
+
         
-        document.getElementById("edit-gender").value = cells[4].textContent.trim();
-        document.getElementById("edit-major").value = cells[5].getAttribute("name");
-        document.getElementById("edit-class_year").value = cells[6].textContent.trim();
-        document.getElementById("edit-program").value = cells[7].getAttribute("name");
 
         applyIdentityCardEdit(getIdentityCardFromDiv(cells[8].querySelector("div")), document.getElementById("edit-identity_card"));
         applyPassportEdit(getPassportFromDiv(cells[9].querySelector("div")), document.getElementById("edit-passport"));
@@ -62,11 +73,6 @@ function onStudentRowClick(row, studentId) {
         applyAddressEdit(getAddressFromAddressDiv(cells[11].querySelector("div")), document.getElementById("edit-address_temporary"));
         applyAddressEdit(getAddressFromAddressDiv(cells[12].querySelector("div")), document.getElementById("edit-address_mailing"));
 
-        document.getElementById("edit-email").value = cells[13].textContent.trim();
-        document.getElementById("edit-phone_number").value = cells[14].textContent.trim();
-        document.getElementById("edit-status").value = cells[15].getAttribute("name");
-
-        document.getElementById("edit-nationality").value = cells[16].textContent.trim();
 
         setMessage("info", `Đang chỉnh sửa thông tin sinh viên: ${studentId}, ${studentName}, ${birthdate}`);
     } else {
@@ -74,17 +80,18 @@ function onStudentRowClick(row, studentId) {
         selectedStudentId = null;
         setMessage("", "");
         
-        document.getElementById("edit-student_id").value = "";
-        document.getElementById("edit-name").value = "";
-        document.getElementById("edit-birthdate").value = "";
-        document.getElementById("edit-gender").value = "";
-        document.getElementById("edit-major").value = "";
-        document.getElementById("edit-class_year").value = "";
-        document.getElementById("edit-program").value = "";
-        //document.getElementById("edit-address").value = "";
-        document.getElementById("edit-email").value = "";
-        document.getElementById("edit-phone_number").value = "";
-        document.getElementById("edit-status").value = "";
+        clearValues(document, [
+            "edit-student_id",
+            "edit-name",
+            "edit-birthdate",
+            "edit-gender",
+            "edit-major",
+            "edit-class_year",
+            "edit-program",
+            "edit-email",
+            "edit-phone_number",
+            "edit-status",
+        ]);
     }
 }
 
@@ -439,6 +446,12 @@ function onIdentityCardEditClicked(button) {
 
     const identityCardData = getIdentityCardFromDiv(currentEditIdentityCardDiv);
 
+    // setValues(
+    //     document,
+    //     {
+
+    //     }
+    // )
     document.getElementById("identity-card-id").readOnly = false;
     document.getElementById("identity-card-issue-date").readOnly = false;
     document.getElementById("identity-card-expiry-date").readOnly = false;

@@ -1,4 +1,5 @@
 # Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 5)
+# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 5)
 ## Giới thiệu
 Là trang web quản lý sinh viên đơn giản, cung cấp các chức năng thêm, xóa, sửa thông tin sinh viên, import, export, v.v
 
@@ -146,6 +147,7 @@ Thêm danh mục bằng cách nhập mã danh mục và tên vào dòng nhập l
 
 ### Đổi tên danh mục
 Tên danh mục có thể đổi trực tiếp bằng cách nhập tên mới vào ô tên của danh mục và nhấn `Enter`.
+
 
 ## Export danh sách sinh viên
 

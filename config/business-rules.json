@@ -1,6 +1,6 @@
 {
     "emailDomain": "@student.university.edu.vn",
-    "phoneRegex": "^(?:\\+84|0[35789])\\d{8}$",
+    "phoneRegex": "^(?:\\+84|0)[35789]\\d{8}$",
     "statusRules": {
       "TTDH": ["TTBL", "TTTN", "TTDC"],
       "TTBL": ["TTDH", "TTDC"],

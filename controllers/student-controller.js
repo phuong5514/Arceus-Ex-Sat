@@ -6,19 +6,27 @@ import Status from "../models/status-model.js";
 import Address from "../models/address-model.js";
 import IdentityCard from "../models/identity-card-model.js";
 import Passport from "../models/passport-model.js";
-import path from 'path';
 import { writeLog } from '../helpers/logger.js';
 import * as guidance from '../helpers/guidance-format.js';
 import { formatAddress, formatIdentificationDocument, formatIdentityCard, formatPassport } from '../helpers/student-data-formatter.js'; 
 
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import { promises as fs }  from 'fs';
+import path from 'path';
+import { fileURLToPath } from "url";
+
+import {studentAddSchema, studentUpdateSchema} from '../validators/student-validator.js';
+import { console } from "inspector";
+import { ZodError } from "zod";
+import { populate } from "dotenv";
 
 dayjs.extend(customParseFormat);
 
+const defaultPageLimit = 20; 
 
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
-    pagination: false,
+    pagination: true,
     page: 1,
     limit: 100,
     sort: "_id",
@@ -41,17 +49,19 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
   // format students data
   results.docs.forEach(student => {
     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
-
     const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
-
-    addresses.forEach(address => {
-      if (address) {
-        address.text = formatAddress(address);
+    for (let index = 0; index < addresses.length; index++) {
+      if (addresses[index] != null){
+        addresses[index].text = formatAddress(addresses[index]);
       } else {
-        address = emptyAddress();
-        address.text = "";
+        addresses[index] = emptyAddress();
+        addresses[index].text = ""
       }
-    });
+    }
+    student.permanent_address = addresses[0];
+    student.temporary_address = addresses[1];
+    student.mailing_address = addresses[2];
+    writeLog("Student", student._id, ":", student.permanent_address, student.temporary_address, student.mailing_address);
 
     formatIdentificationDocument(student.identity_card, formatIdentityCard);
     formatIdentificationDocument(student.passport, formatPassport);
@@ -74,14 +84,17 @@ function emptyAddress(){
 
 export const getAllStudents = async (req, res) => {
   try {
-    const results = await fetchAndFormatStudents();
+    const results = await fetchAndFormatStudents({}, {
+      page: req.query.page || 1,
+      limit: req.query.limit || defaultPageLimit,
+    });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
-      console.error("Error getting students:", error.message);
-      res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
+    console.error("Error getting students:", error.message);
+    res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
   }
 };
 
@@ -89,7 +102,7 @@ export const addStudent = async (req, res) => {
   const student = req.body;
 
   try {
-    const newStudent = await preprocessStudent(student);
+    const newStudent = await preprocessStudent(student, studentAddSchema);
 
     await Student.insertOne(newStudent);
 
@@ -103,118 +116,55 @@ export const addStudent = async (req, res) => {
   }
 };
 
-async function preprocessStudent(student) {
-  const majorList = await Major.distinct("_id");
-  const statusList = await Status.distinct("_id");
-  const programList = await Program.distinct("_id");
-  const genderList = ["Nam", "Nữ"]
+export async function preprocessStudent(studentToProcess, validator) {
+  
+  const existingStudent = await Student.findOne({ _id: studentToProcess._id });
+  if (existingStudent) {
+    throw new Error('Duplicate ID');
+  }
+  
+  let student;
+  try {
+    student = await validator.parseAsync(studentToProcess);
+  } catch (error) {
+    if (error instanceof  ZodError) {
+      console.error("Validation error:", error.issues);
+      throw new Error(error.issues.map(issue => `${issue.message} at  ${issue.path}`).join(", "));  
+    }
+  }
+  
 
-  // addresses are objects that need to be added to the Address collection
- // Corrected version using for...of
   const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
   const addressIds = [student._id + "ADDRPMNT", student._id + "ADDRTMP", student._id + "ADDRMAIL"];
   const addressFields = ["house_number", "street", "ward", "district", "city", "country", "postal_code"];
 
   for (let index = 0; index < addresses.length; index++) {
     let address = addresses[index];
-    if (address) {
-      const storedAddress = await Address.findOne({ _id: addressIds[index] });
 
-      if (storedAddress) {
-        addressFields.forEach(field => {
-          storedAddress[field] = address[field];
-        });
-        await storedAddress.save();
-      } else {
-        const newAddress = { ...address, _id: addressIds[index] };
-        await Address.insertOne(newAddress);
-      }
+    const storedAddress = await Address.findOne({ _id: addressIds[index] });
 
-      addresses[index] = addressIds[index];
+    if (storedAddress) {
+      addressFields.forEach(field => {
+        storedAddress[field] = address[field];
+      });
+      await storedAddress.save();
     } else {
-      addresses[index] = "";
+      const newAddress = { ...address, _id: addressIds[index] };
+      await Address.insertOne(newAddress);
     }
+
+    addresses[index] = addressIds[index];
   }
 
   student.permanent_address = addresses[0];
   student.temporary_address = addresses[1];
   student.mailing_address = addresses[2];
 
-  // // addresses are objects that need to be added to the Address collection
-  // if (student.permanent_address) {
-  //   const addressId = student._id + "ADDRPMNT";
-  //   // check if address existed
-  //   const address = await Address.findOne({ _id: addressId });
-  //   if (address) {
-  //     address.house_number = student.permanent_address.house_number;
-  //     address.street = student.permanent_address.street;
-  //     address.ward = student.permanent_address.ward;
-  //     address.district = student.permanent_address.district;
-  //     address.city = student.permanent_address.city;
-  //     address.country = student.permanent_address.country;
-  //     address.postal_code = student.permanent_address.postal_code;
-  //     await address.save();
-  //   } else {
-  //     const newAddress = student.permanent_address;
-  //     newAddress._id = addressId;
-  //     await Address.insertOne(newAddress);
-  //   }
-  //   student.permanent_address = addressId;
-  // } else {
-  //   student.permanent_address = "";
-  // }
-  // if (student.temporary_address) {
-  //   const addressId = student._id + "ADDRTMP";
-  //   // check if address existed
-  //   const address = await Address.findOne({ _id: addressId });
-  //   if (address) {
-  //     address.house_number = student.temporary_address.house_number;
-  //     address.street = student.temporary_address.street;
-  //     address.ward = student.temporary_address.ward;
-  //     address.district = student.temporary_address.district;
-  //     address.city = student.temporary_address.city;
-  //     address.country = student.temporary_address.country;
-  //     address.postal_code = student.temporary_address.postal_code;
-  //     await address.save();
-  //   }
-  //   else {
-  //     const newAddress = student.temporary_address;
-  //     newAddress._id = addressId;
-  //     await Address.insertOne(newAddress);
-  //   }
-  //   student.temporary_address = addressId;
-  // } else {
-  //   student.temporary_address = "";
-  // }
-  // if (student.mailing_address) {
-  //   const addressId = student._id + "ADDRMAIL";
-  //   // check if address existed
-  //   const address = await Address.findOne({ _id: addressId });
-  //   if (address) {
-  //     address.house_number = student.mailing_address.house_number;
-  //     address.street = student.mailing_address.street;
-  //     address.ward = student.mailing_address.ward;
-  //     address.district = student.mailing_address.district;
-  //     address.city = student.mailing_address.city;
-  //     address.country = student.mailing_address.country;
-  //     address.postal_code = student.mailing_address.postal_code;
-  //     await address.save();
-  //   }
-  //   else {
-  //     const newAddress = student.mailing_address;
-  //     newAddress._id = addressId;
-  //     await Address.insertOne(newAddress);
-  //   }
-  //   student.mailing_address = addressId;
-  // } else {
-  //   student.mailing_address = "";
-  // }
-
-
   if (student.identity_card && student.identity_card._id) {
     // check if identity card existed
     const identityCard = await IdentityCard.findOne({ _id: student.identity_card._id });
     
+    writeLog("IdentityCard" + JSON.stringify(student.identityCard));
     if (identityCard) {
       identityCard.issue_date = student.identity_card.issue_date;
       identityCard.expiry_date = student.identity_card.expiry_date;
@@ -265,7 +215,7 @@ export const updateStudent = async (req, res) => {
     if (!studentToUpdate) {
       throw new Error("Không tìm thấy sinh viên cần cập nhật");
     }
-    const processedStudent = await preprocessStudent(student);
+    const processedStudent = await preprocessStudent(student, studentUpdateSchema);
     
     studentToUpdate.name = processedStudent.name;
     studentToUpdate.email = processedStudent.email;
@@ -283,6 +233,7 @@ export const updateStudent = async (req, res) => {
     studentToUpdate.identity_card = processedStudent.identity_card;
     studentToUpdate.passport = processedStudent.passport;
     studentToUpdate.nationality = processedStudent.national;
+
     await studentToUpdate.save();
 
     writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
@@ -341,7 +292,10 @@ export const searchStudents = async (req, res) => {
     }
 
     console.log("Search completed!")
-    const results = await fetchAndFormatStudents(query);
+    const results = await fetchAndFormatStudents(query, {
+      page: queryData.page || 1,
+      limit: queryData.limit || defaultPageLimit
+    });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
     const programs = await Program.find().lean();
@@ -351,20 +305,30 @@ export const searchStudents = async (req, res) => {
   }
 };
 
-export const showImportPage = (req, res) => {
-  res.render("import", { title: "Import Students" });
+export const showImportPage = async (req, res) => {
+  const template_dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../import_templates");
+  const json_template = await fs.readFile(path.join(template_dir, "json-import.txt"), "utf-8");
+  const csv_template = await fs.readFile(path.join(template_dir, "csv-import.txt"), "utf-8");
+  res.render("import", { title: "Import Students", json_template, csv_template});
 };
+
+function formatExtraLogs(extra_logs){
+  if (extra_logs.length > 0){
+    return `Chi tiết:\n ${extra_logs.join('\n')}`
+  } else {
+    return `Chi tiết:\n (Không có)`
+  }
+}
 
 export const importStudents = async (req, res) => {
   try {
     // Kiểm tra file
     if (!req.files || !req.files.file) {
       res.status(400).json({
-        success: false,
+        ok: false,
         message: 'Vui lòng chọn file để import'
       });
     }
-    
     
     const file = req.files.file;
     const fileType = req.body.fileType;
@@ -372,14 +336,14 @@ export const importStudents = async (req, res) => {
     // Kiểm tra định dạng file
     if (fileType === 'csv' && !file.name.toLowerCase().endsWith('.csv')) {
       return res.status(400).json({
-        success: false,
+        ok: false,
         message: 'File phải có định dạng .csv'
       });
     }
     // HOTFIX: Somehow file extension will change from "".json" to "j.son"
     if (fileType === 'json' && !file.name.toLowerCase().endsWith('.json') && !file.name.toLowerCase().endsWith('j.son')) {
       return res.status(400).json({
-        success: false,
+        ok: false,
         message: 'File phải có định dạng .json'
       });
     }
@@ -387,6 +351,7 @@ export const importStudents = async (req, res) => {
     // Đọc nội dung file
     const fileContent = file.data.toString('utf8');
     const students = [];
+    const extra_error_logs = [];
 
     switch (fileType) {
       case 'csv':{
@@ -394,7 +359,7 @@ export const importStudents = async (req, res) => {
         const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line);
         if (lines.length < 2) {
           return res.status(400).json({
-            success: false,
+            ok: false,
             message: 'File CSV phải có ít nhất header và một dòng dữ liệu'
           });
         }
@@ -405,7 +370,7 @@ export const importStudents = async (req, res) => {
         // Kiểm tra header
         if (!expectedHeaders.every(h => headers.includes(h))) {
           return res.status(400).json({
-            success: false,
+            ok: false,
             message: `File CSV phải có đầy đủ các cột: ${expectedHeaders.join(', ')}`
           });
         }
@@ -420,17 +385,10 @@ export const importStudents = async (req, res) => {
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',').map(v => v.trim());
           if (values.length !== headers.length) {
-            console.log(`Bỏ qua dòng ${i + 1} vì số cột không khớp`);
+            console.log(`Bỏ qua dòng ${i + 1}: Số cột không khớp`);
             continue;
           }
           
-          // Kiểm tra xem có trường nào bị thiếu không
-          // const hasEmptyFields = values.some(v => !v);
-          // if (hasEmptyFields) {
-          //   console.log(`Bỏ qua dòng ${i + 1} vì có trường dữ liệu trống`);
-          //   continue;
-          // }
-
           const newStudent = {
             _id: values[headerMap['_id']],
             name: values[headerMap['name']],
@@ -494,39 +452,42 @@ export const importStudents = async (req, res) => {
 
           await processStudentImport(newStudent, (err)=>{
             if (err){
-              console.error("Bỏ qua dòng", i + 1, "vì dữ liệu không hợp lệ: ", err.message);
+              console.error("Bỏ qua dòng", i + 1, ": ", err.message);
             } else {
               console.log("Thêm sinh viên", newStudent._id, "thành công");
               students.push(newStudent);
-              console.log(students.length);
             }
           });
         }
         break;
       }
       case 'json': {  
-        // Xử lý JSON
         try {
           const jsonData = JSON.parse(fileContent);
           if (!Array.isArray(jsonData)) {
             return res.status(400).json({
-              success: false,
+              ok: false,
               message: 'File JSON phải chứa một mảng các sinh viên'
             });
           }
           for (let i = 0; i < jsonData.length; i++) {
-            await processStudentImport(jsonData[i], (err)=>{
+            writeLog("Student", JSON.stringify(jsonData[i]) );
+            await processStudentImport(jsonData[i], (student, err)=>{
+              let msg = "";
               if (err){
-                console.error("Bỏ qua dòng", i + 1, "vì dữ liệu không hợp lệ: ", err.message);
+                msg = `Bỏ qua dòng ${i + 1}: ${err.message}`;
+                extra_error_logs.push(msg);
+                console.error(msg);
               } else {
-                console.log("Thêm sinh viên", jsonData[i]._id, "thành công");
-                students.push(jsonData[i]);
+                msg = `Thêm sinh viên ${student._id} thành công`;
+                students.push(student);
               }
             });
           }
         } catch (error) {
+          console.error(error.message || error);
           return res.status(400).json({
-            success: false,
+            ok: false,
             message: 'File JSON không hợp lệ'
           });
         }
@@ -536,8 +497,8 @@ export const importStudents = async (req, res) => {
     // Kiểm tra dữ liệu trống
     if (students.length === 0) {
       return res.status(400).json({
-        success: false,
-        message: 'Không có dữ liệu nào được import'
+        ok: false,
+        message: 'Không có dữ liệu nào được import\n' + formatExtraLogs(extra_error_logs)
       });
     }
 
@@ -547,15 +508,15 @@ export const importStudents = async (req, res) => {
     // Ghi log và trả về kết quả
     writeLog('IMPORT', 'SUCCESS', `Import ${students.length} sinh viên thành công`);
     return res.status(200).json({
-      success: true,
-      message: `Import thành công ${students.length} sinh viên`
+      ok: true,
+      message: `Import thành công ${students.length} sinh viên\n ` + formatExtraLogs(extra_error_logs)
     });
 
   } catch (error) {
     console.error('Import error:', error);
     writeLog('IMPORT', 'ERROR', `Import sinh viên thất bại: ${error.message}`);
     return res.status(500).json({
-      success: false,
+      ok: false,
       message: 'Có lỗi xảy ra khi import: ' + error.message
     });
   }
@@ -563,163 +524,26 @@ export const importStudents = async (req, res) => {
 
 
 // This function validates and alter the student data before inserting into the database
-async function processStudentImport(student, resultCallback) {
-  const requiredFields = [
-    "_id", "name", "birthdate", "gender", "class_year", "program", // "address", old address field 
-    "email", "phone_number", "status", "major", "nationality",
-    // {"permanent_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
-    // {"temporary_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
-    // {"mailing_address": ["house_number", "street", "ward", "district", "city", "country", "postal_code"]},
-    {"identity_card": ["_id", "issue_date", "expiry_date", "issue_location", "is_digitized", "chip_attached"]},
-    {"passport": ["_id", "type", "country_code", "issue_date", "expiry_date", "issue_location"]},
-    // passport_notes is optional
-  ];
-
-  // Check if all required fields are present
-  if (!checkRequiredFields(student, requiredFields, resultCallback)) {
-    return;
+async function processStudentImport(studentToProcess, resultCallback) {
+  try {
+    const student = await preprocessStudent(studentToProcess, studentAddSchema);
+    resultCallback(student, null);
+  } catch (error) {
+    resultCallback(null, error);
   }
-
-  // Check if student id is new
-  const studentExist = await Student.findOne({ _id: student._id });
-  if (studentExist) {
-    resultCallback(new Error(`Sinh viên ${student._id} đã tồn tại trong hệ thống`));
-    return;
-  }
-
-  if (!/^\d{8}$/.test(student._id)) {
-    resultCallback(new Error("MSSV phải là 8 chữ số"));
-    return;
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.email)) {
-    resultCallback(new Error("Định dạng email không hợp lệ"));
-    return;
-  }
-
-  if (!/^\d{10,11}$/.test(student.phone_number)) {
-    resultCallback(new Error("Số điện thoại phải từ 10 đến 11 chữ số"));
-    return;
-  }
-
-  if (!["Nam", "Nữ"].includes(student.gender)) {
-    resultCallback(new Error("Giới tính phải là Nam hoặc Nữ"));
-    return;
-  }
-
-  if (!/^\d{4}$/.test(student.class_year)) {
-    resultCallback(new Error("Năm học phải là 4 chữ số"));
-    return;
-  }
-
-  if (!dayjs(student.birthdate).isValid()) {
-    resultCallback(new Error("Ngày sinh không hợp lệ"));
-    return;
-  } else {
-    student.birthdate = dayjs(student.birthdate, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.identity_card.issue_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày cấp CCCD/CMND phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.identity_card.issue_date = dayjs(student.identity_card.issue_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.identity_card.expiry_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày hết hạn CCCD/CMND phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.identity_card.expiry_date = dayjs(student.identity_card.expiry_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.passport.issue_date, "DD/MM/YYYY", true).isValid()) {
-    resultCallback(new Error("Ngày cấp hộ chiếu phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.passport.issue_date = dayjs(student.passport.issue_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  if (!dayjs(student.passport.expiry_date).isValid()) {
-    resultCallback(new Error("Ngày hết hạn hộ chiếu phải thuộc định dạng DD/MM/YYYY"));
-    return;
-  } else {
-    student.passport.expiry_date = dayjs(student.passport.expiry_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-  }
-
-  // Run check on major and change to its id 
-  if (student.major){
-    const major = await Major.findOne({major_name: student.major});
-    if (major){
-      student.major = major._id;
-    } else {
-      resultCallback(new Error(`Ngành học ${major} không nằm trong danh sách ngành học có sẵn`));
-      return;
-    }
-  }
-  // Run check on status and change to its id
-  if (student.status){
-    const status = Status.findOne({status_name: student.status});
-    if (status){
-      student.status = status._id;
-    } else {
-      resultCallback(new Error(`Trạng thái ${student.status} không nằm trong danh sách trạng thái có sẵn`));
-      return;
-    }
-  }
-  // Run check on program and change to its id
-  if (student.program){
-    const program = Program.findOne({program_name: student.program});
-    if (program){
-      student.program = program._id;
-    } else {
-      resultCallback(new Error("Trạng thái không nằm trong danh sách trạng thái có sẵn"));
-      return;
-    }
-  }
-  // Add in new address if needed
-  if (student.permanent_address){
-    const addressId = student._id + "ADDRPMNT";
-    const address = await Address.find({ _id: addressId });
-    if (!address){
-      student.permanent_address._id = addressId;
-      await Address.insertOne(student.permanent_address);
-    }
-    student.permanent_address = addressId;
-  }
-  if (student.temporary_address){
-    const addressId = student._id + "ADDRTMP";
-    const address = await Address.find({ _id: addressId });
-    if (!address){
-      student.temporary_address._id = addressId;
-      await Address.insertOne(student.temporary_address);
-    }
-    student.temporary_address = addressId;
-  }
-  if (student.mailing_address){
-    const addressId = student._id + "ADDRMAIL";
-    const address = await Address.find({ _id: addressId });
-    if (!address){
-      student.mailing_address._id = addressId;
-      await Address.insertOne(student.mailing_address);
-    }
-    student.mailing_address = addressId;
-  }
-
-  resultCallback(null);
 }
 
 const checkRequiredFields = (student, requiredFields, resultCallback) => {
   const checkFields = (obj, fields, parent = '') => {
     for (const field of fields) {
       if (typeof field === "string") {
-        if (!obj[field]) {
+        if (obj[field] === undefined) {
           resultCallback(new Error(`Trường ${parent}${field} không được để trống`));
           return false;
         }
       } else if (typeof field === "object") {
         const parentField = Object.keys(field)[0];
-        if (!obj[parentField]) {
+        if (obj[parentField] === undefined) {
           resultCallback(new Error(`Trường ${parent}${parentField} không được để trống`));
           return false;
         }
@@ -733,6 +557,7 @@ const checkRequiredFields = (student, requiredFields, resultCallback) => {
 
   return checkFields(student, requiredFields);
 };
+
 
 export const exportAllStudents = async (req, res) => {
   try {
@@ -821,6 +646,66 @@ export const exportAllStudents = async (req, res) => {
   } catch (error) {
     console.error("Error exporting students:", error.message);
     writeLog('EXPORT', 'ERROR', `Export sinh viên thất bại: ${error.message}`);
-    res.status(500).json({ok: false, error: "Lỗi xuất dữ liệu sinh viên" });
+    res.status(500).json({ok: false, message: "Lỗi xuất dữ liệu sinh viên" });
   }
 };
+
+export const getStudentAcademic = (studentId) => {
+  try {
+    const options = {
+      lean: true,
+      populate: [
+        "major",
+        "program",
+        "status",
+      ]
+    }
+
+    return Student.findOne({ _id: studentId }, {}, options);
+  } catch (error) {
+    console.error("Error getting student:", error.message);
+    return null;
+  }
+}
+
+export const getAllStudentsAcademic = (page, limit) => {
+  try {
+    const options = {
+      pagination: true,
+      page,
+      limit,
+      lean: true,
+      populate: [
+        "major",
+        "program",
+        "status",
+      ]
+    }
+
+    return Student.paginate({}, options);
+  } catch (error) {
+    console.error("Error getting students:", error.message);
+    return null;
+  }
+};
+
+export const searchAllStudentAcademic = (query, page, limit) => {
+  try {
+    const options = {
+      pagination: true,
+      page,
+      limit,
+      lean: true,
+      populate: [
+        "major",
+        "program",
+        "status",
+      ]
+    }
+
+    return Student.paginate(query, options);
+  } catch (error) {
+    console.error("Error getting students:", error.message);
+    return null;
+  }
+}

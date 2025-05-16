@@ -6,6 +6,8 @@ function showFormat() {
 
 document.getElementById('importForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  setMessage('info', 'Đang import file...');
+
   const formData = new FormData();
   formData.append('fileType', document.getElementById('fileType').value);
   formData.append('file', document.getElementById('file').files[0]);
@@ -17,25 +19,26 @@ document.getElementById('importForm').addEventListener('submit', async (e) => {
     });
     const data = await response.json();
 
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = data.message;
-    messageDiv.className = data.success ? 'success' : 'error';
-    messageDiv.style.display = 'block';
-
-    if (data.success) {
-      // Nếu import thành công, reset form sau 2 giây
-      setTimeout(() => {
-        document.getElementById('importForm').reset();
-        messageDiv.style.display = 'none';
-      }, 2000);
+    if (data.ok){
+      setMessage('success', 'Import file thành công');
+    } else {
+      setMessage('error', 'Lỗi khi import file: ' + data.message);
     }
   } catch (error) {
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = 'Error importing file: ' + error.message;
-    messageDiv.className = 'error';
-    messageDiv.style.display = 'block';
+    setMessage('error', 'Lỗi khi import file: ' + error.message);
   }
 });
+
+function setMessage(tag, msg){
+  const messageDiv = document.getElementById('message');
+  messageDiv.classList.remove('success');
+  messageDiv.classList.remove('error');
+  messageDiv.classList.remove('warning');
+  messageDiv.classList.remove('info');
+  messageDiv.classList.add(tag);
+  messageDiv.style.display = 'block';
+  messageDiv.textContent = msg;
+}
 
 // Show CSV format by default
 showFormat();

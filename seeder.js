@@ -24,8 +24,8 @@ const students = [
     class_year: "2022",
     program: "CTDT",
     address: "TP HCM",
-    email: "phuc21744@gmail.com",
-    phone_number: "0325740149",
+    email: "phuc12346@student.university.edu.vn",
+    phone_number: "+84325740149",
     status: "TTDH",
     major: "KHOATATM",
     nationality: "Việt Nam",
@@ -43,7 +43,7 @@ const students = [
     class_year: "2022",
     program: "CTTT",
     address: "TP HCM",
-    email: "manhphuong1234@gmail.com",
+    email: "manhphuong1234@student.university.edu.vn",
     phone_number: "0123456789",
     status: "TTDH",
     major: "KHOALUAT",
@@ -54,7 +54,6 @@ const students = [
     identity_card: "987654321010",
     passport: "C9876543"
   },
-  // Add more student entries here
   {
     _id: "22120288",
     name: "Trần Văn A",
@@ -82,7 +81,7 @@ const students = [
     class_year: "2022",
     program: "CTTN",
     address: "TP HCM",
-    email: "lethib@gmail.com",
+    email: "lethib@student.university.edu.vn",
     phone_number: "0912345678",
     status: "TTDH",
     major: "KHOAPHAP",
@@ -112,7 +111,6 @@ const identityCards = [
     is_digitized: true,
     chip_attached: false
   },
-  // Add more identity card entries here
   {
     _id: "123456789012",
     issue_date: "2019-03-15",
@@ -150,7 +148,6 @@ const passports = [
     issue_location: "TP HCM",
     notes: "Đã gia hạn"
   },
-  // Add more passport entries here
   {
     _id: "C1234568",
     type: "Regular",
@@ -188,7 +185,6 @@ const majors = [
     _id: "KHOAPHAP",
     major_name: "Tiếng Pháp"
   },
-  // Add more major entries here
   {
     _id: "KHOATQ",
     major_name: "Tiếng Trung Quốc"
@@ -216,7 +212,6 @@ const programs = [
     _id: "CTCLC",
     program_name: "Chất lượng cao"
   },
-  // Add more program entries here
   {
     _id: "CTQT",
     program_name: "Quốc tế"
@@ -244,7 +239,6 @@ const statuses = [
     _id: "TTTD",
     status_name: "Tạm ngừng học"
   },
-  // Add more status entries here
   {
     _id: "TTBV",
     status_name: "Bảo vệ luận văn"
@@ -316,7 +310,6 @@ const addresses = [
     country: "Việt Nam",
     postal_code: "700000",
   },
-  // Add more address entries here
   {
     _id: "22120288ADDRPMNT",
     house_number: "404",

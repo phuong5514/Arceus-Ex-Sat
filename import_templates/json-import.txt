@@ -1,0 +1,60 @@
+[
+  {
+    "_id": "22120271",
+    "name": "Dương Hoàng Hồng Phúc",
+    "birthdate": "08/11/2004",
+    "gender": "Nam",
+    "class_year": 2022,
+    "program": "Đại trà",
+    "address": "TP HCM",
+    "email": "phuc21744@student.university.edu.vn",
+    "phone_number": "+84325740149",
+    "status": "Đang học",
+    "major": "Tiếng Anh Thương mại",
+    "nationality": "Việt Nam",
+    "permanent_address": {
+      "house_number": "123",
+      "street": "Nguyễn Văn Cừ",
+      "ward": "Phường 1",
+      "district": "Quận 5",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "postal_code": "700000"
+    },
+    "temporary_address": {
+      "house_number": "456",
+      "street": "Nguyễn Trãi",
+      "ward": "Phường 2",
+      "district": "Quận 5",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "postal_code": "700000"
+    },
+    "mailing_address": {
+      "house_number": "789",
+      "street": "Lê Lợi",
+      "ward": "Phường 3",
+      "district": "Quận 1",
+      "city": "TP HCM",
+      "country": "Việt Nam",
+      "postal_code": "700000"
+    },
+    "identity_card": {
+      "_id": "012345678910",
+      "issue_date": "26/05/2020",
+      "expiry_date": "26/05/2020",
+      "issue_location": "TP HCM",
+      "is_digitized": true,
+      "chip_attached": true
+    },
+    "passport": {
+      "_id": "C1234567",
+      "type": "Regular",
+      "country_code": "VNM",
+      "issue_date": "08/11/2021",
+      "expiry_date": "08/11/2026",
+      "issue_location": "TP HCM",
+      "notes": ""
+    }
+  }
+]

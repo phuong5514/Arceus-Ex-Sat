@@ -22,7 +22,7 @@ router.get("/search", studentController.searchStudents);
 
 router.post("/students", validateAddStudent, studentController.addStudent);
 
-router.put("/students/:student_id", validateUpdateStudent, studentController.updateStudent);
+router.put("/students/:student_id", studentController.updateStudent);
 
 router.delete("/students", studentController.deleteStudents);
 

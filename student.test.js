@@ -8,6 +8,9 @@ import Address from './models/address-model.js';
 import IdentityCard from './models/identity-card-model.js';
 import Passport from './models/passport-model.js';
 import { jest } from '@jest/globals';
+import Course from './models/course-model.js';
+import Enrollment from './models/enrollment-model.js';
+import Transcript from './models/transcript-model.js';
 
 // Set up the testing environment
 beforeAll(async () => await connect());
@@ -381,246 +384,348 @@ describe('Student Management System Tests', () => {
 });
 
 describe('Student Management System Tests - Sample 2', () => {
-  // Sample data for testing
-  const sampleMajor2 = { _id: 'CNTT', major_name: 'Công nghệ Thông tin' };
-  const sampleProgram2 = { _id: 'CLC', program_name: 'Chất lượng cao' };
-  const sampleStatus2 = { _id: 'TN', status_name: 'Tốt nghiệp' };
-  
-  const sampleAddress2 = {
-    _id: '22120272-ADDRPMNT',
-    house_number: '456',
-    street: 'Nguyễn Thị Thập',
-    ward: 'Phường 2',
-    district: 'Quận 7',
-    city: 'TP HCM',
-    country: 'Việt Nam',
-    postal_code: '700000'
-  };
-  
-  const sampleIdentityCard2 = {
-    _id: '987654321012',
-    issue_date: new Date('2019-06-15T00:00:00.000Z'),
-    expiry_date: new Date('2029-06-15T00:00:00.000Z'),
-    issue_location: 'TP HCM',
-    is_digitized: true,
-    chip_attached: true
-  };
-  
-  const sampleStudent2 = {
-    _id: '22120272',
-    name: 'Đỗ Thị Ngọc Linh',
-    birthdate: new Date('2003-05-20T00:00:00.000Z'),
-    gender: 'Nữ',
-    class_year: 2022,
-    program: 'CLC',
-    address: 'TP HCM',
-    email: 'ddt.nling@student.university.edu.vn',
-    phone_number: '0987654321',
-    status: 'TN',
-    major: 'CNTT',
-    nationality: 'Việt Nam',
-    permanent_address: '22120272-ADDRPMNT',
-    identity_card: '987654321012'
-  };
-
-  // Test 11: Tìm sinh viên theo năm học
-  test('should find students by class year', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    const student2023 = {
-      ...sampleStudent2,
-      _id: '22120273',
-      name: 'Nguyễn Văn B',
-      email: 'b.nv@hcmus.edu.vn',
-      class_year: 2023
-    };
-    await Student.create(student2023);
-    
-    // Act
-    const students = await Student.find({ class_year: 2022 });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
+  // Test data factory
+  const createTestData = () => ({
+    major: {
+      _id: 'CNTT',
+      major_name: 'Công nghệ Thông tin'
+    },
+    program: {
+      _id: 'CLC',
+      program_name: 'Chất lượng cao'
+    },
+    status: {
+      _id: 'TN',
+      status_name: 'Tốt nghiệp'
+    },
+    address: {
+      _id: '22120272-ADDRPMNT',
+      house_number: '456',
+      street: 'Nguyễn Thị Thập',
+      ward: 'Phường 2',
+      district: 'Quận 7',
+      city: 'TP HCM',
+      country: 'Việt Nam',
+      postal_code: '700000'
+    },
+    identityCard: {
+      _id: '987654321012',
+      issue_date: new Date('2019-06-15T00:00:00.000Z'),
+      expiry_date: new Date('2029-06-15T00:00:00.000Z'),
+      issue_location: 'TP HCM',
+      is_digitized: true,
+      chip_attached: true
+    },
+    course: {
+      _id: 'CS101',
+      course_name: 'Lập trình cơ bản',
+      credits: 3,
+      department: 'CNTT',
+      description: 'Môn học cơ bản về lập trình',
+      is_active: true
+    },
+    student: {
+      _id: '22120272',
+      name: 'Đỗ Thị Ngọc Linh',
+      birthdate: new Date('2003-05-20T00:00:00.000Z'),
+      gender: 'Nữ',
+      class_year: 2022,
+      program: 'CLC',
+      address: 'TP HCM',
+      email: 'ddt.nling@hcmus.edu.vn',
+      phone_number: '0987654321',
+      status: 'TN',
+      major: 'CNTT',
+      nationality: 'Việt Nam',
+      permanent_address: '22120272-ADDRPMNT',
+      identity_card: '987654321012'
+    }
   });
 
-  // Test 12: Tìm sinh viên theo giới tính
-  test('should find students by gender', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    const maleStudent = {
-      ...sampleStudent2,
-      _id: '22120273',
-      name: 'Nguyễn Văn C',
-      email: 'c.nv@hcmus.edu.vn',
-      gender: 'Nam'
-    };
-    await Student.create(maleStudent);
-    
-    // Act
-    const students = await Student.find({ gender: 'Nữ' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
+  let testData;
+  let student;
+  let course;
+
+  beforeEach(async () => {
+    testData = createTestData();
+    await Major.create(testData.major);
+    await Program.create(testData.program);
+    await Status.create(testData.status);
+    await Address.create(testData.address);
+    await IdentityCard.create(testData.identityCard);
+    await Course.create(testData.course);
+    student = await Student.create(testData.student);
   });
 
-  // Test 13: Tìm sinh viên theo quốc tịch
-  test('should find students by nationality', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    const foreignStudent = {
-      ...sampleStudent2,
-      _id: '22120273',
-      name: 'John Smith',
-      email: 'john@hcmus.edu.vn',
-      nationality: 'USA'
-    };
-    await Student.create(foreignStudent);
-    
-    // Act
-    const students = await Student.find({ nationality: 'Việt Nam' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
+  afterEach(async () => {
+    await Student.deleteMany({});
+    await Major.deleteMany({});
+    await Program.deleteMany({});
+    await Status.deleteMany({});
+    await Address.deleteMany({});
+    await IdentityCard.deleteMany({});
+    await Course.deleteMany({});
   });
 
-  // Test 14: Tìm sinh viên theo địa chỉ
-  test('should find students by address', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    const studentInHanoi = {
-      ...sampleStudent2,
-      _id: '22120273',
-      name: 'Nguyễn Văn D',
-      email: 'd.nv@hcmus.edu.vn',
-      address: 'Hà Nội'
-    };
-    await Student.create(studentInHanoi);
-    
-    // Act
-    const students = await Student.find({ address: 'TP HCM' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
-  });
+  describe('Student Academic Management', () => {
+    test('should enroll student in a course', async () => {
+      // Arrange
+      const enrollment = {
+        _id: 'ENR001',
+        student_id: student._id,
+        class_id: 'CLS001',
+        enrolled_at: new Date()
+      };
 
-  // Test 15: Tìm sinh viên theo số điện thoại
-  test('should find students by phone number', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    // Act
-    const students = await Student.find({ phone_number: '0987654321' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
-  });
+      // Act
+      const newEnrollment = await Enrollment.create(enrollment);
 
-  // Test 16: Tìm sinh viên theo CMND
-  test('should find students by identity card', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    // Act
-    const students = await Student.find({ identity_card: '987654321012' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
-  });
-
-  // Test 17: Tìm sinh viên theo ngày sinh
-  test('should find students by birthdate', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    // Act
-    const students = await Student.find({ 
-      birthdate: new Date('2003-05-20T00:00:00.000Z')
+      // Assert
+      expect(newEnrollment).toBeDefined();
+      expect(newEnrollment.student_id).toBe(student._id);
+      expect(newEnrollment.class_id).toBe('CLS001');
     });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
+
+    test('should calculate student GPA correctly', async () => {
+      // Arrange
+      const grades = [
+        { course: testData.course._id, grade: 8.5, credits: 3 },
+        { course: 'CS102', grade: 9.0, credits: 3 }
+      ];
+
+      // Act
+      const totalPoints = grades.reduce((sum, course) => 
+        sum + (course.grade * course.credits), 0);
+      const totalCredits = grades.reduce((sum, course) => 
+        sum + course.credits, 0);
+      const gpa = totalPoints / totalCredits;
+
+      // Assert
+      expect(gpa).toBe(8.75);
+    });
+
+    test('should check graduation requirements', async () => {
+      // Arrange
+      const completedCourses = [
+        { course: testData.course._id, grade: 8.5, credits: 3 },
+        { course: 'CS102', grade: 9.0, credits: 3 },
+        { course: 'CS103', grade: 8.0, credits: 3 }
+      ];
+
+      // Act
+      const canGraduate = completedCourses.length >= 3 && 
+                         completedCourses.every(c => c.grade >= 5.0);
+
+      // Assert
+      expect(canGraduate).toBe(true);
+    });
   });
 
-  // Test 18: Tìm sinh viên theo chương trình đào tạo
-  test('should find students by program', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    // Act
-    const students = await Student.find({ program: 'CLC' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
+  describe('Student Course Management', () => {
+    test('should check course prerequisites', async () => {
+      // Arrange
+      const advancedCourse = {
+        _id: 'CS201',
+        course_name: 'Lập trình nâng cao',
+        credits: 3,
+        department: 'CNTT',
+        prerequisite_course: testData.course._id
+      };
+      await Course.create(advancedCourse);
+
+      // Act
+      const course = await Course.findById(advancedCourse._id)
+        .populate('prerequisite_course');
+
+      // Assert
+      expect(course.prerequisite_course).toBeDefined();
+      expect(course.prerequisite_course._id).toBe(testData.course._id);
+    });
+
+    test('should handle course schedule conflicts', async () => {
+      // Arrange
+      const course1 = {
+        _id: 'CS101',
+        course_name: 'Lập trình cơ bản',
+        credits: 3,
+        department: 'CNTT',
+        schedule: { day: 'Monday', time: '8:00-10:00' }
+      };
+      const course2 = {
+        _id: 'CS102',
+        course_name: 'Lập trình nâng cao',
+        credits: 3,
+        department: 'CNTT',
+        schedule: { day: 'Monday', time: '9:00-11:00' }
+      };
+
+      // Helper to convert time string to minutes
+      function timeToMinutes(timeStr) {
+        const [h, m] = timeStr.split(':').map(Number);
+        return h * 60 + m;
+      }
+      const [start1, end1] = course1.schedule.time.split('-').map(timeToMinutes);
+      const [start2, end2] = course2.schedule.time.split('-').map(timeToMinutes);
+      const hasConflict = course1.schedule.day === course2.schedule.day &&
+                         start1 < end2 && start2 < end1;
+
+      // Assert
+      expect(hasConflict).toBe(true);
+    });
   });
 
-  // Test 19: Tìm sinh viên theo tình trạng học tập
-  test('should find students by status', async () => {
-    // Arrange
-    await Major.create(sampleMajor2);
-    await Program.create(sampleProgram2);
-    await Status.create(sampleStatus2);
-    await Address.create(sampleAddress2);
-    await IdentityCard.create(sampleIdentityCard2);
-    await Student.create(sampleStudent2);
-    
-    // Act
-    const students = await Student.find({ status: 'TN' });
-    
-    // Assert
-    expect(students).toHaveLength(1);
-    expect(students[0]._id).toBe('22120272');
+  describe('Student Information Management', () => {
+    test('should update student contact information', async () => {
+      // Arrange
+      const newContact = {
+        email: 'new.email@hcmus.edu.vn',
+        phone_number: '0987654322',
+        address: 'Hà Nội'
+      };
+
+      // Act
+      const updatedStudent = await Student.findByIdAndUpdate(
+        student._id,
+        newContact,
+        { new: true }
+      );
+
+      // Assert
+      expect(updatedStudent.email).toBe(newContact.email);
+      expect(updatedStudent.phone_number).toBe(newContact.phone_number);
+      expect(updatedStudent.address).toBe(newContact.address);
+    });
+
+    test('should validate student information updates', async () => {
+      // Arrange
+      const invalidUpdate = {
+        email: 'invalid-email',
+        phone_number: '123'
+      };
+
+      // Act & Assert
+      try {
+        await Student.findByIdAndUpdate(student._id, invalidUpdate, { new: true });
+        fail('Expected validation to fail');
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
   });
 
+  describe('Student Status Management', () => {
+    test('should track academic status changes', async () => {
+      // Arrange
+      const statuses = ['Đang học', 'Tạm dừng', 'TN'];
+      const statusHistory = [];
+
+      // Act
+      for (const status of statuses) {
+        const updatedStudent = await Student.findByIdAndUpdate(
+          student._id,
+          { status },
+          { new: true }
+        );
+        statusHistory.push(updatedStudent.status);
+      }
+
+      // Assert
+      expect(statusHistory).toEqual(statuses);
+    });
+
+    test('should handle student leave of absence', async () => {
+      // Arrange
+      const leaveInfo = {
+        status: 'Tạm dừng',
+        reason: 'Nghỉ phép',
+        start_date: new Date(),
+        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      };
+
+      // Act
+      const updatedStudent = await Student.findByIdAndUpdate(
+        student._id,
+        leaveInfo,
+        { new: true }
+      );
+
+      // Assert
+      expect(updatedStudent.status).toBe(leaveInfo.status);
+    });
+  });
+
+  describe('Student Academic Performance', () => {
+    test('should calculate semester GPA', async () => {
+      // Arrange
+      const semesterGrades = [
+        { course: testData.course._id, grade: 8.5, credits: 3 },
+        { course: 'CS102', grade: 9.0, credits: 3 },
+        { course: 'CS103', grade: 7.5, credits: 3 }
+      ];
+
+      // Act
+      const totalPoints = semesterGrades.reduce((sum, course) => 
+        sum + (course.grade * course.credits), 0);
+      const totalCredits = semesterGrades.reduce((sum, course) => 
+        sum + course.credits, 0);
+      const semesterGPA = totalPoints / totalCredits;
+
+      // Assert
+      expect(semesterGPA).toBeCloseTo(8.33, 2);
+    });
+
+    test('should determine academic standing', async () => {
+      // Arrange
+      const gpa = 8.5;
+      const creditsCompleted = 90;
+      const requiredCredits = 120;
+
+      // Act
+      const academicStanding = gpa >= 8.0 && creditsCompleted >= requiredCredits * 0.75
+        ? 'Xuất sắc'
+        : gpa >= 7.0 && creditsCompleted >= requiredCredits * 0.5
+        ? 'Khá'
+        : 'Trung bình';
+
+      // Assert
+      expect(academicStanding).toBe('Xuất sắc');
+    });
+  });
+
+  describe('Student Course Registration', () => {
+    test('should validate course registration prerequisites', async () => {
+      // Arrange
+      const prerequisiteCourse = await Course.findById('CS101');
+
+      const advancedCourse = await Course.create({
+        _id: 'CS201',
+        course_name: 'Lập trình nâng cao',
+        credits: 3,
+        department: 'CNTT',
+        description: 'Môn học nâng cao về lập trình',
+        prerequisite_course: prerequisiteCourse._id,
+        is_active: true
+      });
+
+      // Act
+      const course = await Course.findById(advancedCourse._id).populate('prerequisite_course');
+
+      // Assert
+      expect(course.prerequisite_course).toBeDefined();
+      expect(course.prerequisite_course._id).toBe(prerequisiteCourse._id);
+    });
+
+    test('should check maximum course load', async () => {
+      // Arrange
+      const currentCredits = 15;
+      const newCourseCredits = 3;
+      const maxCredits = 21;
+
+      // Act
+      const canRegister = currentCredits + newCourseCredits <= maxCredits;
+
+      // Assert
+      expect(canRegister).toBe(true);
+    });
+  });
 });

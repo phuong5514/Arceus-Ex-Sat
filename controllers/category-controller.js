@@ -26,7 +26,7 @@ export const addMajor = async (req, res) => {
         }
         const newMajor = new Major({ _id: id, major_name: name });
         await newMajor.save();
-        res.status(201).json({ ok: true, error: "" });
+        res.status(201).json({ ok: true, message: "" });
     } catch (error) {
         return_error(res, 400, error.message);
     }
@@ -40,7 +40,7 @@ export const addStatus = async (req, res) => {
         }
         const newStatus = new Status({ _id: id, status_name: name });
         await newStatus.save();
-        res.status(201).json({ ok: true, error: "" });
+        res.status(201).json({ ok: true, message: "" });
     } catch (error) {
         return_error(res, 400, error.message);
     }
@@ -54,7 +54,7 @@ export const addProgram = async (req, res) => {
         }
         const newProgram = new Program({ _id: id, program_name: name });
         await newProgram.save();
-        res.status(201).json({ ok: true, error: "Thêm chương trình thành công!" });
+        res.status(201).json({ ok: true, message: "Thêm chương trình thành công!" });
     } catch (error) {
         return_error(res, 400, error.message);
     }
@@ -67,7 +67,7 @@ export const deleteMajor = async (req, res) => {
         if (!result.ok) {
             throw new Error("Không tìm thấy Khoa!");
         } else {
-            res.status(200).json({ ok: true, error: "" });
+            res.status(200).json({ ok: true, message: "" });
         }
     } catch (error) {
         return_error(res, 400, error.message);
@@ -80,7 +80,7 @@ export const deleteStatus = async (req, res) => {
         if (!result.ok) {
             throw new Error("Không tìm thấy Trạng thái!");
         } else {
-            res.status(200).json({ ok: true, error: "" });
+            res.status(200).json({ ok: true, message: "" });
         }
     } catch (error) {
         return_error(res, 400, error.message);
@@ -93,7 +93,7 @@ export const deleteProgram = async (req, res) => {
         if (!result.ok) {
             throw new Error("Không tìm thấy Chương trình!");
         } else {
-            res.status(200).json({ ok: true, error: "" });
+            res.status(200).json({ ok: true, message: "" });
         }
     } catch (error) {
         return_error(res, 400, error.message);
@@ -108,7 +108,7 @@ export const renameMajor = async (req, res) => {
         if (!result.ok) {
             throw new Error("Không tìm thấy Khoa!");
         } else {
-            res.status(200).json({ ok: true, error: "" });
+            res.status(200).json({ ok: true, message: "" });
         }
     } catch (error) {
         return_error(res, 400, error.message);
@@ -123,7 +123,7 @@ export const renameStatus = async (req, res) => {
         if (!result.ok) {
             throw new Error("Không tìm thấy Trạng thái!");
         } else {
-            res.status(200).json({ ok: true, error: "" });
+            res.status(200).json({ ok: true, message: "" });
         }
     } catch (error) {
         return_error(res, 400, error.message);
@@ -138,7 +138,7 @@ export const renameProgram = async (req, res) => {
         if (!result.ok) {
             throw new Error("Không tìm thấy Chương trình!");
         } else {
-            res.status(200).json({ ok: true, error: "" });
+            res.status(200).json({ ok: true, message: "" });
         }
     } catch (error) {
         return_error(res, 400, error.message);

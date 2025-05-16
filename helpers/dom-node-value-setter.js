@@ -46,3 +46,17 @@ export const toggleReadOnly = (parentNode, ids) => {
         childElement.readOnly = !readOnlyValue;
     })
 }
+
+export const setReadOnly = (parentNode, ids, value) => {
+    if (!parentNode || typeof parentNode.getElementById !== "function") {
+        throw new Error("Invalid parentNode provided");
+    }
+    if (!Array.isArray(ids)) {
+        throw new Error("ids must be an array");
+    }
+
+    ids.forEach((id) => {
+        const childElement = parentNode.getElementById(id);
+        childElement.readOnly = value;
+    })
+}

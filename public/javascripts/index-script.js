@@ -1,4 +1,4 @@
-import { setValues, clearValues, toggleReadOnly } from "../../helpers/dom-node-value-setter";
+import { setValues, clearValues, toggleReadOnly, setReadOnly } from "../../helpers/dom-node-value-setter";
 
 let mode = "view";
 let dataChanged = false;
@@ -452,6 +452,11 @@ function onIdentityCardEditClicked(button) {
 
     //     }
     // )
+
+    // setReadOnly(document, [
+
+    // ], false);
+
     document.getElementById("identity-card-id").readOnly = false;
     document.getElementById("identity-card-issue-date").readOnly = false;
     document.getElementById("identity-card-expiry-date").readOnly = false;
@@ -459,6 +464,7 @@ function onIdentityCardEditClicked(button) {
     document.getElementById("identity-card-is-digitized").readOnly = false;
     document.getElementById("identity-card-chip-attached").readOnly = false;
 
+    // setValues(document, {})
     document.getElementById("identity-card-id").value = identityCardData._id;
     document.getElementById("identity-card-issue-date").value = identityCardData.issue_date;
     document.getElementById("identity-card-expiry-date").value = identityCardData.expiry_date;

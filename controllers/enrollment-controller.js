@@ -2,18 +2,18 @@ import * as studentController from "../controllers/student-controller.js";
 import Enrollment from "../models/enrollment-model.js";
 import Class from "../models/class-model.js";
 
-const defaultPageLimit = 20;
+import return_error from "../helpers/error-handler.js";
+import QueryValuesEnum from "../helpers/query-values.js";
 
 // Page for choosing students
 export const getStudents = async (req, res) => {
   try {
-    const page = req.query.page || 1;
-    const limit = req.query.limit || defaultPageLimit;
+    const page = req.query.page || QueryValuesEnum.DEFAULT_QUERY_PAGE;
+    const limit = req.query.limit || QueryValuesEnum.DEFAULT_PAGE_LIMIT;
     const students = await studentController.getAllStudentsAcademic(page, limit);
     res.render("enrollment", {students});
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    return_error(res, 500, "Server failed to fetch students data", true)
   }
 }
 
@@ -44,8 +44,6 @@ export const getEnrolledClasses = async (studentId) => {
       const studentCount = await getEnrolledStudentCount(enrolledClass._id);
       enrolledClass.student_count = studentCount;
     }
-
-    console.log(filteredClasses);
 
     return filteredClasses;
   } catch (error) {
@@ -139,7 +137,7 @@ export const registerClasses = async (req, res) => {
 
       // Check prerequisites
       if (c.course_id.prerequisite_course && !enrolledCourses.includes(c.course_id.prerequisite_course)) {
-        return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký lớp học này`});
+        return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký khoá ${c.course_id._id}`});
       }
 
       const newEnrollment = new Enrollment({
@@ -156,8 +154,9 @@ export const registerClasses = async (req, res) => {
 
     res.status(200).json({ok: true, message: ""});
   } catch (error){
-    console.error(error);
-    res.status(500).json({ok: false, message: error.message});
+    return_error(res, 500, error.message, true)
+    // console.error(error);
+    // res.status(500).json({ok: false, message: error.message});
   }
 };
 
@@ -185,7 +184,6 @@ export const unregisterClasses = async (req, res) => {
 
     res.status(200).json({ok: true, message: ""});
   } catch (error){
-    console.error(error);
-    res.status(500).json({ok: false, message: error.message});
+    return_error(res, 500, error.message, true)
   }
 }

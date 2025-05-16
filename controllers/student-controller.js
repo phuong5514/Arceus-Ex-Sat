@@ -18,11 +18,10 @@ import { fileURLToPath } from "url";
 import {studentAddSchema, studentUpdateSchema} from '../validators/student-validator.js';
 import { console } from "inspector";
 import { ZodError } from "zod";
-import { populate } from "dotenv";
+
+import QueryValuesEnum from "../helpers/query-values.js";
 
 dayjs.extend(customParseFormat);
-
-const defaultPageLimit = 20; 
 
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
   const defaultOptions = {
@@ -48,6 +47,7 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
 
   // format students data
   results.docs.forEach(student => {
+    // Birthday ISO -> DD/MM/YYYY
     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
     const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
     for (let index = 0; index < addresses.length; index++) {
@@ -85,8 +85,8 @@ function emptyAddress(){
 export const getAllStudents = async (req, res) => {
   try {
     const results = await fetchAndFormatStudents({}, {
-      page: req.query.page || 1,
-      limit: req.query.limit || defaultPageLimit,
+      page: req.query.page || QueryValuesEnum.DEFAULT_QUERY_PAGE,
+      limit: req.query.limit || QueryValuesEnum.DEFAULT_PAGE_LIMIT,
     });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
@@ -94,7 +94,7 @@ export const getAllStudents = async (req, res) => {
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
     console.error("Error getting students:", error.message);
-    res.status(500).json({ error: "Lỗi lấy danh sách sinh viên" });
+    res.status(500).json({ ok: false, message: "Lỗi lấy danh sách sinh viên: " + error.message });
   }
 };
 
@@ -156,9 +156,11 @@ export async function preprocessStudent(studentToProcess, validator) {
     addresses[index] = addressIds[index];
   }
 
-  student.permanent_address = addresses[0];
-  student.temporary_address = addresses[1];
-  student.mailing_address = addresses[2];
+  Object.assign(student, {
+    permanent_address: addresses[0],
+    temporary_address: addresses[1],
+    mailing_address: addresses[2]
+  });
 
   if (student.identity_card && student.identity_card._id) {
     // check if identity card existed
@@ -166,33 +168,40 @@ export async function preprocessStudent(studentToProcess, validator) {
     
     writeLog("IdentityCard" + JSON.stringify(student.identityCard));
     if (identityCard) {
-      identityCard.issue_date = student.identity_card.issue_date;
-      identityCard.expiry_date = student.identity_card.expiry_date;
-      
-      identityCard.issue_location = student.identity_card.issue_location;
-      identityCard.is_digitized = student.identity_card.is_digitized;
-      identityCard.chip_attached = student.identity_card.chip_attached;
+      identityCard.set({
+        issue_date: student.identity_card.issue_date,
+        expiry_date: student.identity_card.expiry_date,
+        issue_location: student.identity_card.issue_location,
+        is_digitized: student.identity_card.is_digitized,
+        chip_attached: student.identity_card.chip_attached
+      });
       console.log("Updating existing identity card: ", identityCard);
       await identityCard.save();
+
     } else {
       console.log("Inserting new identity card: ", student.identity_card);
       await IdentityCard.insertOne(student.identity_card);
     }
+
     student.identity_card = student.identity_card._id;
+
   } else {
     student.identity_card = "";
   }
+
+
   if (student.passport && student.passport._id) {
     // check if passport existed
     const passport = await Passport.findOne({ _id: student.passport._id });
     if (passport) {
-      passport.type = student.passport.type;
-      passport.country_code = student.passport.country_code;
-      passport.issue_date = student.passport.issue_date;
-
-      passport.expiry_date = student.passport.expiry_date;
-
-      passport.issue_location = student.passport.issue_location;
+      passport.set({
+        type: student.passport.type,
+        country_code: student.passport.country_code,
+        issue_date: student.passport.issue_date,
+        expiry_date: student.passport.expiry_date,
+        issue_location: student.passport.issue_location,
+        // notes: student.passport.notes
+      });
       console.log("Updating existing passport: ", passport);
       await passport.save();
     } else {
@@ -216,30 +225,35 @@ export const updateStudent = async (req, res) => {
       throw new Error("Không tìm thấy sinh viên cần cập nhật");
     }
     const processedStudent = await preprocessStudent(student, studentUpdateSchema);
-    
-    studentToUpdate.name = processedStudent.name;
-    studentToUpdate.email = processedStudent.email;
-    studentToUpdate.phone_number = processedStudent.phone_number;
-    studentToUpdate.address = processedStudent.address;
-    studentToUpdate.major = processedStudent.major;
-    studentToUpdate.class_year = processedStudent.class_year;
-    studentToUpdate.program = processedStudent.program;
-    studentToUpdate.status = processedStudent.status;
-    studentToUpdate.birthdate = processedStudent.birthdate;
-    studentToUpdate.gender = processedStudent.gender;
-    studentToUpdate.permanent_address = processedStudent.permanent_address;
-    studentToUpdate.temporary_address = processedStudent.temporary_address;
-    studentToUpdate.mailing_address = processedStudent.mailing_address;
-    studentToUpdate.identity_card = processedStudent.identity_card;
-    studentToUpdate.passport = processedStudent.passport;
-    studentToUpdate.nationality = processedStudent.national;
+    // Update all fields from processedStudent to studentToUpdate
+    studentToUpdate.set({
+      name: processedStudent.name,
+      email: processedStudent.email,
+      phone_number: processedStudent.phone_number,
+      address: processedStudent.address,
+      major: processedStudent.major,
+      class_year: processedStudent.class_year,
+      program: processedStudent.program,
+      status: processedStudent.status,
+      birthdate: processedStudent.birthdate,
+      gender: processedStudent.gender,
+      permanent_address: processedStudent.permanent_address,
+      temporary_address: processedStudent.temporary_address,
+      mailing_address: processedStudent.mailing_address,
+      identity_card: processedStudent.identity_card,
+      passport: processedStudent.passport,
+      nationality: processedStudent.nationality
+    });
 
     await studentToUpdate.save();
 
+    // TODO: wrap these part into a function
     writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
     console.log("Student updated successfully");
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
+    // TODO: wrap these parts into a function
+
     writeLog('UPDATE', 'ERROR', `Cập nhật sinh viên ${studentId} thất bại: ${error.message}`);
     console.error("Error updating student:", error.message);
     res.status(400).json({ ok: false, error: error.message });
@@ -259,7 +273,7 @@ export const deleteStudents = async (req, res) => {
     if (result.deletedCount === 0) {
       throw new Error(`Không tìm thấy sinh viên nào nằm trong danh sách cần xóa`);
     }
-    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
+    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
     console.log(`Deleted ${result.deletedCount} students successfully`);
     res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
   } catch (error) {
@@ -293,8 +307,8 @@ export const searchStudents = async (req, res) => {
 
     console.log("Search completed!")
     const results = await fetchAndFormatStudents(query, {
-      page: queryData.page || 1,
-      limit: queryData.limit || defaultPageLimit
+      page: queryData.page || QueryValuesEnum.DEFAULT_QUERY_PAGE,
+      limit: queryData.limit || QueryValuesEnum.DEFAULT_PAGE_LIMIT
     });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();
@@ -320,6 +334,7 @@ function formatExtraLogs(extra_logs){
   }
 }
 
+// TODO: seperate this function into multiple
 export const importStudents = async (req, res) => {
   try {
     // Kiểm tra file
@@ -558,7 +573,7 @@ const checkRequiredFields = (student, requiredFields, resultCallback) => {
   return checkFields(student, requiredFields);
 };
 
-
+// TODO: seperate this function into multiple
 export const exportAllStudents = async (req, res) => {
   try {
     const format = req.query.format || 'json'; // Default to JSON if no format specified

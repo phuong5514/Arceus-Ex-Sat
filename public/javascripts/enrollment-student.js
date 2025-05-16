@@ -16,7 +16,7 @@ async function onRemoveClassesClick(){
 
   setMessage('message-enrolled', 'info', 'Đang xóa...');
 
-  const result = await fetch(`/enrollment/unregister/${student_id}`, {
+  const response = await fetch(`/enrollment/unregister/${student_id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
@@ -24,19 +24,19 @@ async function onRemoveClassesClick(){
     body: JSON.stringify(selectedClasses)
   });
 
-  if (result.ok){
-    const data = await result.json();
-    if (data.ok){
+  if (response.ok){
+    const result = await response.json();
+    if (result.ok){
       setMessage('message-enrolled', 'success', 'Xóa lớp học thành công.');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } else {
-      setMessage('message-enrolled', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + data.message);
+      setMessage('message-enrolled', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + result.message);
     }
   } else {
-    const data = await result.json();
-    setMessage('message-enrolled', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + data.message);
+    const error = await response.json();
+    setMessage('message-enrolled', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + error.message);
   }
 }
 
@@ -57,7 +57,7 @@ async function onAddClassesClick(){
   const student_id = window.location.pathname.split('/').pop();
   setMessage('message-available', 'info', 'Đang thêm...');
 
-  const result = await fetch(`/enrollment/register/${student_id}`, {
+  const response = await fetch(`/enrollment/register/${student_id}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -65,19 +65,19 @@ async function onAddClassesClick(){
     body: JSON.stringify(selectedClasses)
   });
 
-  if (result.ok){
-    const data = await result.json();
-    if (data.ok){
+  if (response.ok){
+    const result = await response.json();
+    if (result.ok){
       setMessage('message-available', 'success', 'Thêm lớp học thành công.');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } else {
-      setMessage('message-available', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + data.message);
+      setMessage('message-available', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + result.message);
     }
   } else {
-    const data = await result.json();
-    setMessage('message-available', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + data.message);
+    const error = await response.json();
+    setMessage('message-available', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + error.message);
   }
 }
 

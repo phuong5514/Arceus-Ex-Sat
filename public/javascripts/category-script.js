@@ -17,7 +17,7 @@ async function addMajor() {
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Thêm khoa thất bại!");
+        setMessage("error", result.message || "Thêm khoa thất bại!");
     }
 }
 async function deleteMajor(id) {
@@ -29,7 +29,7 @@ async function deleteMajor(id) {
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Xóa khoa thất bại!");
+        setMessage("error", result.message || "Xóa khoa thất bại!");
     }
 }
 
@@ -46,7 +46,7 @@ async function addStatus() {
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Thêm tình trạng thất bại!");
+        setMessage("error", result.message || "Thêm tình trạng thất bại!");
     }
 }
 
@@ -59,7 +59,7 @@ async function deleteStatus(id) {
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Xóa tình trạng thất bại!");
+        setMessage("error", result.message || "Xóa tình trạng thất bại!");
     }
 }
 
@@ -76,7 +76,7 @@ async function addProgram() {
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Thêm chương trình thất bại!");
+        setMessage("error", result.message || "Thêm chương trình thất bại!");
     }
 }
 
@@ -89,7 +89,7 @@ async function deleteProgram(id) {
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Xóa chương trình thất bại!");
+        setMessage("error", result.message || "Xóa chương trình thất bại!");
     }
 }
 
@@ -105,7 +105,7 @@ async function renameMajor(event, nameInput){
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error);
+        setMessage("error", result.message || "Đổi tên khoa thất bại");
     }
 }
 
@@ -121,7 +121,7 @@ async function renameStatus(event, nameInput){
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error);
+        setMessage("error", result.message || "Đổi tình trạng thất bại");
     }
 }
 
@@ -137,7 +137,7 @@ async function renameProgram(event, nameInput){
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error);
+        setMessage("error", result.message, "Đổi tên chương trình thất bại");
     }
 }
 

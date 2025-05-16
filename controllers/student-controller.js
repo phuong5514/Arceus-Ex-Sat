@@ -15,9 +15,10 @@ import { promises as fs }  from 'fs';
 import path from 'path';
 import { fileURLToPath } from "url";
 
-import {studentAddSchema, studentUpdateSchema} from '../middlewares/zod-validation-middleware.js';
+import {studentAddSchema, studentUpdateSchema} from '../validators/student-validator.js';
 import { console } from "inspector";
 import { ZodError } from "zod";
+import { populate } from "dotenv";
 
 dayjs.extend(customParseFormat);
 
@@ -115,7 +116,7 @@ export const addStudent = async (req, res) => {
   }
 };
 
-async function preprocessStudent(studentToProcess, validator) {
+export async function preprocessStudent(studentToProcess, validator) {
   
   const existingStudent = await Student.findOne({ _id: studentToProcess._id });
   if (existingStudent) {
@@ -480,7 +481,6 @@ export const importStudents = async (req, res) => {
               } else {
                 msg = `Thêm sinh viên ${student._id} thành công`;
                 students.push(student);
-                console.log(msg);
               }
             });
           }
@@ -646,7 +646,66 @@ export const exportAllStudents = async (req, res) => {
   } catch (error) {
     console.error("Error exporting students:", error.message);
     writeLog('EXPORT', 'ERROR', `Export sinh viên thất bại: ${error.message}`);
-    res.status(500).json({ok: false, error: "Lỗi xuất dữ liệu sinh viên" });
+    res.status(500).json({ok: false, message: "Lỗi xuất dữ liệu sinh viên" });
   }
 };
-export { preprocessStudent };
+
+export const getStudentAcademic = (studentId) => {
+  try {
+    const options = {
+      lean: true,
+      populate: [
+        "major",
+        "program",
+        "status",
+      ]
+    }
+
+    return Student.findOne({ _id: studentId }, {}, options);
+  } catch (error) {
+    console.error("Error getting student:", error.message);
+    return null;
+  }
+}
+
+export const getAllStudentsAcademic = (page, limit) => {
+  try {
+    const options = {
+      pagination: true,
+      page,
+      limit,
+      lean: true,
+      populate: [
+        "major",
+        "program",
+        "status",
+      ]
+    }
+
+    return Student.paginate({}, options);
+  } catch (error) {
+    console.error("Error getting students:", error.message);
+    return null;
+  }
+};
+
+export const searchAllStudentAcademic = (query, page, limit) => {
+  try {
+    const options = {
+      pagination: true,
+      page,
+      limit,
+      lean: true,
+      populate: [
+        "major",
+        "program",
+        "status",
+      ]
+    }
+
+    return Student.paginate(query, options);
+  } catch (error) {
+    console.error("Error getting students:", error.message);
+    return null;
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Quản lý Khóa học
+  </title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <nav >
+    <%- include('./partials/nav-bar.ejs') %>
+    <div class="flex-row">
+      <button onclick="window.location.href='/course/add'">Thêm khóa học</button>
+      <div class="grow"></div>
+      <!-- Pagination -->
+      <div class="flex-row align-center justify-right gap-8">
+        <button 
+          class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
+          onclick="onPageChange(<%= results.page - 1 %>)"> 
+          <
+        </button>
+        <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+        <button 
+          class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
+          onclick="onPageChange(<%= results.page + 1 %>)">
+          >
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th>Mã</th>
+        <th>Tên khóa học</th>
+        <th>Khoa</th>
+        <th>Mô tả</th>
+        <th>Mã môn tiên quyết</th>
+        <th>Trạng thái</th>
+        <th>Ngày tạo</th>
+      </tr>
+    </thead>
+    <!-- Sample data -->
+    <tbody>
+      <% for (var i=0; i < results.docs.length; i++) { %>
+        <tr>
+          <td>
+            <a href="/course/<%= results.docs[i]._id %>">
+              <%= results.docs[i]._id %>
+            </a>
+          </td>
+          <td>
+            <a href="/course/<%= results.docs[i]._id %>">
+              <%= results.docs[i].course_name %>
+            </a>
+          </td>
+          <td><%= results.docs[i].department %></td>
+          <td class="max-w-300"><%= results.docs[i].description %></td>
+          <td><%= results.docs[i].prerequisite_course || 'N/A' %></td>
+          <td><%= results.docs[i].is_active ? 'Đang mở' : 'Đã ngừng mở' %></td>
+          <td><%= results.docs[i].created_at.text %></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <!-- Pagination Script -->
+  <script>
+    function onPageChange(page) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('page', page);
+      url.searchParams.set('limit', '<%= results.limit %>');
+      window.location.href = url.toString();
+    }
+  </script>
+</body>

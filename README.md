@@ -1,4 +1,4 @@
-# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 3)
+# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 5)
 ## Giới thiệu
 Là trang web quản lý sinh viên đơn giản, cung cấp các chức năng thêm, xóa, sửa thông tin sinh viên, import, export, v.v
 
@@ -154,3 +154,62 @@ Tên danh mục có thể đổi trực tiếp bằng cách nhập tên mới v�
 Danh sách sinh viên có thể được xuất ra file để lưu trữ bằng cách:
 + Chọn kiểu file muốn xuất ra: `CSV` hoặc `JSON`, từ menu dropdown
 + Nhấn vào nút *Export All* để xuất ra file
+
+## Các chức năng của giáo vụ
+Từ màn hình chính, nhấp vào `Chuyển đến Giáo vu5` ở góc trên bên trái để đến giao diện của giá vụ.
+
+### Khóa học
+Tại đây, giáo vụ xem danh sách các khóa học hiện có:
+![alt text](readme_resources/course_page.png)
+Nhấp vào tên hoặc mã một khóa học để xem chi tiết:
+![alt text](readme_resources/course_detail.png)
+Để thay đổi thông tin khóa học, nhấp vào nút `Thay đổi` ở góc trên bên phải của mục. Trang thay đổi thông tin hiện ra:
+![alt text](readme_resources/course_edit.png)
+Giáo vụ thay đổi các thông tin cần thiết tại đây. Sau đó:
++ Nhấn `Lưu thay đổi` để lưu lại thông tin mới
++ Nhấn `Hủy` để hủy bỏ thao tác thay đổi thông tin
++ Nhấn `Xóa` để xóa khóa học
+
+*Lưu ý:* Giáo vụ chỉ có thể xóa khóa học sau khi tạo trong vòng tối đa 30 phút. 
+
+### Lớp học
+Từ thanh điều hướng trên cùng, nhấp vào `Lớp học` để đến trang quản lý lớp học.
+Tại đây, giáo vụ xem danh sách các lớp học hiện có:
+![alt text](readme_resources/class_page.png)
+Nhấp vào tên hoặc mã một lớp học để xem chi tiết:
+![alt text](readme_resources/class_detail.png)
+Để thay đổi thông tin lớp học, nhấp vào nút `Thay đổi` ở góc trên bên phải của mục. Trang thay đổi thông tin hiện ra:
+![alt text](readme_resources/class_edit.png)
+Giáo vụ thay đổi các thông tin cần thiết tại đây. Sau đó:
++ Nhấn `Lưu thay đổi` để lưu lại thông tin mới
++ Nhấn `Hủy` để hủy bỏ thao tác thay đổi thông tin
++ Nhấn `Xóa` để xóa lớp học
+
+### Học phần
+Từ thanh điều hướng trên cùng, nhấp vào `Học phần` để đến trang quản lý học phần cho sinh viên.
+Tại đây, giáo vụ xem danh sách các sinh viên hiện có để đăng ký học phần:
+![alt text](readme_resources/student_page.png)
+
+Nhấp vào tên hoặc mã một sinh viên để xem chi tiết thông tin học tập của sinh viên:
+![alt text](readme_resources/student_detail.png)
+Kéo xuống dưới trang để xem danh sách các lớp học sinh viên đã đăng ký và có thể đăng ký:
+![alt text](readme_resources/student_course.png)
+Để đăng ký học phần, giáo vụ nhấp chọn vào các ô checkbox bên trái mã lớp học, trong mục `Danh sách lớp học có thể đăng ký`. Sau đó nhấn vào nút `Đăng ký` phía dưới danh sách để đăng ký lớp học cho sinh viên
+*Lưu ý*:
++ Giáo vụ chỉ có thể đăng ký các lớp học chưa đầy 
++ Các lớp đăng ký phải thuộc khóa mà sinh viên đã thỏa học phần tiên quyết
+
+## Unit testing
+- **Công cụ sử dụng**
+Nhóm sử dụng Jest, một công cụ test JavaScript phổ biến, để thực hiện các testcase. Jest cung cấp một môi trường test linh hoạt và mạnh mẽ, cho phép viết và chạy các testcase một cách dễ dàng.
+- **Phương pháp test**
+Nhóm đã thực hiện các testcase theo phương pháp sau:
+Viết các testcasetrong file `student.test.js` cho từng chức năng của hệ thống, bao gồm thêm mới sinh viên, tìm kiếm sinh viên, cập nhật thông tin sinh viên, xóa sinh viên, nhập dữ liệu từ JSON.Sử dụng Jest để chạy các testcase và kiểm tra kết quả.
+- **Cách thực hiện**:
+ ```bash
+  npm install #(để cài đặt các package cần thiết trong `package.json`)
+
+  npm run test (để chạy các testcase)
+```
+-  **Kết quả**
+  ![image](https://github.com/user-attachments/assets/ff996206-ae83-47c1-8705-d8602d5960cf)

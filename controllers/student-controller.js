@@ -157,11 +157,9 @@ export async function preprocessStudent(studentToProcess, validator) {
     addresses[index] = addressIds[index];
   }
 
-  student.set({
-    permanent_address: addresses[0],
-    temporary_address: addresses[1],
-    mailing_address: addresses[2]
-  })
+  student.permanent_address = addresses[0];
+  student.temporary_address = addresses[1];
+  student.mailing_address = addresses[2];
 
   if (student.identity_card && student.identity_card._id) {
     // check if identity card existed

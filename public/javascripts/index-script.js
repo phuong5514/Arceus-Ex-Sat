@@ -138,25 +138,22 @@ async function onEditStudentSaved() {
         student.passport = null;
     }
     
-    try {
-        setMessage("info", "Đang thay đổi...");
-        const response = await fetch(`/students/${selectedStudentId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(student),
-        });
+    setMessage("info", "Đang thay đổi...");
+    
+    const response = await fetch(`/students/${selectedStudentId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(student),
+    });
 
-        if (response.ok) {
-            markDataChanged();
-            changeToMode("view");
-            setMessage("success", "Cập nhật thông tin sinh viên thành công!");
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            const error = await response.json();
-            setMessage("error", error.error || "Cập nhật thất bại");
-        }
-    } catch (error) {
-        setMessage("error", "Lỗi kết nối: " + error.message);
+    if (response.ok) {
+        markDataChanged();
+        changeToMode("view");
+        setMessage("success", "Cập nhật thông tin sinh viên thành công!");
+        setTimeout(() => window.location.reload(), 1000);
+    } else {
+        const error = await response.json();
+        setMessage("error", error.error || "Cập nhật thất bại");
     }
 }
 
@@ -189,22 +186,19 @@ async function onAddStudentSaved() {
     student.identity_card = getIdentityCardFromDiv(document.getElementById("add-identity_card"));
     student.passport = getPassportFromDiv(document.getElementById("add-passport"));
 
-    try {
-        setMessage("error", "Đang thêm...")
-        const response = await fetch("/students", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(student),
-        });
+    setMessage("error", "Đang thêm...")
+    
+    const response = await fetch("/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(student),
+    });
 
-        if (response.ok) {
-            window.location.reload();
-        } else {
-            const result = await response.json();
-            setMessage("error", result.error || "Thêm sinh viên thất bại"); 
-        }
-    } catch (error){
-        setMessage("error", "Lỗi kết nối: " + error.message);
+    if (response.ok) {
+        window.location.reload();
+    } else {
+        const result = await response.json();
+        setMessage("error", result.error || "Thêm sinh viên thất bại"); 
     }
 }
 
@@ -223,29 +217,26 @@ async function onRemoveStudentsSaved() {
         return;
     }
 
-    try {
-        setMessage("info", "Đang xóa...");
-        const response = await fetch("/students", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ student_ids: selectedStudents }),
-        });
+    setMessage("info", "Đang xóa...");
+    
+    const response = await fetch("/students", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ student_ids: selectedStudents }),
+    });
 
-        if (response.ok) {
-            markDataChanged();
-            changeToMode("view");
-            setMessage("success", "Xóa sinh viên thành công!");
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        } else {
-            const result = await response.json();
-            setMessage("error", result.error || "Xóa sinh viên thất bại.");
-        }
-    } catch (error){
-        setMessage("error", "Lỗi kết nối: " + error.message);
+    if (response.ok) {
+        markDataChanged();
+        changeToMode("view");
+        setMessage("success", "Xóa sinh viên thành công!");
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    } else {
+        const result = await response.json();
+        setMessage("error", result.error || "Xóa sinh viên thất bại.");
     }
 }
 

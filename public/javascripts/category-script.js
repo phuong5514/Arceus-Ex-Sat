@@ -105,7 +105,7 @@ async function renameMajor(event, nameInput){
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.message);
+        setMessage("error", result.message || "Đổi tên khoa thất bại");
     }
 }
 
@@ -121,7 +121,7 @@ async function renameStatus(event, nameInput){
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.message);
+        setMessage("error", result.message || "Đổi tình trạng thất bại");
     }
 }
 
@@ -137,7 +137,7 @@ async function renameProgram(event, nameInput){
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.message);
+        setMessage("error", result.message, "Đổi tên chương trình thất bại");
     }
 }
 

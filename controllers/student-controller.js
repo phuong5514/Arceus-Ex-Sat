@@ -48,6 +48,7 @@ const fetchAndFormatStudents = async (query = {}, options = {}) => {
 
   // format students data
   results.docs.forEach(student => {
+    // Birthday ISO -> DD/MM/YYYY
     student.birthdate = dayjs(student.birthdate).format('DD/MM/YYYY');
     const addresses = [student.permanent_address, student.temporary_address, student.mailing_address];
     for (let index = 0; index < addresses.length; index++) {
@@ -161,9 +162,6 @@ export async function preprocessStudent(studentToProcess, validator) {
     temporary_address: addresses[1],
     mailing_address: addresses[2]
   })
-  // student.permanent_address = addresses[0];
-  // student.temporary_address = addresses[1];
-  // student.mailing_address = addresses[2];
 
   if (student.identity_card && student.identity_card._id) {
     // check if identity card existed
@@ -255,7 +253,7 @@ export const updateStudent = async (req, res) => {
     console.log("Student updated successfully");
     res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
   } catch (error) {
-    // TODO: wrap these part into a function
+    // TODO: wrap these parts into a function
 
     writeLog('UPDATE', 'ERROR', `Cập nhật sinh viên ${studentId} thất bại: ${error.message}`);
     console.error("Error updating student:", error.message);
@@ -276,7 +274,7 @@ export const deleteStudents = async (req, res) => {
     if (result.deletedCount === 0) {
       throw new Error(`Không tìm thấy sinh viên nào nằm trong danh sách cần xóa`);
     }
-    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
+    writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
     console.log(`Deleted ${result.deletedCount} students successfully`);
     res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
   } catch (error) {

@@ -85,8 +85,8 @@ function emptyAddress(){
 export const getAllStudents = async (req, res) => {
   try {
     const results = await fetchAndFormatStudents({}, {
-      page: req.query.page || 1,
-      limit: req.query.limit || defaultPageLimit,
+      page: req.query.page || QueryValuesEnum.DEFAULT_QUERY_PAGE,
+      limit: req.query.limit || QueryValuesEnum.DEFAULT_PAGE_LIMIT,
     });
     const majors = await Major.find().lean();
     const status = await Status.find().lean();

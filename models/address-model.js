@@ -6,7 +6,7 @@ const AddressSchema = mongoose.Schema({
     _id: String,
     house_number: String,
     street: String,
-    ward: String, // Phường, xã
+    ward: String,
     district: String,
     city: String,
     country: String,

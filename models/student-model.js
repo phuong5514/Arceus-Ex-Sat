@@ -10,7 +10,7 @@ const StudentSchema = mongoose.Schema({
   class_year: Number,
   program: { type: String, ref: "Program" },
   address: String,
-  email: String,
+  email: { type: String, unique: true },
   phone_number: String,
   status: { type: String, ref: "Status" },
   major: { type: String, ref: "Major" },

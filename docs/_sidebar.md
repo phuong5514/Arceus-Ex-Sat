@@ -1,2 +1,3 @@
 - [Home](/)
 - [Database schema](DATABASE.md)
+- [Coding Standard Pratices](Coding-standard.md)

@@ -15,5 +15,7 @@ const EnrollmentSchema = new mongoose.Schema({
 EnrollmentSchema.plugin(paginate);
 EnrollmentSchema.plugin(aggregatePaginate);
 
+EnrollmentSchema.index({ student_id: 1, class_id: 1 }, { unique: true });
+
 const Enrollment = mongoose.model("Enrollment", EnrollmentSchema, "enrollments");
 export default Enrollment;

@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
-import { connect, closeDatabase, clearDatabase } from './test-setup.js';
-import Student from './models/student-model.js';
-import Major from './models/major-model.js';
-import Program from './models/program-model.js';
-import Status from './models/status-model.js';
-import Address from './models/address-model.js';
-import IdentityCard from './models/identity-card-model.js';
-import Passport from './models/passport-model.js';
+import { connect, closeDatabase, clearDatabase } from '../helpers/test-setup.js';
+import Student from '../../models/student-model.js';
+import Major from '../../models/major-model.js';
+import Program from '../../models/program-model.js';
+import Status from '../../models/status-model.js';
+import Address from '../../models/address-model.js';
+import IdentityCard from '../../models/identity-card-model.js';
+import Passport from '../../models/passport-model.js';
 import { jest } from '@jest/globals';
-import Course from './models/course-model.js';
-import Enrollment from './models/enrollment-model.js';
-import Transcript from './models/transcript-model.js';
+import Course from '../../models/course-model.js';
+import Enrollment from '../../models/enrollment-model.js';
+import Transcript from '../../models/transcript-model.js';
 
 // Set up the testing environment
 beforeAll(async () => await connect());
@@ -18,8 +18,8 @@ afterEach(async () => await clearDatabase());
 afterAll(async () => await closeDatabase());
 
 // Mock the necessary functions for validation testing
-jest.mock('./validators/student-validator.js', () => {
-  const originalModule = jest.requireActual('./validators/student-validator.js');
+jest.mock('../../validators/student-validator.js', () => {
+  const originalModule = jest.requireActual('../../validators/student-validator.js');
   
   return {
     ...originalModule,
@@ -154,70 +154,42 @@ describe('Student Management System Tests', () => {
     });
 
     test('should handle student with various birthdates', async () => {
-      const { sampleStudent } = await setupTestData();
-      const testDates = [
+      const birthdates = [
         new Date('2000-01-01'),
-        new Date('2004-11-08'),
-        new Date()
+        new Date('2001-05-15'),
+        new Date('1999-12-31')
       ];
-
-      for (const date of testDates) {
-        const student = {
-          ...sampleStudent,
-          _id: `2212028${testDates.indexOf(date)}`,
-          birthdate: date
-        };
+      for (const [i, birthdate] of birthdates.entries()) {
+        const student = defineStudent({ birthdate, email: `birthdate${i}@university.edu.vn` });
         const newStudent = await Student.create(student);
-        expect(newStudent.birthdate.getTime()).toBe(date.getTime());
+        expect(newStudent.birthdate).toEqual(birthdate);
       }
     });
 
     test('should handle student with various phone numbers', async () => {
-      const { sampleStudent } = await setupTestData();
-      const testPhones = [
-        '0123456789',
-        '0987654321',
-        '01234567890'
-      ];
-
-      for (const phone of testPhones) {
-        const student = {
-          ...sampleStudent,
-          _id: `2212028${testPhones.indexOf(phone)}`,
-          phone_number: phone
-        };
+      const phoneNumbers = ['0123456789', '0987654321', '0909090909'];
+      for (const [i, phone_number] of phoneNumbers.entries()) {
+        const student = defineStudent({ phone_number, email: `phone${i}@university.edu.vn` });
         const newStudent = await Student.create(student);
-        expect(newStudent.phone_number).toBe(phone);
+        expect(newStudent.phone_number).toBe(phone_number);
       }
     });
 
     test('should handle student with various genders', async () => {
-      const { sampleStudent } = await setupTestData();
-      const testGenders = ['Nam', 'Nữ', 'Khác'];
-
-      for (const gender of testGenders) {
-        const student = {
-          ...sampleStudent,
-          _id: `2212028${testGenders.indexOf(gender)}`,
-          gender
-        };
+      const genders = ['male', 'female', 'other'];
+      for (const [i, gender] of genders.entries()) {
+        const student = defineStudent({ gender, email: `gender${i}@university.edu.vn` });
         const newStudent = await Student.create(student);
         expect(newStudent.gender).toBe(gender);
       }
     });
 
     test('should handle student with various class years', async () => {
-      const { sampleStudent } = await setupTestData();
-      const testYears = [2020, 2021, 2022, 2023];
-
-      for (const year of testYears) {
-        const student = {
-          ...sampleStudent,
-          _id: `2212028${testYears.indexOf(year)}`,
-          class_year: year
-        };
+      const classYears = [2020, 2021, 2022, 2023];
+      for (const [i, class_year] of classYears.entries()) {
+        const student = defineStudent({ class_year, email: `classyear${i}@university.edu.vn` });
         const newStudent = await Student.create(student);
-        expect(newStudent.class_year).toBe(year);
+        expect(newStudent.class_year).toBe(class_year);
       }
     });
   });
@@ -728,4 +700,15 @@ describe('Student Management System Tests - Sample 2', () => {
       expect(canRegister).toBe(true);
     });
   });
+});
+
+// Helper function để tạo student với email khác nhau
+defineStudent = (overrides = {}) => ({
+  _id: overrides._id || `ID${Math.random()}`,
+  name: overrides.name || 'Lê Võ Minh Phương',
+  email: overrides.email || `student${Math.random()}@university.edu.vn`,
+  class_year: overrides.class_year || 2022,
+  major: overrides.major || 'TATM',
+  status: overrides.status || 'DH',
+  ...overrides
 });

@@ -1,3 +1,5 @@
 - [Home](/)
 - [Database schema](DATABASE.md)
 - [Coding Standard Pratices](Coding-standard.md)
+- [Getting started](GETTINGSTARTED.md)
+- [Update existing entry](UPDATEEXISTINGENTRY.md)

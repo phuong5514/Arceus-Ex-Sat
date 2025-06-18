@@ -1,0 +1,2 @@
+- [Home](/)
+- [Database schema](DATABASE.md)

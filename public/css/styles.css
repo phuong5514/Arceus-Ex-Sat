@@ -146,9 +146,9 @@ tr:nth-child(odd) {
   background-color: var(--orange_300);
 }
 
-.reload-button {
+/* .reload-button {
   display: none;
-}
+} */
 
 .message-panel {
   padding: 4px 8px;

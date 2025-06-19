@@ -12,29 +12,29 @@
   <nav>
     <div class="toolbar flex-column">
       <div class="grow flex-row">
-        <button type="button" onclick="window.location.href='course'">Chuyển đến Giáo vụ</button>
+        <button type="button" onclick="window.location.href='course'"> <%= t.go_to_academic_affairs %> </button>
         <button type="button" onclick="window.location.href='/en'">
-          <img style="object-fit: contain; height: 20px;" src="./images/flag-gb-svgrepo-com.svg"/>
+          <img style="object-fit: contain; height: 20px;" src="/images/flag-gb-svgrepo-com.svg"/>
         </button>
-        <button type="button" onclick="window.location.href='/vn'">
-          <img style="object-fit: contain; height: 20px;" src="./images/flag-for-flag-vietnam-svgrepo-com.svg"/>
+        <button type="button" onclick="window.location.href='/vi'">
+          <img style="object-fit: contain; height: 20px;" src="/images/flag-for-flag-vietnam-svgrepo-com.svg"/>
         </button>
 
         <div class="grow"></div>
         <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
-          <label for="search-term" class="search-label">Tìm kiếm:</label>
+          <label for="search-term" class="search-label"> <%= t.search %> </label>
           <input id="search-term" type="text" class="input" placeholder="Nhập từ khóa" size="30"
             value="<%= queryData ? queryData.search : '' %>">
           <select id="search-by">
-            <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>>MSSV</option>
-            <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>>Họ tên</option>
+            <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>> <%= t.student_id %> </option>
+            <option value="name" <%= queryData && queryData.search_by === "name" ? "selected" : "" %>> <%= t.full_name %> </option>
           </select>
-          <button type="submit" class="search-button h-full">Tìm</button>
+          <button type="submit" class="search-button h-full"> <%= t.find %> </button>
           
           <div id="more-search-options" class="h-full" <%- queryData && queryData.search_by_major ? 'style="display: block;"' : 'style="display: none;"' %> >
-            <label for="search-by-major" class="search-label">Khoa:</label>
+            <label for="search-by-major" class="search-label"> <%= t.faculty %> </label>
             <select id="search-by-major" class="h-full">
-              <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>--Tất cả--</option>
+              <option value="" <%= !queryData || !queryData.search_by_major ? "selected" : "" %>>-- <%= t.all %> --</option>
               <% for (var i = 0; i < majors.length; i++) { %>
                 <option value="<%= majors[i]._id %>" <%= queryData && queryData.search_by_major === majors[i]._id ? "selected" : "" %>><%= majors[i].major_name %></option>
               <% } %>
@@ -47,19 +47,13 @@
         </form>
       </div>
       <div class="grow flex-row">
-        <button class="grow" id="add-student-btn" onclick="onAddStudentClicked()"> Thêm sinh viên</button>
-        <button class="grow" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh
-          viên</button>
-        <button class="grow" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
-          viên</button>
-        <button class="grow" onclick="window.location.href='category'">
-            Quản lý danh mục
-        </button>
-        <button class="grow" onclick="window.location.href='course'">
-            Quản lý học phần
-        </button>
-        <button class="grow" onclick="window.location.href='student/import'">Import</button>
-        <button class="grow" id="export-download-button" onclick="exportData()"">Export tất cả</button>
+        <button class="grow" id="add-student-btn" onclick="onAddStudentClicked()"> <%= t.add_student %> </button>
+        <button class="grow" id="remove-student-btn" onclick="onRemoveStudentClicked()"> <%= t.delete_student %> </button>
+        <button class="grow" id="edit-student-btn" onclick="onEditStudentClicked()"> <%= t.edit_student_information %> </button>
+        <button class="grow" onclick="window.location.href='category'"> <%= t.category_management %> </button>
+        <button class="grow" onclick="window.location.href='course'"> <%= t.course_management %> </button>
+        <button class="grow" onclick="window.location.href='student/import'"> <%= t.import %> </button>
+        <button class="grow" id="export-download-button" onclick="exportData()"> <%= t.export_students %> </button>
         <select id="export-format" class="grow">
           <option value="json">as JSON</option>
           <option value="csv">as CSV</option>
@@ -67,13 +61,13 @@
         
       </div>
       <div class="grow flex-row">
-        <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
-        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()">Xác nhận
+        <button class="add save-button" onclick="onAddStudentSaved()"> <%= t.save_changes %> </button>
+        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()"> <%= t.confirm_deletion %>
           xóa</button>
-        <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
-        <button class="add cancel-button" onclick="onAddStudentCancled()">Hủy</button>
-        <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()">Lưu</button>
-        <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCancled()">Hủy</button>
+        <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCanceled()"> <%= t.cancel %> </button>
+        <button class="add cancel-button" onclick="onAddStudentCanceled()"> <%= t.cancel %> </button>
+        <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()"> <%= t.save_changes %> </button>
+        <button class="edit cancel-button" style="display: none;" onclick="onAddStudentCanceled()"> <%= t.cancel %> </button>
         <div class="grow message-panel flex-row align-center justify-center">
           <div id="message">&nbsp;</div>
         </div>
@@ -99,34 +93,34 @@
   
   <dialog id="address-dialog">
     <form method="dialog" class="address-dialog-container" onsubmit="onAddressDialogSubmitted(event)">
-      <div class="address-dialog-header"> Thông tin địa chỉ: </div>
+      <div class="address-dialog-header"> <%= t.address_information %>: </div>
       <div class="flex-column gap-8">
-        <label for="address-house_number">Số nhà: </label>
-        <input type="text" id="address-house_number" name="house_number" placeholder="Số nhà" size="20">
+        <label for="address-house_number"> <%= t.house_number %>: </label>
+        <input type="text" id="address-house_number" name="house_number" placeholder="<%= t.house_number %>" size="20">
       </div>
       <div class="flex-column gap-8">
-        <label for="address-street"> Đường: </label>
-        <input type="text" id="address-street" name="street" placeholder="Đường" size="20">
+        <label for="address-street"> <%= t.street %>: </label>
+        <input type="text" id="address-street" name="street" placeholder="<%= t.street %>" size="20">
       </div>
       <div class="flex-column gap-8">
-        <label for="address-ward"> Phường/Xã: </label>
-        <input type="text" id="address-ward" name="ward" placeholder="Phường/Xã" size="20">
+        <label for="address-ward"> <%= t.ward_commune %>: </label>
+        <input type="text" id="address-ward" name="ward" placeholder="<%= t.ward_commune %>" size="20">
       </div>
       <div class="flex-column gap-8">
-        <label for="address-district"> Quận/Huyện: </label>
-        <input type="text" id="address-district" name="district" placeholder="Quận/Huyện" size="20">
+        <label for="address-district"> <%= t.district %>: </label>
+        <input type="text" id="address-district" name="district" placeholder="<%= t.district %>" size="20">
       </div>
       <div class="flex-column gap-8">
-        <label for="address-city"> Tỉnh/Thành phố</label>
-        <input type="text" id="address-city" name="city" placeholder="Thành phố" size="20">
+        <label for="address-city"> <%= t.province_city %>: </label>
+        <input type="text" id="address-city" name="city" placeholder="<%= t.province_city %>" size="20">
       </div>
       <div class="flex-column gap-8">
-        <label for="address-country"> Quốc gia</label>
-        <input type="text" id="address-country" name="country" placeholder="Quốc gia" size="20">
+        <label for="address-country"> <%= t.country %>: </label>
+        <input type="text" id="address-country" name="country" placeholder="<%= t.country %>" size="20">
       </div>
       <div class="flex-column gap-8">
-        <label for="address-postal_code"> Mã bưu điện</label>
-        <input type="text" id="address-postal_code" name="postal_code" placeholder="Mã bưu điện" size="20">
+        <label for="address-postal_code"> <%= t.postal_code %>: </label>
+        <input type="text" id="address-postal_code" name="postal_code" placeholder="<%= t.postal_code %>" size="20">
       </div>
       <button id="submit-address-button" class="address-dialog-submit-button" type="submit">OK</button>
     </form>

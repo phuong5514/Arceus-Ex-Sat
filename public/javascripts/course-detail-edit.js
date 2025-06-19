@@ -33,7 +33,7 @@ async function onEditCourseSubmitted(event){
       console.log("Cập nhật khóa học thành công!");
       setMessage('success', "Cập nhật khóa học thành công!");
       setTimeout(() => {
-        window.location.href = `/course/${courseId}`;
+        window.location.href = `course/${courseId}`;
       }, 1000);
     } else {
       console.error(result.message);
@@ -57,7 +57,7 @@ async function onDeleteCourseClicked(courseId){
       console.log("Xóa khóa học thành công!");
       setMessage('success', "Xóa khóa học thành công!");
       setTimeout(() => {
-        window.location.href = `/course`;
+        window.location.href = `course`;
       }, 1000);
     } else {
       setMessage('error', result.message);

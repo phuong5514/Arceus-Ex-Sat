@@ -187,7 +187,7 @@ async function onEditStudentSaved() {
     
     setMessage("info", "Đang thay đổi...");
     
-    const response = await fetch(`/students/${selectedStudentId}`, {
+    const response = await fetch(`/student/${selectedStudentId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
@@ -235,7 +235,7 @@ async function onAddStudentSaved() {
 
     setMessage("info", "Đang thêm...")
     
-    const response = await fetch("/students", {
+    const response = await fetch("/student", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
@@ -266,7 +266,7 @@ async function onRemoveStudentsSaved() {
 
     setMessage("info", "Đang xóa...");
     
-    const response = await fetch("/students", {
+    const response = await fetch("/student", {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -287,7 +287,7 @@ async function onRemoveStudentsSaved() {
     }
 }
 
-function onAddStudentCancled() {
+function onAddStudentCanceled() {
     changeToMode("view");
 }
 
@@ -342,8 +342,8 @@ function addState(element, state) {
 
 function markDataChanged() {
     dataChanged = true;
-    const reloadButton = document.querySelector(".reload-button");
-    reloadButton.style.display = "inline";
+    // const reloadButton = document.querySelector(".reload-button");
+    // reloadButton.style.display = "inline";
 }
 
 function setMessage(tag, messageText) {
@@ -743,5 +743,5 @@ function onSearchSubmitted(event) {
         search_by_major: document.getElementById("search-by-major").value
     });
 
-    window.location.href = `/student/search?${urlQuery.toString()}`;
+    window.location.href = `student/search?${urlQuery.toString()}`;
 }

@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="<%= lang || 'vi' %>">
 <head>
-  <title>
-    Quản lý Sinh viên
-  </title>
+  <meta charset="UTF-8">
+  <title> Quản lý Sinh viên </title>
   <link rel="stylesheet" href="/css/styles.css">
-  <script src="javascripts/index-script.js" defer></script>
+  <script src="/javascripts/index-script.js" defer></script>
+  <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 
 <body>
   <nav>
     <div class="toolbar flex-column">
       <div class="grow flex-row">
-        <button type="button" onclick="window.location.href='/course'">Chuyển đến Giáo vụ</button>
+        <button type="button" onclick="window.location.href='course'">Chuyển đến Giáo vụ</button>
         <button type="button" onclick="window.location.href='/en'">
           <img style="object-fit: contain; height: 20px;" src="./images/flag-gb-svgrepo-com.svg"/>
         </button>
@@ -48,29 +47,24 @@
         </form>
       </div>
       <div class="grow flex-row">
-        <button class="grow" id="add-student-btn" onclick="onAddStudentClicked()">Thêm sinh viên</button>
+        <button class="grow" id="add-student-btn" onclick="onAddStudentClicked()"> Thêm sinh viên</button>
         <button class="grow" id="remove-student-btn" onclick="onRemoveStudentClicked()">Xóa sinh
           viên</button>
         <button class="grow" id="edit-student-btn" onclick="onEditStudentClicked()">Sửa thông tin sinh
           viên</button>
-        <button class="grow" onclick="window.location.href='/category'">
+        <button class="grow" onclick="window.location.href='category'">
             Quản lý danh mục
         </button>
-        <button class="grow" onclick="window.location.href='/course'">
+        <button class="grow" onclick="window.location.href='course'">
             Quản lý học phần
         </button>
-        <button class="grow" onclick="window.location.href='/import'">Import</button>
-        <button class="grow" id="export-download-button" onclick="exportData()"">Export All</button>
+        <button class="grow" onclick="window.location.href='student/import'">Import</button>
+        <button class="grow" id="export-download-button" onclick="exportData()"">Export tất cả</button>
         <select id="export-format" class="grow">
           <option value="json">as JSON</option>
           <option value="csv">as CSV</option>
         </select>
         
-        <div class="grow" style="display: none;">
-          <a class="reload-button" href="/">
-            Reloading...
-          </a>
-        </div>
       </div>
       <div class="grow flex-row">
         <button class="add save-button" onclick="onAddStudentSaved()">Lưu</button>
@@ -363,7 +357,7 @@
                               <input type="hidden" name="is_digitized" <%= results.docs[i].identity_card?.is_digitized ? 'checked' : '' %>>
                               <input type="hidden" name="chip_attached" <%= results.docs[i].identity_card?.chip_attached ? 'checked' : '' %>>
                           </div>
-                          <img class="more-info" src="./images/info.svg" onclick="onIdentityCardInfoClicked(this)" width="10"/>
+                          <img class="more-info" src="/images/info.svg" onclick="onIdentityCardInfoClicked(this)" width="10"/>
                       </div>
                   </td>
                   <td>
@@ -381,7 +375,7 @@
                               <input type="hidden" name="issue_location" value="<%= results.docs[i].passport?.issue_location || "" %>">
                               <input type="hidden" name="notes" value="<%= results.docs[i].passport?.notes || "" %>">
                           </div>                                
-                          <img class="more-info" src="./images/info.svg" onclick="onPassportInfoClicked(this)" width="10"/>
+                          <img class="more-info" src="/images/info.svg" onclick="onPassportInfoClicked(this)" width="10"/>
                       </div>
                   </td>
                   <td>
@@ -399,7 +393,7 @@
                               <input type="hidden" name="country" value="<%= results.docs[i].permanent_address.country %>">
                               <input type="hidden" name="postal_code" value="<%= results.docs[i].permanent_address.postal_code %>">
                           </div>
-                          <img class="more-info" src="./images/info.svg" onclick="onAddressInfoClicked(this)" width="10"/>
+                          <img class="more-info" src="/images/info.svg" onclick="onAddressInfoClicked(this)" width="10"/>
                       </div>
                   </td>
                   <td>
@@ -417,7 +411,7 @@
                               <input type="hidden" name="country" value="<%= results.docs[i].temporary_address.country %>">
                               <input type="hidden" name="postal_code" value="<%= results.docs[i].temporary_address.postal_code %>">
                           </div>
-                          <img class="more-info" src="./images/info.svg" onclick="onAddressInfoClicked(this)" width="10"/>
+                          <img class="more-info" src="/images/info.svg" onclick="onAddressInfoClicked(this)" width="10"/>
                       </div>
                   </td>
                   <td>
@@ -435,7 +429,7 @@
                               <input type="hidden" name="country" value="<%= results.docs[i].mailing_address.country %>">
                               <input type="hidden" name="postal_code" value="<%= results.docs[i].mailing_address.postal_code %>">
                           </div>
-                          <img class="more-info" src="./images/info.svg" onclick="onAddressInfoClicked(this)" width="10"/>
+                          <img class="more-info" src="/images/info.svg" onclick="onAddressInfoClicked(this)" width="10"/>
                       </div>
                   </td>
                   <td><%= results.docs[i].email || "" %></td>

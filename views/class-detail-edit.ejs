@@ -1,104 +1,104 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="<%= lang || 'vi' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <% if (mode) { %>
+            Thay đổi: <%= current_class._id %>
+        <% } else { %>
+            Thêm mới lớp học
+        <% } %>
+    </title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="/javascripts/class-detail-edit.js" defer></script>
+    <base href="/<%= lang ? lang + '/' : '' %>">
+</head>
+
+<body>
     <% mode = current_class != null %>
+    <div class="flex-column m-16 gap-16">
+        <div class="flex-row space-between">
+            <h1> <%= mode ? current_class._id : "Thêm mới lớp học" %> </h1>
+            <button onclick="window.location.href='class'">Quay lại</button>
+        </div>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>
-            <% if (mode) { %>
-                Thay đổi: <%= current_class._id %>
-            <% } else { %>
-                Thêm mới lớp học
-            <% } %>
-        </title>
-        <link rel="stylesheet" href="/css/styles.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-        <script src="/javascripts/class-detail-edit.js" defer></script>
-    </head>
+        <form class="grid box grid-gap-16 bg-grey-100 align-center px-64 pt-16 pb-32" onsubmit="onClassSubmitted(event, <%= mode %>)">
+            <h2 class="grid-colspan-12 text-center">Thông tin lớp học</h2>
+            <div id="message" class="grid-colspan-12 message-panel" style="display: none;"></div>
 
-    <body>
-        <div class="flex-column m-16 gap-16">
-            <div class="flex-row space-between">
-                <h1> <%= mode ? current_class._id : "Thêm mới lớp học" %> </h1>
-                <button onclick="window.location.href='/class'">Quay lại</button>
+            <label for="id" class="grid-colspan-2 text-right font-bold">Mã lớp học</label>
+            <div class="grid-colspan-10">
+                <input id="id" class="grid-colspan-10 w-full border-box" type="text" name="id" value="<%= mode ? current_class._id : "" %>" <%= mode ? "readonly" : "" %> />
             </div>
 
-            <form class="grid box grid-gap-16 bg-grey-100 align-center px-64 pt-16 pb-32" onsubmit="onClassSubmitted(event, <%= mode %>)">
-                <h2 class="grid-colspan-12 text-center">Thông tin lớp học</h2>
-                <div id="message" class="grid-colspan-12 message-panel" style="display: none;"></div>
+            <label for="course_id" class="grid-colspan-2 text-right font-bold">Mã khóa học</label>
+            <div class="grid-colspan-10">
+                <!-- <input id="course_id" class="grid-colspan-10 w-full border-box" type="text" name="course_id" value="<%= mode ? current_class.course_id : "" %>" /> -->
+                <select id="course_id" class="w-full border-box" name="course_id">
+                    <option value="" disabled selected>-- Chọn khóa học --</option>
+                    <% for (let i = 0; i < courses.length; i++) { %>
+                        <option value="<%= courses[i]._id %>" <%= mode && current_class.course_id === courses[i]._id ? 'selected' : '' %>>
+                            <%= `${courses[i]._id} - ${courses[i].course_name}` %>
+                        </option>
+                    <% } %> 
+                </select>
+            </div>
 
-                <label for="id" class="grid-colspan-2 text-right font-bold">Mã lớp học</label>
-                <div class="grid-colspan-10">
-                    <input id="id" class="grid-colspan-10 w-full border-box" type="text" name="id" value="<%= mode ? current_class._id : "" %>" <%= mode ? "readonly" : "" %> />
-                </div>
+            <label for="academic_year" class="grid-colspan-2 text-right font-bold">Năm học</label>
+            <div class="grid-colspan-10">
+                <input id="academic_year" class="grid-colspan-10 w-full border-box" type="text" name="academic_year" value="<%= mode ? current_class.academic_year : "" %>" />
+            </div>
 
-                <label for="course_id" class="grid-colspan-2 text-right font-bold">Mã khóa học</label>
-                <div class="grid-colspan-10">
-                    <!-- <input id="course_id" class="grid-colspan-10 w-full border-box" type="text" name="course_id" value="<%= mode ? current_class.course_id : "" %>" /> -->
-                    <select id="course_id" class="w-full border-box" name="course_id">
-                        <option value="" disabled selected>-- Chọn khóa học --</option>
-                        <% for (let i = 0; i < courses.length; i++) { %>
-                            <option value="<%= courses[i]._id %>" <%= mode && current_class.course_id === courses[i]._id ? 'selected' : '' %>>
-                                <%= `${courses[i]._id} - ${courses[i].course_name}` %>
-                            </option>
-                        <% } %> 
-                    </select>
-                </div>
+            <label for="semester" class="grid-colspan-2 text-right font-bold align-self-start mt-10">Học kì</label>
+            <div class="grid-colspan-10">
+                <!-- <input id="semester" class="grid-colspan-10 w-full border-box" type="text" name="semester" value="<%= mode ? current_class.semester : "" %>" /> -->
+                <select id="semester" class="w-full border-box" name="semester">
+                    <option value="" disabled selected>-- Chọn học kì --</option>
+                    <option value="1" <%= mode && current_class.semester === '1' ? 'selected' : '' %>>Học kì 1</option>
+                    <option value="2" <%= mode && current_class.semester === '2' ? 'selected' : '' %>>Học kì 2</option>
+                    <option value="summer" <%= mode && current_class.semester.toLowerCase()  === 'summer' ? 'selected' : '' %>>Học kì Hè</option>
+                </select>
+            </div>
 
-                <label for="academic_year" class="grid-colspan-2 text-right font-bold">Năm học</label>
-                <div class="grid-colspan-10">
-                    <input id="academic_year" class="grid-colspan-10 w-full border-box" type="text" name="academic_year" value="<%= mode ? current_class.academic_year : "" %>" />
-                </div>
+            <label for="lecturer" class="grid-colspan-2 text-right font-bold">Giảng viên</label>
+            <div class="grid-colspan-10">
+                <input id="lecturer" class="grid-colspan-10 w-full border-box" type="text" name="lecturer" value="<%= mode ? current_class.lecturer : "" %>" />
+            </div>
 
-                <label for="semester" class="grid-colspan-2 text-right font-bold align-self-start mt-10">Học kì</label>
-                <div class="grid-colspan-10">
-                    <!-- <input id="semester" class="grid-colspan-10 w-full border-box" type="text" name="semester" value="<%= mode ? current_class.semester : "" %>" /> -->
-                    <select id="semester" class="w-full border-box" name="semester">
-                        <option value="" disabled selected>-- Chọn học kì --</option>
-                        <option value="1" <%= mode && current_class.semester === '1' ? 'selected' : '' %>>Học kì 1</option>
-                        <option value="2" <%= mode && current_class.semester === '2' ? 'selected' : '' %>>Học kì 2</option>
-                        <option value="summer" <%= mode && current_class.semester.toLowerCase()  === 'summer' ? 'selected' : '' %>>Học kì Hè</option>
-                    </select>
-                </div>
+            <label for="max_students" class="grid-colspan-2 text-right font-bold">Tổng số sinh viên</label>
+            <div class="grid-colspan-10">
+                <input id="max_students" class="grid-colspan-10 w-full border-box" type="number" min="1" name="max_students" value="<%= mode ? current_class.max_students : "" %>" />
+            </div>
 
-                <label for="lecturer" class="grid-colspan-2 text-right font-bold">Giảng viên</label>
-                <div class="grid-colspan-10">
-                    <input id="lecturer" class="grid-colspan-10 w-full border-box" type="text" name="lecturer" value="<%= mode ? current_class.lecturer : "" %>" />
-                </div>
+            <label for="schedule" class="grid-colspan-2 text-right font-bold">Lịch học</label>
+            <div class="grid-colspan-10">
+                <input id="schedule" class="grid-colspan-10 w-full border-box" type="text" name="schedule" value="<%= mode ? current_class.schedule : "" %>" />
+            </div>
 
-                <label for="max_students" class="grid-colspan-2 text-right font-bold">Tổng số sinh viên</label>
-                <div class="grid-colspan-10">
-                    <input id="max_students" class="grid-colspan-10 w-full border-box" type="number" min="1" name="max_students" value="<%= mode ? current_class.max_students : "" %>" />
-                </div>
-
-                <label for="schedule" class="grid-colspan-2 text-right font-bold">Lịch học</label>
-                <div class="grid-colspan-10">
-                    <input id="schedule" class="grid-colspan-10 w-full border-box" type="text" name="schedule" value="<%= mode ? current_class.schedule : "" %>" />
-                </div>
-
-                <label for="classroom" class="grid-colspan-2 text-right font-bold">Phòng học</label>
-                <div class="grid-colspan-10">
-                    <input id="classroom" class="grid-colspan-10 w-full border-box" type="text" name="classroom" value="<%= mode ? current_class.classroom : "" %>" />
-                </div>
-                    
-                <div class="grid-colspan-12 flex-row justify-right">
-                    <button type="submit" class="px-32">Lưu thay đổi</button>
-                    <% if (mode) { %>
-                        <button type="button" class="px-32" onclick="onDeleteClassClicked('<%= current_class._id %>')">Xóa khóa học</button>
-                    <% } %>
-                    <button type="button" class="px-32" onclick="window.location.href='/class'">Hủy</button>
-                </div>
-            </form>
-        </div>
-    </body>
-    <script>
-        new Choices('#course_id', {
-            searchEnabled: true,
-            shouldSort: true,
-            removeItemButton: true,
-            itemSelectText: '',
-        });
-    </script>
+            <label for="classroom" class="grid-colspan-2 text-right font-bold">Phòng học</label>
+            <div class="grid-colspan-10">
+                <input id="classroom" class="grid-colspan-10 w-full border-box" type="text" name="classroom" value="<%= mode ? current_class.classroom : "" %>" />
+            </div>
+                
+            <div class="grid-colspan-12 flex-row justify-right">
+                <button type="submit" class="px-32">Lưu thay đổi</button>
+                <% if (mode) { %>
+                    <button type="button" class="px-32" onclick="onDeleteClassClicked('<%= current_class._id %>')">Xóa khóa học</button>
+                <% } %>
+                <button type="button" class="px-32" onclick="window.location.href='class'">Hủy</button>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    new Choices('#course_id', {
+        searchEnabled: true,
+        shouldSort: true,
+        removeItemButton: true,
+        itemSelectText: '',
+    });
+</script>
 </html>

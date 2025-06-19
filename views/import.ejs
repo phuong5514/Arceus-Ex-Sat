@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html lang="vi">
-
+<html lang="<%= lang || 'vi' %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-    Nhập sinh viên
-  </title>
+  <title> Nhập sinh viên </title>
   <link rel="stylesheet" href="/css/styles.css">
   <script src="/javascripts/import-script.js" defer></script>
+  <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 
 <body>
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
       <h1>Nhập sinh viên</h1>
-      <button onclick="window.location.href='/'" >Quay lại</button>
+      <button onclick="window.location.href='student'" >Quay lại</button>
     </div>
 
     <div class="box flex-column">

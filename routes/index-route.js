@@ -1,35 +1,37 @@
-import express, { query } from 'express';
-import * as studentController from '../controllers/student-controller.js';
-import fileUpload from 'express-fileupload';
-import { validateAddStudent, validateUpdateStudent } from '../middlewares/validator-middleware.js';
+import express from 'express';
+import en from '../languages/en.js';
+import vi from '../languages/vi.js';
+import studentRoute from './student-route.js';
+import categoryRoute from './category-route.js';
+import classRoute from './class-route.js';
+import enrollmentRoute from './enrollment-route.js';
+import courseRoute from './course-route.js';
 
 const router = express.Router();
 
-router.use(fileUpload({
-    createParentPath: true,
-    limits: { 
-        fileSize: 50 * 1024 * 1024 // 50MB max file size
-    },
-    abortOnLimit: true,
-    responseOnLimit: "File size is too large",
-    safeFileNames: true,
-    preserveExtension: true
-}));
+// Language middleware
+router.use('/:lang(vi|en)?', (req, res, next) => {
+  const lang = req.params.lang || '';
+  res.locals.lang = lang;
+  res.locals.t = lang === 'en' ? en : vi;
+  next();
+});
 
-router.get("/", studentController.getAllStudents);
+// Redirect base `/` to `/vi/student`
+router.get('/', (req, res) => {
+  res.redirect('/vi/student');
+});
 
-router.get("/search", studentController.searchStudents);
+// Redirect `/vi` or `/en` to `/vi/student` or `/en/student`
+router.get('/:lang(vi|en)', (req, res) => {
+  res.redirect(`/${req.params.lang}/student`);
+});
 
-router.post("/students", validateAddStudent, studentController.addStudent);
-
-router.put("/students/:student_id", studentController.updateStudent);
-
-router.delete("/students", studentController.deleteStudents);
-
-router.get('/import', studentController.showImportPage);
-
-router.post('/import', studentController.importStudents);
-
-router.get('/export-download', studentController.exportAllStudents);
+// Mount route handlers under language prefix
+router.use('/:lang(vi|en)?/student', studentRoute);
+router.use('/:lang(vi|en)?/course', courseRoute);
+router.use('/:lang(vi|en)?/class', classRoute);
+router.use('/:lang(vi|en)?/category', categoryRoute);
+router.use('/:lang(vi|en)?/enrollment', enrollmentRoute);
 
 export default router;

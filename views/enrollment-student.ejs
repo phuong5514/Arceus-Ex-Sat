@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="vi">
-
+<html lang="<%= lang || 'vi' %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-    Đăng ký học phần
-  </title>
+  <title> Đăng ký học phần </title>
   <link rel="stylesheet" href="/css/styles.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
   <script src="/javascripts/enrollment-student.js" defer></script>
+  <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 
 <body>
@@ -20,7 +18,7 @@
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
       <h1><%= student._id %> - <%= student.name %></h1>
-      <button type="button" onclick="window.location.href='/enrollment'">Quay lại</button>
+      <button type="button" onclick="window.location.href='enrollment'">Quay lại</button>
     </div>
     <div class="max-w-1000 align-self-center flex-column gap-16">
       <div class="flex-column gap-16 align-center">

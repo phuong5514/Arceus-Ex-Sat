@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
-
+<html lang="<%= lang || 'vi' %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-    Đăng ký học phần
-  </title>
+  <title> Đăng ký học phần </title>
   <link rel="stylesheet" href="/css/styles.css">
+  <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 <body>
   <nav> 
@@ -45,12 +43,12 @@
       <% for (var i = 0; i < students.docs.length; i++) { %>
         <tr>
           <td>
-            <a href="/enrollment/student/<%= students.docs[i]._id %>">
+            <a href="enrollment/student/<%= students.docs[i]._id %>">
               <%= students.docs[i]._id %>
             </a>
           </td>
           <td>
-            <a href="/enrollment/student/<%= students.docs[i]._id %>">
+            <a href="enrollment/student/<%= students.docs[i]._id %>">
               <%= students.docs[i].name %>
             </a>
           </td>

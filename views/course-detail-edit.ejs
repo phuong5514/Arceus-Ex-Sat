@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="vi">
-
+<html lang="<%= lang || 'vi' %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-    Thay đổi: <%= course.course_name %>
-  </title>
+  <title> Thay đổi: <%= course.course_name %> </title>
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
   <script src="/javascripts/course-detail-edit.js" defer></script>
+  <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 
 <body>
@@ -20,7 +18,7 @@
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
       <h1> <%= course._id %> - <%= course.course_name %></h1>
-      <button onclick="window.location.href='/course'">Quay lại</button>
+      <button onclick="window.location.href='course'">Quay lại</button>
     </div>
     <form class="grid box grid-gap-16 bg-grey-100 align-center px-64 pt-16 pb-32" onsubmit="onEditCourseSubmitted(event)">
       <h2 class="grid-colspan-12 text-center">Thông tin khóa học</h2>
@@ -80,7 +78,7 @@
       <div class="grid-colspan-12 flex-row justify-right">
         <button type="submit" class="px-32">Lưu thay đổi</button>
         <button type="button" class="px-32" onclick="onDeleteCourseClicked('<%= course._id %>')">Xóa khóa học</button>
-        <button type="button" class="px-32" onclick="window.location.href='/course'">Hủy</button>
+        <button type="button" class="px-32" onclick="window.location.href='course'">Hủy</button>
       </div>
     </form>
   </div>

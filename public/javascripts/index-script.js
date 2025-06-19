@@ -728,7 +728,7 @@ function onPassportInfoClicked(button) {
 
 function exportData() {
     const format = document.getElementById('export-format').value;
-    window.location.href = `/export-download?format=${format}`;
+    window.location.href = `student/export-download?format=${format}`;
 }
 
 function onSearchSubmitted(event) {
@@ -743,5 +743,5 @@ function onSearchSubmitted(event) {
         search_by_major: document.getElementById("search-by-major").value
     });
 
-    window.location.href = `/search?${urlQuery.toString()}`;
+    window.location.href = `/student/search?${urlQuery.toString()}`;
 }

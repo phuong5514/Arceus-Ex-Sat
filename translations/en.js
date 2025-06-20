@@ -22,7 +22,8 @@ export default {
   add_new_class: "Add New Class",
   class_information: "Class Information",
   class_code: "Class Code",
-  course_management: "Quản lý học phần",
+  course_management: "Course managment",
+  course: "Course",
   course_code: "Course Code",
   select_course: "Select Course",
   academic_year: "Academic Year",
@@ -76,6 +77,7 @@ export default {
   student_management: "Student Management",
   go_to_academic_affairs: "Go to Academic Affairs",
   search: "Search",
+  input_keyword: "Enter keyword",
   find: "Find",
   all: "All",
   add_student: "Add Student",
@@ -114,5 +116,6 @@ export default {
   select_gender: "Select Gender",
   male: "Male",
   female: "Female",
-  no_students_found: "No Students Found"
+  no_students_found: "No Students Found",
+  page: "Page"
 }

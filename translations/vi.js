@@ -23,6 +23,7 @@ export default {
   class_information: "Thông tin lớp học",
   class_code: "Mã lớp học",
   course_management: "Quản lý học phần",
+  course: "Khóa học",
   course_code: "Mã khóa học",
   select_course: "Chọn khóa học",
   academic_year: "Năm học",
@@ -76,6 +77,7 @@ export default {
   student_management: "Quản lý Sinh viên",
   go_to_academic_affairs: "Chuyển đến Giáo vụ",
   search: "Tìm kiếm",
+  input_keyword: "Nhập từ khóa",
   find: "Tìm",
   all: "Tất cả",
   add_student: "Thêm sinh viên",
@@ -114,5 +116,6 @@ export default {
   select_gender: "Chọn giới tính",
   male: "Nam",
   female: "Nữ",
-  no_students_found: "Không có sinh viên"
+  no_students_found: "Không có sinh viên",
+  page: "Trang"
 }

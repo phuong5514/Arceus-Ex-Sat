@@ -20,5 +20,11 @@
 		"body": [
 			"console.log(JSON.stringify($1, null, 2));"
 		]
+	},
+	"Translation variable in EJS": {
+		"prefix": "translation:ejs",
+		"body": [
+			"<%= t.${1|category_management,go_back,faculty,major,faculty_code,faculty_name,rename_major,delete_major,add_major,study_status,status_code,enter_new_status,rename_status,delete_status,curriculum,program_code,enter_new_program,rename_program,delete_program,change,add_new_class,class_information,class_code,course_management,course_code,select_course,academic_year,semester,select_semester,semester_i,semester_ii,lecturer,total_students,schedule,classroom,save_changes,delete_course,cancel,details,class_management,add_class,add_new_course,course_information,course_name,enter_course_code,enter_course_name,select_faculty,course_description,credits,enter_credits,prerequisite_course_code,select_prerequisite_course,status,select_status,open,closed,add_course,no_results_found,register_course,academic_information,student_id,full_name,date_of_birth,gender,major_field,registered_course_list,cancel_registration,class_size,subject_name,enter_student,file_type,select_file,import,csv_file_format,student_management,go_to_academic_affairs,search,find,all,add_student,delete_student,edit_student_information,export_students,as_json,as_csv,loading,confirm_deletion,address_information,house_number,street,ward_commune,district,province_city,country,postal_code,id_card_information,id_number,issue_date,expiration_date,place_of_issue,digitized_id_card,with_chip_if_id_card,passport_information,passport_number,type,country_code,note,phone_number_abbr,phone_number,permanent_address,temporary_address,mailing_address,select_gender,male,female,no_students_found|} %>"
+		]
 	}
 }

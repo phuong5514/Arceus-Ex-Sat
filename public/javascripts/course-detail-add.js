@@ -34,7 +34,7 @@ async function onAddCourseSubmitted(event){
       console.log("Cập nhật khóa học thành công!");
       setMessage('success', "Cập nhật khóa học thành công!");
       setTimeout(() => {
-        window.location.href = `/course/${course_id}`;
+        window.location.href = `course/${course_id}`;
       }, 1000);
     } else {
       console.error(result.message);

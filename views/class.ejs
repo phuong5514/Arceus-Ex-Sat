@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="<%= lang || 'vi' %>">
 <head>
-  <title>
-    Quản lý lớp học
-  </title>
+  <title> Quản lý lớp học </title>
   <link rel="stylesheet" href="/css/styles.css">
-  <!-- <script src="javascripts/index-script.js" defer></script> -->
+  <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 
 <body>
     <nav>
       <%- include('./partials/nav-bar.ejs') %>
       <div class="flex-row">
-        <button onclick="window.location.href='/class/add'">Thêm lớp học</button>
+        <button onclick="window.location.href='class/add'">Thêm lớp học</button>
         <div class="grow"></div>
         <!-- Pagination -->
         <div class="flex-row align-center justify-right gap-8">
@@ -52,10 +49,10 @@
 
           <tbody>
               <% for (var i=0; i < results.docs.length; i++) { %>
-              <tr class="table-row" onclick="window.location.href='/class/<%= results.docs[i]._id %>'">
+              <tr class="table-row" onclick="window.location.href='class/<%= results.docs[i]._id %>'">
                   <td></td>
                   <td>
-                    <a href="/class/<%= results.docs[i]._id %>">
+                    <a href="class/<%= results.docs[i]._id %>">
                       <%= results.docs[i]._id %>
                     </a>
                   </td>

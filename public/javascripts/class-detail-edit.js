@@ -44,7 +44,7 @@ async function onEditClassSubmitted(event) {
             console.log("Cập nhật lớp học thành công!");
             setMessage('success', "Cập nhật lớp học thành công!");
             setTimeout(() => {
-                window.location.href = `/class/${originalClassId}`;
+                window.location.href = `class/${originalClassId}`;
             }, 1000);
         } else {
             console.error(result.message);
@@ -95,7 +95,7 @@ async function onCreateClassSubmitted(event) {
             console.log("Thêm lớp học thành công!");
             setMessage('success', "Thêm lớp học thành công!");
             setTimeout(() => {
-                window.location.href = `/class`;
+                window.location.href = `class`;
             }, 1000);
         } else {
             console.error(result.message);
@@ -120,7 +120,7 @@ async function onDeleteClassClicked(classId) {
             console.log("Xóa lớp học thành công!");
             setMessage('success', "Xóa lớp học thành công!");
             setTimeout(() => {
-                window.location.href = `/class`;
+                window.location.href = `class`;
             }, 1000);
         } else {
             console.error(result.message);

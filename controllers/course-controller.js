@@ -135,13 +135,6 @@ function getAvailableDepartments() {
   return Department.find({}).lean();
 }
 
-function getAvailableStatus() {
-  return [
-    { value: true, text: "Đang mở" },
-    { value: false, text: "Không mở" }
-  ];
-}
-
 export function getAvailableCourses() {
   return Course.find({}).lean();
 }
@@ -149,13 +142,12 @@ export function getAvailableCourses() {
 export const getCourseDetail = async (req, res) => {
   try{
     const availableDepartments = await getAvailableDepartments(); 
-    const availableStatus = getAvailableStatus();
     const availableCourses = await getAvailableCourses();
 
     const { id } = req.params;
     const course = await Course.findById({_id : id}).lean();
     if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
-    res.render('course-detail', {course, status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
+    res.render('course-detail', {course, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
     return_error(res, 500, err.message, true)
   }
@@ -164,13 +156,12 @@ export const getCourseDetail = async (req, res) => {
 export const getCourseDetailEdit = async (req, res) => {
   try{
     const availableDepartments = await getAvailableDepartments(); 
-    const availableStatus = getAvailableStatus();
     const availableCourses = await getAvailableCourses();
 
     const { id } = req.params;
     const course = await Course.findById({_id : id}).lean();
     if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
-    res.render('course-detail-edit', {course, status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
+    res.render('course-detail-edit', {course, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
     return_error(res, 500, err.message, true)
   }
@@ -179,10 +170,9 @@ export const getCourseDetailEdit = async (req, res) => {
 export const getCourseAdd = async (req, res) => {
   try {
     const availableDepartments = await getAvailableDepartments(); 
-    const availableStatus = getAvailableStatus();
     const availableCourses = await getAvailableCourses();
 
-    res.render('course-detail-add', {status: availableStatus, departments: availableDepartments, prerequisite_courses: availableCourses});
+    res.render('course-detail-add', {departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch {
     return_error(res, 500, err.message, true)
   }

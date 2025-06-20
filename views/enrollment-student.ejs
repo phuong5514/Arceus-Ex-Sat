@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Đăng ký học phần </title>
+  <title> <%= t.register_course %> </title>
   <link rel="stylesheet" href="/css/styles.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -24,46 +24,46 @@
       <div class="flex-column gap-16 align-center">
         <!-- Student Academic Info -->
         <div class="grid grid-gap-8 border-box w-full box bg-grey-200 px-32 pt-16 pb-16">
-          <h2 class="grid-colspan-12 text-center">Thông tin học tập</h2>
-          <div class="grid-colspan-4 border-right font-bold">MSSV</div>
+          <h2 class="grid-colspan-12 text-center"> <%= t.study_i %> </h2>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.student_id %> </div>
           <div class="grid-colspan-8"><%= student._id %></div>
-          <div class="grid-colspan-4 border-right font-bold">Họ tên</div>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.student_id %> </div>
           <div class="grid-colspan-8"><%= student.name %></div>
-          <div class="grid-colspan-4 border-right font-bold">Ngày sinh</div>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.date_of_birth %> </div>
           <div class="grid-colspan-8"><%= student.birthdate.toLocaleDateString('vi-VN') %></div>
-          <div class="grid-colspan-4 border-right font-bold">Giới tính</div>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.gender %> </div>
           <div class="grid-colspan-8"><%= student.gender %></div>
-          <div class="grid-colspan-4 border-right font-bold">Chương trình</div>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.program %> </div>
           <div class="grid-colspan-8"><%= student.program ? `${student.program._id} - ${student.program.program_name}` : 'N/A' %></div>
-          <div class="grid-colspan-4 border-right font-bold">Ngành học</div>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.major %> </div>
           <div class="grid-colspan-8"><%= student.major ? `${student.major._id} - ${student.major.major_name}` : 'N/A' %></div>
-          <div class="grid-colspan-4 border-right font-bold">Trạng thái</div>
+          <div class="grid-colspan-4 border-right font-bold"> <%= t.study_status %> </div>
           <div class="grid-colspan-8"><%= student.status ? `${student.status._id} - ${student.status.status_name}` : 'N/A' %></div>
         </div>
         <!-- Enrolled Classes -->
         <div class="box flex-column w-full border-box p-16 gap-4">
           <% renderClassList(
-            "Danh sách học phần đã đăng ký",
+            "<%= t.registered_course_list %>",
             enrolledClasses,
             false
           ) %>
           <span class="message-panel" id="message-enrolled" style="display: none;"></span>
           <div class="flex-row justify-right">
-            <button type="button" class="w-200" onclick="onRemoveClassesClick()">Hủy đăng ký</button>
+            <button type="button" class="w-200" onclick="onRemoveClassesClick()"> <%= t.cancel_registration %> </button>
           </div>
         </div>
         <!-- Available Classes -->
         <div class="box flex-column w-full border-box p-16 gap-8">
           <div class="grow flex-column">
             <%= renderClassList(
-              "Danh sách học phần có thể đăng ký",
+              "<%= t.registrable_course_list %>",
               availableClasses,
               true
             ) %>
           </div>
           <span class="message-panel" id="message-available" style="display: none;"></span>
           <div class="flex-row justify-right">
-            <button type="button" class="w-200" onclick="onAddClassesClick()">Đăng ký</button>
+            <button type="button" class="w-200" onclick="onAddClassesClick()"> <%= t.register_course %> </button>
           </div>
         </div>
         </div>
@@ -78,12 +78,12 @@
   <!-- Headers -->
   <div class="grid grid-colspan-12 grid-gap-8 border-bottom p-8 min-w-800">
     <div class="grid-colspan-1"></div>
-    <div class="grid-colspan-2 font-bold">Mã lớp</div>
-    <div class="grid-colspan-3 font-bold">Tên học phần</div>
-    <div class="grid-colspan-1 font-bold">Sỉ số</div>
-    <div class="grid-colspan-1 font-bold text-center">Số tín chỉ</div>
-    <div class="grid-colspan-2 font-bold text-center">Học kỳ</div>
-    <div class="grid-colspan-2 font-bold">Năm học</div>
+    <div class="grid-colspan-2 font-bold"> <%= t.course_code %> </div>
+    <div class="grid-colspan-3 font-bold"> <%= t.course_name %> </div>
+    <div class="grid-colspan-1 font-bold"> <%= t.class_size %> </div>
+    <div class="grid-colspan-1 font-bold text-center"> <%= t.credits %> </div>
+    <div class="grid-colspan-2 font-bold text-center"> <%= t.semester %> </div>
+    <div class="grid-colspan-2 font-bold"> <%= t.academic_year %> </div>
   </div>
   <div class="grid grid-gap-8 max-h-300 overflow-auto">
     <% if (classes.length > 0) { %>
@@ -107,7 +107,7 @@
         </div>
       <% }) %>
     <% } else { %>
-      <p class="grid-colspan-12 text-center font-italic">(Không có dữ liệu)</p>
+      <p class="grid-colspan-12 text-center font-italic"> (<%= t.no_results_found %>) </p>
     <% } %>
   </div>
 <% } %>

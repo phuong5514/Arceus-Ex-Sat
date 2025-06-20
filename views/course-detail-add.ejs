@@ -24,20 +24,20 @@
       onsubmit="onAddCourseSubmitted(event)">
       <h2 class="grid-colspan-12 text-center">Thông tin khóa học</h2>
       <div id="message" class="grid-colspan-12 message-panel" style="display: none;"></div>
-      <label for="course_id" class="grid-colspan-2 text-right font-bold">Mã khóa học</label>
+      <label for="course_id" class="grid-colspan-2 text-right font-bold"> <%= t.course_code %> </label>
       <div class="grid-colspan-10">
         <input id="course_id" class="grid-colspan-10 w-full border-box" type="text" name="course_id"
-          placeholder="Nhập mã khóa học" required />
+          placeholder="<%= t.enter_course_code %>" required />
       </div>
-      <label for="name" class="grid-colspan-2 text-right font-bold">Tên khóa học</label>
+      <label for="name" class="grid-colspan-2 text-right font-bold"> <%= t.course_name %> </label>
       <div class="grid-colspan-10">
         <input id="course_name" class="grid-colspan-10 w-full border-box" type="text" name="name"
-          placeholder="Nhập tên khóa học" required />
+          placeholder="<%= t.enter_course_name %>" required />
       </div>
-      <label for="department" class="grid-colspan-2 text-right font-bold">Khoa</label>
+      <label for="department" class="grid-colspan-2 text-right font-bold"> <%= t.department %> </label>
       <div class="grid-colspan-10">
         <select id="department" class="w-full border-box" name="department" required>
-          <option value="" disabled selected>-- Chọn khoa --</option>
+          <option value="" disabled selected>-- <%= t.select_department %> --</option>
           <% for (let i=0; i < departments.length; i++) { %>
             <option value="<%= departments[i]._id %>">
               <%= `${departments[i]._id} - ${departments[i].department_name}` %>
@@ -45,20 +45,20 @@
             <% } %>
         </select>
       </div>
-      <label for="description" class="grid-colspan-2 text-right font-bold align-self-start mt-10">Mô tả</label>
+      <label for="description" class="grid-colspan-2 text-right font-bold align-self-start mt-10"> <%= t.course_description %> </label>
       <div class="grid-colspan-10">
         <textarea id="description" class="w-full border-box" name="description" rows="3"
-          placeholder="Nhập mô tả khóa học"></textarea>
+          placeholder="<%= t.enter %>"></textarea>
       </div>
-      <label for="credits" class="grid-colspan-2 text-right font-bold">Số tín chỉ</label>
+      <label for="credits" class="grid-colspan-2 text-right font-bold"> <%= t.credits %> </label>
       <div class="grid-colspan-10">
-        <input class="border-box w-full" id="credits" name="credits" type="number" placeholder="Nhập số tín chỉ" min="2"
+        <input class="border-box w-full" id="credits" name="credits" type="number" placeholder="<%= t.enter_credits %>" min="2"
           required />
       </div>
-      <label for="prerequisite_course" class="grid-colspan-2 text-right font-bold">Mã môn tiên quyết</label>
+      <label for="prerequisite_course" class="grid-colspan-2 text-right font-bold"> <%= t.prerequisite_course_code %> </label>
       <div class="grid-colspan-10">
         <select id="prerequisite_course" class="w-full border-box" name="prerequisite_course">
-          <option value="" disabled selected>-- Chọn môn tiên quyết --</option>
+          <option value="" disabled selected>-- <%= t.select_prerequisite_course %> --</option>
           <% for (let i=0; i < prerequisite_courses.length; i++) { %>
             <option value="<%= prerequisite_courses[i]._id %>">
               <%= `${prerequisite_courses[i]._id} - ${prerequisite_courses[i].course_name}` %>
@@ -66,17 +66,17 @@
             <% } %>
         </select>
       </div>
-      <label for="is_active" class="grid-colspan-2 text-right font-bold">Trạng thái</label>
+      <label for="is_active" class="grid-colspan-2 text-right font-bold"> <%= t.course_status %> </label>
       <div class="grid-colspan-10">
         <select id="is_active" class="w-full border-box" name="is_active" required>
-          <option value="" disabled selected>-- Chọn trạng thái --</option>
-          <option value="true">Đang mở</option>
-          <option value="false">Đã ngừng mở</option>
+          <option value="" disabled selected>-- <%= t.select_course_status %> --</option>
+          <option value="true"> <%= t.open %> </option>
+          <option value="false"> <%= t.closed %> </option>
         </select>
       </div>
       <div class="grid-colspan-12 flex-row justify-right">
-        <button type="submit" class="px-32">Thêm khóa học</button>
-        <button type="button" class="px-32" onclick="window.location.href='course'">Hủy</button>
+        <button type="submit" class="px-32"> <%= t.add_new_course %> </button>
+        <button type="button" class="px-32" onclick="window.location.href='course'"> <%= t.cancel %> </button>
       </div>
     </form>
   </div>
@@ -85,13 +85,13 @@
       searchEnabled: true,
       shouldSort: true,
       itemSelectText: '',
-      noChoicesText: 'Không có kết quả nào',
+      noChoicesText: '<%= t.no_results_found %>',
     });
     new Choices('#prerequisite_course', {
       searchEnabled: true,
       shouldSort: true,
       itemSelectText: '',
-      noChoicesText: 'Không có kết quả nào',
+      noChoicesText: '<%= t.no_results_found %>',
     });
     new Choices('#is_active', {
       searchEnabled: false,

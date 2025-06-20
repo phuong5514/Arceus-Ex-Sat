@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Đăng ký học phần </title>
+  <title> <%= t.register_course %> </title>
   <link rel="stylesheet" href="/css/styles.css">
   <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
@@ -17,7 +17,7 @@
         onclick="onPageChange(<%= students.page - 1 %>)"> 
         <
       </button>
-      <span>Trang <%= students.page %> / <%= students.totalPages %></span>
+      <span> <%= t.page %> <%= students.page %> / <%= students.totalPages %></span>
       <button 
         class="pagination-button <%= !students.hasNextPage ? 'disabled' : '' %>"
         onclick="onPageChange(<%= students.page + 1 %>)">
@@ -30,13 +30,13 @@
   <table class="w-full">
     <thead>
       <tr>
-        <th>MSSV</th>
-        <th>Tên</th>
-        <th>Ngày sinh</th>
-        <th>Giới tính</th>
-        <th>Chương trình</th>
-        <th>Ngành học</th>
-        <th>Trạng thái</th>
+        <th> <%= t.study_status %> </th>
+        <th> <%= t.full_name %> </th>
+        <th> <%= t.date_of_birth %> </th>
+        <th> <%= t.gender %> </th>
+        <th> <%= t.program %> </th>
+        <th> <%= t.major %> </th>
+        <th> <%= t.study_status %> </th>
       </tr>
     </thead>
     <tbody>

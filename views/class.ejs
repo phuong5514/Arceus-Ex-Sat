@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= lang || 'vi' %>">
 <head>
-  <title> Quản lý lớp học </title>
+  <title> <%= t.class_management %> </title>
   <link rel="stylesheet" href="/css/styles.css">
   <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
@@ -19,7 +19,7 @@
                 onclick="onPageChange('<%= results.page - 1 %>')"> 
                 <
             </button>
-            <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+            <span> <%= t.page %> <%= results.page %> / <%= results.totalPages %></span>
             <button 
                 class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
                 onclick="onPageChange('<%= results.page + 1 %>')">
@@ -34,16 +34,16 @@
           <thead>
               <tr>
                   <th></th>
-                  <th>Mã lớp học</th>
-                  <th>Mã môn học</th>
-                  <th>Tên khóa học</th>
-                  <th>Năm học</th>
-                  <th>Học kì</th>
-                  <th>Giảng viên</th>
-                  <th>Số sinh viên tối đa</th>
-                  <th>Lịch học</th>
-                  <th>Phòng học</th>
-                  <th>Ngày tạo</th>
+                  <th> <%= t.class_code %> </th>
+                  <th> <%= t.course_code %> </th>
+                  <th> <%= t.course_name %> </th>
+                  <th> <%= t.academic_year %> </th>
+                  <th> <%= t.semester %> </th>
+                  <th> <%= t.lecturer %> </th>
+                  <th> <%= t.class_size %> </th>
+                  <th> <%= t.schedule %> </th>
+                  <th> <%= t.classroom %> </th>
+                  <th> <%= t.creation_date %> </th>
               </tr>
           </thead>
 
@@ -70,7 +70,7 @@
           </tbody>
       </table>
       <% if (results.docs.length == 0) { %>
-        <div class="empty-table">(Không có lớp học)</div>
+        <div class="empty-table">(<%= t.no_courses_found %> )</div>
       <% } %>
   </div>
   <!-- Pagination Script -->

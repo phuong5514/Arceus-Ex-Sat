@@ -2,7 +2,7 @@
 <html lang="<%= lang || 'vi' %>">
 <head>
   <meta charset="UTF-8">
-  <title> Quản lý Danh mục </title>
+  <title> <%= t.category_management %> </title>
   <link rel="stylesheet" href="/css/styles.css">
   <script src="/javascripts/category-script.js" defer></script>
   <base href="/<%= lang ? lang + '/' : '' %>">
@@ -11,7 +11,7 @@
 <!-- template -->
 <% function renderManagementSection(title, id, list, placeholderId, placeholderName, renameFunction, deleteFunction, addFunction) { %>
   <div class="box grow flex-column gap-4">
-    <h1>Quản lý danh mục</h1>
+    <h1> <%= t.category_management %> </h1>
     <div id="<%= id %>-list" class="flex-column gap-4 scrollable">
       <% list.forEach(item => { %>
         <div class="flex-row gap-4">
@@ -32,7 +32,7 @@
 <body>
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
-      <h1 class="center-title">Quản lý Danh mục</h1>
+      <h1 class="center-title"> <%= t.category_management %> </h1>
         <button onclick="window.location.href='student'"> <%= t.go_back %> </button>
     </div>
     
@@ -40,11 +40,11 @@
 
     <div class="flex-row align-left gap-8">
       <!-- Quản lý Khoa -->
-      <%= renderManagementSection("Khoa", "major", majors, "ID Khoa", "Tên Khoa", "renameMajor", "deleteMajor", "addMajor") %>
+      <%= renderManagementSection(t.major, "major", majors, t.major_code, t.enter_new_major, "renameMajor", "deleteMajor", "addMajor") %>
       <!-- Quản lý Tình trạng SV -->
-      <%= renderManagementSection("Tình trạng Sinh viên", "status", status, "ID Tình trạng", "Nhập tình trạng mới", "renameStatus", "deleteStatus", "addStatus") %>
+      <%= renderManagementSection(t.study_status, "status", status, t.study_status_code, t.enter_new_study_status, "renameStatus", "deleteStatus", "addStatus") %>
       <!-- Quản lý Chương trình -->
-      <%= renderManagementSection("Chương trình", "program", programs, "ID Chương trình", "Nhập chương trình mới", "renameProgram", "deleteProgram", "addProgram") %> 
+      <%= renderManagementSection(t.program, "program", programs, t.program_code, t.enter_new_program, "renameProgram", "deleteProgram", "addProgram") %> 
     </div>
   </div>
 </body>

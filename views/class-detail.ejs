@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Chi tiết: <%= current_class._id %> </title>
+    <title> <%= t.details %> : <%= current_class._id %> </title>
     <link rel="stylesheet" href="/css/styles.css">
     <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
@@ -17,58 +17,58 @@
         <div class="grid box column-gap-4 bg-grey-100 align-self-center align-center px-32 pt-16 pb-32 min-w-600">
 
             <div class="grid-colspan-3"></div>
-            <h2 class="grid-colspan-6 text-center">Thông tin lớp học</h2>
+            <h2 class="grid-colspan-6 text-center"> <%= t.class_information %> </h2>
             <button type="button" class="grid-colspan-3 h-full" onclick="window.location.href='class/edit/<%= current_class._id%>'"> <%= t.change %> </button>
             <div class="grid-colspan-12 message-panel" id="message" style="display: none;"></div> 
-            <label class="grid-colspan-4 text-left font-bold border-right ">Mã lớp học</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.class_code %> </label>
             <div class="grid-colspan-8">
                 <p class="grid-colspan-8 w-full border-box"><%= current_class._id %></p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Mã khóa học</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.course_code %> </label>
             <div class="grid-colspan-8">
                 <p class="grid-colspan-8 w-full border-box"><%= current_class.course_id %></p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Năm học</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.academic_year %> </label>
             <div class="grid-colspan-8">
                 <p class="w-full border-box">
                 <%= current_class.academic_year %>
                 </p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Học kì</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.semester %> </label>
             <div class="grid-colspan-8">
                 <p class="w-full border-box">
                     <% if (current_class.semester === "1") { %>
-                        Học kỳ 1
+                        <%= t.semester_i %>
                     <% } else if (current_class.semester === "2") { %>
-                        Học kỳ 2
+                        <%= t.semester_ii %>
                     <% } else if (current_class.semester === "summer") { %>
-                        Học kỳ Hè
+                        <%= t.semester_summer %>
                     <% } %>
                 </p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Giảng viên</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.lecturer %> </label>
             <div class="grid-colspan-8">
                 <p class="border-box w-full"><%= current_class.lecturer %></p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Tổng số sinh viên</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.total_students %> </label>
             <div class="grid-colspan-8">
                 <p class="border-box w-full"><%= current_class.max_students %></p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Lịch học</label>
+            <label class="grid-colspan-4 text-left font-bold border-right "> <%= t.schedule %> </label>
             <div class="grid-colspan-8">
                 <p class="w-full border-box">
                 <%= current_class.schedule %>
                 </p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right ">Phòng học</label>
+            <label class="grid-colspan-4 text-left font-bold border-right"> <%= t.classroom %> </label>
             <div class="grid-colspan-8">
                 <p class="w-full border-box">
                 <%= current_class.classroom %>
                 </p>
             </div>
-            <label class="grid-colspan-4 text-left font-bold border-right">Ngày tạo</label>
+            <label class="grid-colspan-4 text-left font-bold border-right"> <%= t.creation_date %> </label>
             <div class="grid-colspan-8">
-                <p class="w-full border-box"><%= formatted_created_at %></p>
+                <p class="w-full border-box"> <%= formatted_created_at %> </p>
             </div>
         </div>
     </div>

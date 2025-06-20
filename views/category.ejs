@@ -33,7 +33,19 @@
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
       <h1 class="center-title"> <%= t.category_management %> </h1>
+      <div class="flex-row">
+        <button type="button" onclick="
+          window.location.href = '/en' + window.location.pathname.slice(3) + window.location.search + window.location.hash;"
+          >
+          <img style="object-fit: contain; height: 20px;" src="/images/flag-gb-svgrepo-com.svg"/>
+        </button>
+        <button type="button" onclick="
+          window.location.href = '/vi' + window.location.pathname.slice(3) + window.location.search + window.location.hash;"
+          >
+          <img style="object-fit: contain; height: 20px;" src="/images/flag-for-flag-vietnam-svgrepo-com.svg"/>
+        </button>      
         <button onclick="window.location.href='student'"> <%= t.go_back %> </button>
+      </div>
     </div>
     
     <div id="message"></div>

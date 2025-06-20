@@ -4,10 +4,14 @@
       <button class="grow" onclick="window.location.href='course'"> <%= t.courses %> </button>
       <button class="grow" onclick="window.location.href='class'"> <%= t.classes %> </button>
       <button class="grow" onclick="window.location.href='enrollment'"> <%= t.enrollments %> </button>
-      <button type="button" onclick="window.location.href='/en'">
+      <button type="button" onclick="
+        window.location.href = '/en' + window.location.pathname.slice(3) + window.location.search + window.location.hash;"
+        >
         <img style="object-fit: contain; height: 20px;" src="/images/flag-gb-svgrepo-com.svg"/>
       </button>
-      <button type="button" onclick="window.location.href='/vn'">
+      <button type="button" onclick="
+        window.location.href = '/vi' + window.location.pathname.slice(3) + window.location.search + window.location.hash;"
+        >
         <img style="object-fit: contain; height: 20px;" src="/images/flag-for-flag-vietnam-svgrepo-com.svg"/>
       </button>
     </div>

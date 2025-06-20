@@ -36,9 +36,9 @@ export const createCourse = async (req, res) => {
     });
 
     await course.save();
-    res.status(201).json(course);
+    res.status(201).json({ok: true, message: t(res.locals.t, "add_course_success"), data: course });
   } catch (err) {
-    return_error(res, 500, err.message)
+    return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
   }
 };
 

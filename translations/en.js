@@ -137,6 +137,9 @@ export default {
   courses: "Khóa học",
   classes: "Classes",
   enrollments: "Enrollments",
+  add_class_success: "Add class successful",
+  update_class_success: "Update class successful",
+  delete_class_success: "Delete class successful",
   prerequisite_failed: "The student didn't complete course $1 to be able to register course $2",
   student_id_required: "Student ID cannot be empty",
   name_required: "Full Name cannot be empty",
@@ -218,5 +221,12 @@ export default {
   add_program_failed: "Failed to add program!",
   delete_program_failed: "Failed to delete program!",
   rename_program_success: "Program renamed successfully!",
-  rename_program_failed: "Failed to rename program!"
+  rename_program_failed: "Failed to rename program!",
+  register_class_success: "Registered class successfully",
+  unregister_class_success: "Unregistered class successfully",
+  unregister_reason_student_request: "Student requested to cancel enrollment",
+  add_course_success: "Add course successful",
+  update_course_success: "Update course successful",
+  delete_course_success: "Delete course successful",
+  deactivate_course_success: "Deactivate course successful"
 }

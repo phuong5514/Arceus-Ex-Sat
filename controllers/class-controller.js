@@ -30,7 +30,7 @@ export const getAllClasses = async (req, res) => {
         results.docs = results.docs.filter((result) => result.course_id !== null);
         res.render('class', { title: 'Classes', results });
     } catch (err) {
-        return_error(res, 500, err.message)
+        return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
     }
 }
 
@@ -43,7 +43,7 @@ export const getClassDetail = async (req, res) => {
         res.render('class-detail', { current_class, formatted_created_at });
 
     } catch (err) {
-        return_error(res, 500, err.message, true)
+        return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
     }
 }
 
@@ -57,7 +57,7 @@ export const getClassDetailEdit = async (req, res) => {
         res.render('class-detail-edit', { current_class, courses });
 
     } catch (err) {
-        return_error(res, 500, err.message, true)
+        return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
     }
 }
 
@@ -66,7 +66,7 @@ export const getClassDetailAdd = async (_req, res) => {
         const courses = await courseController.getAvailableCourses();
         res.render('class-detail-edit', { current_class: null, courses });
     } catch (err) {
-        return_error(res, 500, err.message, true)
+        return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
     }
 }
 
@@ -79,7 +79,7 @@ export const createClass = async (req, res) => {
             throw new Error(t(res.locals.t, "class_already_exists"));
         }
 
-        await checkData(req.body);
+        await checkData(res, req.body);
 
         const newClass = new Class({
             _id,
@@ -94,9 +94,9 @@ export const createClass = async (req, res) => {
         });
 
         await newClass.save();
-        res.status(200).json({ ok: true, message: "" });;
+        res.status(200).json({ ok: true, message: t(res.locals.t, "add_class_success") });
     } catch (err) {
-        return_error(res, 500, err.message, true)
+        return_error(res, 400, err.message, true)
     }
 }
 
@@ -109,7 +109,7 @@ export const updateClass = async (req, res) => {
             throw new Error(t(res.locals.t, "class_not_found", id));
         }
 
-        await checkData(req.body);
+        await checkData(res, req.body);
 
         classToUpdate.set({
             course_id: course_id ?? classToUpdate.course_id,
@@ -122,9 +122,9 @@ export const updateClass = async (req, res) => {
         });
 
         await classToUpdate.save();
-        res.status(200).json({ ok: true, message: "" });
+        res.status(200).json({ ok: true, message: t(res.locals.t, "update_class_success") });
     } catch(err) {
-        return_error(res, 500, err.message, true)
+        return_error(res, 400, err.message, true)
     }
 }
 
@@ -137,45 +137,45 @@ export const deleteClass = async (req, res) => {
         }
 
         await Class.deleteOne({ _id: id });
-        res.status(200).json({ ok: true, message: "" });
+        res.status(200).json({ ok: true, message: t(res.locals.t, "delete_class_success") });
     } catch (err) {
-        return_error(res, 500, err.message, true)
+        return_error(res, 400, err.message, true)
     }
 }
 
-async function checkData(data) {
-    checkMissingField(data)
-    checkMaxStudentCount(data.max_students)
-    checkAcademicYear(data.academic_year)
-    checkSemester(data.semester)
-    checkCourse(data.course_id)
+async function checkData(res, data) {
+    checkMissingField(res, data)
+    checkMaxStudentCount(res, data.max_students)
+    checkAcademicYear(res, data.academic_year)
+    checkSemester(res, data.semester)
+    await checkCourse(res, data.course_id)
 
     return true;
 }
 
-function checkMissingField(data) {
+function checkMissingField(res, data) {
     const missingFields = [];
     if (!data.course_id) {
-        missingFields.push(t(res.locals.t, "course_not_found"));
+        missingFields.push(t(res.locals.t, "courses"));
     }
     if (!data.academic_year) {
-        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["năm học"]));
+        missingFields.push(t(res.locals.t, "academic_year"));
     }
     if (!data.semester) {
-        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["học kỳ"]));
+        missingFields.push(t(res.locals.t, "semester"));
     }
     if (!data.lecturer) {
-        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["giảng viên"]));
+        missingFields.push(t(res.locals.t, "lecturer"));
     }
     if (!data.max_students) {
-        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["số lượng sinh viên tối đa"]));
+        missingFields.push(t(res.locals.t, "total_students"));
     }
     if (missingFields.length > 0) {
         throw new Error(t(res.locals.t, "fill_all_required_fields", missingFields.join(", ")));
     }
 }
 
-function checkMaxStudentCount(max_students) {
+function checkMaxStudentCount(res, max_students) {
     const num = Number(max_students);
     if (!Number.isInteger(num)) {
         throw new Error(t(res.locals.t, "max_students_must_be_integer"));
@@ -185,21 +185,21 @@ function checkMaxStudentCount(max_students) {
     }
 }
 
-function checkAcademicYear(year) {
+function checkAcademicYear(res, year) {
     const regex = /^\d{4}-\d{4}$/;
     if (!regex.test(year)) {
         throw new Error(t(res.locals.t, "invalid_academic_year_format"));
     }
 }
 
-function checkSemester(semester) {
+function checkSemester(res, semester) {
     // TODO: change the hard coded array
     if (!["1", "2", "summer"].includes(semester)) {
         throw new Error(t(res.locals.t, "invalid_semester", semester));
     }
 }
 
-async function checkCourse(course_id) {
+async function checkCourse(res, course_id) {
     const courseExists = await Course.findOne({ _id: course_id });
     if (!courseExists) {
         throw new Error(t(res.locals.t, "course_not_found", course_id));

@@ -15,7 +15,7 @@ export const getStudents = async (req, res) => {
     const students = await studentController.getAllStudentsAcademic(page, limit);
     res.render("enrollment", {students});
   } catch (error) {
-    return_error(res, 500, "Server failed to fetch students data", true)
+    return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
   }
 }
 
@@ -154,7 +154,7 @@ export const registerClasses = async (req, res) => {
       await newEnrollment.save();
     }
 
-    res.status(200).json({ok: true, message: ""});
+    res.status(200).json({ok: true, message: t(res.locals.t, "register_class_success")});
   } catch (error){
     return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
   }
@@ -175,14 +175,14 @@ export const unregisterClasses = async (req, res) => {
         {
           $set: {
             canceled: true,
-            canceled_reason: "Student requested to cancel enrollment",
+            canceled_reason: t(res.locals.t, "unregister_reason_student_request"),
             canceled_at: new Date()
           }
         }
       );
     }
 
-    res.status(200).json({ok: true, message: ""});
+    res.status(200).json({ok: true, message: t(res.locals.t, "unregister_class_success")});
   } catch (error){
     return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
   }

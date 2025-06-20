@@ -14,7 +14,7 @@ export const getDropdowns = async (_req, res) => {
 
         res.render("category", { majors, status, programs });
     } catch (error) {
-        return_error(res, 500, `Error getting dropdowns: ${error.message}`, true);
+        return_error(res, 500, t(res.locals.t, "internal_server_error"), true);
     }
 };
 
@@ -127,7 +127,7 @@ export const renameStatus = async (req, res) => {
             res.status(200).json({ ok: true, message: t(res.locals.t, "rename_status_success") });
         }
     } catch (error) {
-        res.status(400).json({ ok: false, message: t(res.locals.t, "rename_status_failed") });
+        return_error(res, 400, error.message);
     }
 };
 
@@ -142,6 +142,6 @@ export const renameProgram = async (req, res) => {
             res.status(200).json({ ok: true, message: t(res.locals.t, "rename_program_success") });
         }
     } catch (error) {
-        res.status(400).json({ ok: false, message: t(res.locals.t, "rename_program_failed") });
+        return_error(res, 400, error.message);
     }
 };

@@ -137,6 +137,9 @@ export default {
   courses: "Khóa học",
   classes: "Lớp học",
   enrollments: "Học phần",
+  add_class_success: "Thêm lớp học thành công",
+  update_class_success: "Cập nhật lớp học thành công",
+  delete_class_success: "Xoá lớp học thành công",
   prerequisite_failed: "Sinh viên chưa hoàn thành khóa học $1 để đăng ký khoá $2",
   student_id_required: "MSSV không được để trống",
   name_required: "Họ tên không được để trống",
@@ -218,5 +221,12 @@ export default {
   add_program_failed: "Thêm chương trình thất bại!",
   delete_program_failed: "Xóa chương trình thất bại!",
   rename_program_success: "Đổi tên chương trình thành công!",
-  rename_program_failed: "Đổi tên chương trình thất bại!"
+  rename_program_failed: "Đổi tên chương trình thất bại!",
+  register_class_success: "Đăng ký lớp học thành công",
+  unregister_class_success: "Hủy đăng ký lớp học thành công",
+  unregister_reason_student_request: "Sinh viên yêu cầu hủy đăng ký",
+  add_course_success: "Thêm khóa học thành công",
+  update_course_success: "Cập nhật khóa học thành công",
+  delete_course_success: "Xóa khóa học thành công",
+  deactivate_course_success: "Vô hiệu hóa khóa học thành công"
 }

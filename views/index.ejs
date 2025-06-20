@@ -280,7 +280,7 @@
                   </td>
                   <% addressTypes.forEach(addressType=> { %>
                     <td id="<%= mode %>-<%= addressType %>">
-                      <div class="space-between">
+                      <div class="flex-row space-between">
                         <input class="address-text" type="text" name="<%= addressType %>" placeholder="..." size="20" readonly>
                         <button class="address-edit-button" onclick="onAddressEditClicked(this)"> <%= t.change %> </button>
                         <% ["house_number", "street" , "ward" , "district" , "city" , "country" , "postal_code" ].forEach(field=> { %>

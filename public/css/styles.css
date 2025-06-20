@@ -262,14 +262,6 @@ tr:nth-child(odd) {
   grid-column: 1 / span 2;
 }
 
-.address-edit-button{
-  background-color: var(--green_500);
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  padding: 8px 6px;
-}
-
 .space-between{
   justify-content: space-between;
 }

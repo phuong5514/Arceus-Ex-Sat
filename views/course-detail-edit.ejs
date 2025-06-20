@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Thay đổi: <%= course.course_name %> </title>
+  <title> <%= t.change %> : <%= course.course_name %> </title>
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -76,7 +76,7 @@
       </div>
       
       <div class="grid-colspan-12 flex-row justify-right">
-        <button type="submit" class="px-32">Lưu thay đổi</button>
+        <button type="submit" class="px-32"> <%= t.save_changes %> </button>
         <button type="button" class="px-32" onclick="onDeleteCourseClicked('<%= course._id %>')">Xóa khóa học</button>
         <button type="button" class="px-32" onclick="window.location.href='course'">Hủy</button>
       </div>

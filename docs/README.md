@@ -1,4 +1,4 @@
-# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập 5)
+# Trang web Quản lý sinh viên (bản cập nhật cho Bài tập cuối cùng)
 ## Giới thiệu
 Là trang web quản lý sinh viên đơn giản, cung cấp các chức năng thêm, xóa, sửa thông tin sinh viên, import, export, v.v
 
@@ -213,3 +213,44 @@ Viết các testcasetrong file `student.test.js` cho từng chức năng của h
 ```
 -  **Kết quả**
   ![image](https://github.com/user-attachments/assets/ff996206-ae83-47c1-8705-d8602d5960cf)
+
+## Truy cập tài liệu
+Sử dụng lệnh
+```
+npm run docs
+```
+
+### Trường hợp dòng lệnh thất bại:
+Cài đặt docsify:
+```
+npm i docsify-cli -g
+```
+
+Truy cập tài liệu:
+```
+docsify serve docs
+```
+
+*Lưu ý: nếu console không nhận ra docsify do thiếu đường dẫn trong environment variable, có thể thêm tiền tố `npx` để chạy lệnh trên
+
+  ![image](readme_resources/docs_serve_fail_fix.png)
+
+### Nội dung tài liệu:
+1. Home: bản copy của file README này
+  ![image](readme_resources/docs_home.png)
+
+2. Database schema
+  ![image](readme_resources/docs_database.png)
+
+3. Coding Standard Practise
+  ![image](readme_resources/docs_coding_convention.png)
+
+4. Getting started
+  ![image](readme_resources/docs_getting_started.png)
+
+5. Update existing entry
+  ![image](readme_resources/docs_update_existing_entry.png)
+
+6. Unit testing
+  ![image](readme_resources/docs_unit_testing.png)
+

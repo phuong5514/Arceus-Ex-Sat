@@ -10,7 +10,7 @@
 
 <body>
   <nav >
-    <%- include('./partials/nav-bar.ejs') %>
+    <%- include('./partials/nav-bar.ejs', { t }) %>
     <div class="flex-row">
       <button onclick="window.location.href='course/add'"> <%= t.add_course %> </button>
       <div class="grow"></div>
@@ -39,7 +39,7 @@
         <th> <%= t.department %> </th>
         <th> <%= t.course_description %> </th>
         <th> <%= t.prerequisite_course_code %> </th>
-        <th> <%= t.course_status %></th>
+        <th> <%= t.course_status %> </th>
         <th> <%= t.creation_date %> </th>
       </tr>
     </thead>

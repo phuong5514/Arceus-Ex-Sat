@@ -8,6 +8,8 @@
   <base href="/<%= lang ? lang + '/' : '' %>">
 </head>
 
+<% mode = lang || '' %>
+
 <!-- template -->
 <% function renderManagementSection(title, id, list, placeholderId, placeholderName, renameFunction, deleteFunction, addFunction) { %>
   <div class="box grow flex-column gap-4">

@@ -148,7 +148,7 @@ function onRemoveStudentClicked() {
 
 async function onEditStudentSaved() {
     if (!selectedStudentId) {
-        setMessage("error", "Vui lòng chọn sinh viên cần sửa");
+        setMessage("error", window.t ? t("select_student_to_edit") : "Vui lòng chọn sinh viên cần sửa");
         return;
     }
 
@@ -187,7 +187,7 @@ async function onEditStudentSaved() {
     
     setMessage("info", "Đang thay đổi...");
     
-    const response = await fetch(`/student/${selectedStudentId}`, {
+    const response = await fetch(`student/${selectedStudentId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
@@ -235,7 +235,7 @@ async function onAddStudentSaved() {
 
     setMessage("info", "Đang thêm...")
     
-    const response = await fetch("/student", {
+    const response = await fetch("student", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
@@ -260,13 +260,13 @@ async function onRemoveStudentsSaved() {
     });
 
     if (selectedStudents.length === 0) {
-        setMessage("warning", "Vui lòng chọn ít nhất một sinh viên để xóa.");
+        setMessage("warning", window.t ? t("select_at_least_one_student_to_delete") : "Vui lòng chọn ít nhất một sinh viên để xóa.");
         return;
     }
 
     setMessage("info", "Đang xóa...");
     
-    const response = await fetch("/student", {
+    const response = await fetch("student", {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -277,13 +277,13 @@ async function onRemoveStudentsSaved() {
     if (response.ok) {
         markDataChanged();
         changeToMode("view");
-        setMessage("success", "Xóa sinh viên thành công!");
+        setMessage("success", window.t ? t("delete_student_success") : "Xóa sinh viên thành công!");
         setTimeout(() => {
             window.location.reload();
         }, 1000);
     } else {
         const result = await response.json();
-        setMessage("error", result.error || "Xóa sinh viên thất bại.");
+        setMessage("error", window.t ? t("delete_student_failed", result.error || "") : (result.error || "Xóa sinh viên thất bại."));
     }
 }
 

@@ -21,6 +21,8 @@ import { ZodError } from "zod";
 
 import QueryValuesEnum from "../helpers/query-values.js";
 
+import t from "../helpers/translator.js";
+
 dayjs.extend(customParseFormat);
 
 const fetchAndFormatStudents = async (query = {}, options = {}) => {
@@ -94,7 +96,7 @@ export const getAllStudents = async (req, res) => {
     res.render("index", { title: "Student management system", results, majors, status, programs, queryString: "", queryData: null });
   } catch (error) {
     console.error("Error getting students:", error.message);
-    res.status(500).json({ ok: false, message: "Lỗi lấy danh sách sinh viên: " + error.message });
+    res.status(500).json({ ok: false, message: t(res.locals.t, "error_getting_students", error.message) });
   }
 };
 
@@ -108,11 +110,11 @@ export const addStudent = async (req, res) => {
 
     console.log("Student added successfully");
     writeLog('CREATE', 'SUCCESS', `Thêm sinh viên ${student._id} thành công`);
-    res.status(200).json({ ok: true, message: "Thêm sinh viên thành công" });
+    res.status(200).json({ ok: true, message: t(res.locals.t, "add_student_success") });
   } catch (error) {
     writeLog('CREATE', 'ERROR', `Thêm sinh viên thất bại: ${error.message}`);
     console.error("Error adding student:", error.message);
-    res.status(400).json({ ok: false, error: error.message });
+    res.status(400).json({ ok: false, error: t(res.locals.t, "add_student_failed", error.message) });
   }
 };
 
@@ -222,7 +224,7 @@ export const updateStudent = async (req, res) => {
   try {
     const studentToUpdate = await Student.findOne({ _id: studentId });
     if (!studentToUpdate) {
-      throw new Error("Không tìm thấy sinh viên cần cập nhật");
+      throw new Error(t(res.locals.t, "student_not_found_for_update"));
     }
     const processedStudent = await preprocessStudent(student, studentUpdateSchema);
     // Update all fields from processedStudent to studentToUpdate
@@ -250,13 +252,13 @@ export const updateStudent = async (req, res) => {
     // TODO: wrap these part into a function
     writeLog('UPDATE', 'SUCCESS', `Cập nhật sinh viên ${studentId} thành công`);
     console.log("Student updated successfully");
-    res.status(200).json({ ok: true, message: "Cập nhật sinh viên thành công" });
+    res.status(200).json({ ok: true, message: t(res.locals.t, "update_student_success") });
   } catch (error) {
     // TODO: wrap these parts into a function
 
     writeLog('UPDATE', 'ERROR', `Cập nhật sinh viên ${studentId} thất bại: ${error.message}`);
     console.error("Error updating student:", error.message);
-    res.status(400).json({ ok: false, error: error.message });
+    res.status(400).json({ ok: false, error: t(res.locals.t, "update_student_failed", error.message) });
   }
 };
 
@@ -265,21 +267,21 @@ export const deleteStudents = async (req, res) => {
   try {
     // Validate input
     if (!studentIds || !Array.isArray(studentIds) || studentIds.length === 0) {
-      throw new Error("Danh sách MSSV không hợp lệ hoặc rỗng");
+      throw new Error(t(res.locals.t, "invalid_or_empty_student_list"));
     }
 
     // Delete each student by their student_id
     const result = await Student.deleteMany({ _id: { $in: studentIds } });
     if (result.deletedCount === 0) {
-      throw new Error(`Không tìm thấy sinh viên nào nằm trong danh sách cần xóa`);
+      throw new Error(t(res.locals.t, "no_student_found_to_delete"));
     }
     writeLog('DELETE', 'SUCCESS', `Xóa ${result.deletedCount} sinh viên thành công`);
     console.log(`Deleted ${result.deletedCount} students successfully`);
-    res.status(200).json({ ok: true, message: "Xóa sinh viên thành công" });
+    res.status(200).json({ ok: true, message: t(res.locals.t, "delete_student_success") });
   } catch (error) {
     writeLog('DELETE', 'ERROR', `Xóa sinh viên thất bại: ${error.message}`);
     console.error("Error deleting students:", error.message);
-    res.status(400).json({ ok: false, error: error.message });
+    res.status(400).json({ ok: false, error: t(res.locals.t, "delete_student_failed", error.message) });
   }
 }
 
@@ -341,7 +343,7 @@ export const importStudents = async (req, res) => {
     if (!req.files || !req.files.file) {
       res.status(400).json({
         ok: false,
-        message: 'Vui lòng chọn file để import'
+        message: t(res.locals.t, "please_select_file_to_import")
       });
     }
     
@@ -352,14 +354,14 @@ export const importStudents = async (req, res) => {
     if (fileType === 'csv' && !file.name.toLowerCase().endsWith('.csv')) {
       return res.status(400).json({
         ok: false,
-        message: 'File phải có định dạng .csv'
+        message: t(res.locals.t, "file_must_be_csv")
       });
     }
     // HOTFIX: Somehow file extension will change from "".json" to "j.son"
     if (fileType === 'json' && !file.name.toLowerCase().endsWith('.json') && !file.name.toLowerCase().endsWith('j.son')) {
       return res.status(400).json({
         ok: false,
-        message: 'File phải có định dạng .json'
+        message: t(res.locals.t, "file_must_be_json")
       });
     }
 
@@ -375,7 +377,7 @@ export const importStudents = async (req, res) => {
         if (lines.length < 2) {
           return res.status(400).json({
             ok: false,
-            message: 'File CSV phải có ít nhất header và một dòng dữ liệu'
+            message: t(res.locals.t, "csv_must_have_header_and_data")
           });
         }
 
@@ -386,7 +388,7 @@ export const importStudents = async (req, res) => {
         if (!expectedHeaders.every(h => headers.includes(h))) {
           return res.status(400).json({
             ok: false,
-            message: `File CSV phải có đầy đủ các cột: ${expectedHeaders.join(', ')}`
+            message: t(res.locals.t, "csv_missing_columns", expectedHeaders.join(', '))
           });
         }
 
@@ -482,7 +484,7 @@ export const importStudents = async (req, res) => {
           if (!Array.isArray(jsonData)) {
             return res.status(400).json({
               ok: false,
-              message: 'File JSON phải chứa một mảng các sinh viên'
+              message: t(res.locals.t, "json_must_be_array")
             });
           }
           for (let i = 0; i < jsonData.length; i++) {
@@ -513,7 +515,7 @@ export const importStudents = async (req, res) => {
     if (students.length === 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Không có dữ liệu nào được import\n' + formatExtraLogs(extra_error_logs)
+        message: t(res.locals.t, "no_data_imported") + '\n' + formatExtraLogs(extra_error_logs)
       });
     }
 
@@ -524,7 +526,7 @@ export const importStudents = async (req, res) => {
     writeLog('IMPORT', 'SUCCESS', `Import ${students.length} sinh viên thành công`);
     return res.status(200).json({
       ok: true,
-      message: `Import thành công ${students.length} sinh viên\n ` + formatExtraLogs(extra_error_logs)
+      message: t(res.locals.t, "import_success", students.length) + '\n' + formatExtraLogs(extra_error_logs)
     });
 
   } catch (error) {
@@ -532,7 +534,7 @@ export const importStudents = async (req, res) => {
     writeLog('IMPORT', 'ERROR', `Import sinh viên thất bại: ${error.message}`);
     return res.status(500).json({
       ok: false,
-      message: 'Có lỗi xảy ra khi import: ' + error.message
+      message: t(res.locals.t, "import_error", error.message)
     });
   }
 };

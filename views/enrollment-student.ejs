@@ -43,7 +43,7 @@
         <!-- Enrolled Classes -->
         <div class="box flex-column w-full border-box p-16 gap-4">
           <% renderClassList(
-            "<%= t.registered_course_list %>",
+            t.registered_course_list,
             enrolledClasses,
             false
           ) %>
@@ -56,7 +56,7 @@
         <div class="box flex-column w-full border-box p-16 gap-8">
           <div class="grow flex-column">
             <%= renderClassList(
-              "<%= t.registrable_course_list %>",
+              t.registrable_course_list,
               availableClasses,
               true
             ) %>

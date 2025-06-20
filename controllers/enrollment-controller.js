@@ -5,6 +5,8 @@ import Class from "../models/class-model.js";
 import return_error from "../helpers/error-handler.js";
 import QueryValuesEnum from "../helpers/query-values.js";
 
+import t from "../helpers/translator.js"
+
 // Page for choosing students
 export const getStudents = async (req, res) => {
   try {
@@ -84,12 +86,12 @@ export const getStudent = async (req, res) => {
     const enrolledClasses = await getEnrolledClasses(studentId);
     const availableClasses = await getAvailableClasses(studentId);
     if (!student) {
-      return res.status(404).send("Student not found");
+      return res.status(404).send(t(res.locals.t, "student_not_found", studentId));
     }
     res.render("enrollment-student", {student, enrolledClasses, availableClasses});
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(t(res.locals.t, "internal_server_error"));
   }
 }
 
@@ -100,7 +102,7 @@ export const registerClasses = async (req, res) => {
     // Check if student exits
     const student = await studentController.getStudentAcademic(studentId);
     if (!student) {
-      return res.status(404).json({ok: false, message: `Không tìm thấy sinh viên với mã số ${studentId}`});
+      return res.status(404).json({ok: false, message: t(res.locals.t, "student_not_found", studentId)});
     }
     // Check if classes is a subset of available classes
     const availableClasses = await getAvailableClasses(studentId);
@@ -109,7 +111,7 @@ export const registerClasses = async (req, res) => {
     for (const classId of classes) {
       const classIdx = availableClasses.findIndex(availableClass => availableClass._id === classId);
       if (classIdx < 0) {
-        return res.status(400).json({ok: false, message: `Lớp học ${classId} không nằm trong danh sách lớp học có thể đăng ký`});
+        return res.status(400).json({ok: false, message: t(res.locals.t, "class_not_found", classId)});
       }
       classesToRegister.push(availableClasses[classIdx]);
     }
@@ -132,12 +134,12 @@ export const registerClasses = async (req, res) => {
       const student_count = await getEnrolledStudentCount(c._id);
       const max_students = c.max_students;
       if (student_count >= max_students) {
-        return res.status(400).json({ok: false, message: `Lớp học ${c._id} đã đầy`});
+        return res.status(400).json({ok: false, message: t(res.locals.t, "class_full", c._id)});
       }
 
       // Check prerequisites
       if (c.course_id.prerequisite_course && !enrolledCourses.includes(c.course_id.prerequisite_course)) {
-        return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký khoá ${c.course_id._id}`});
+        return res.status(400).json({ok: false, message: t(res.locals.t, "prerequisite_failed", c.course_id.prerequisite_course, c.course_id._id)});
       }
 
       const newEnrollment = new Enrollment({
@@ -154,9 +156,7 @@ export const registerClasses = async (req, res) => {
 
     res.status(200).json({ok: true, message: ""});
   } catch (error){
-    return_error(res, 500, error.message, true)
-    // console.error(error);
-    // res.status(500).json({ok: false, message: error.message});
+    return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
   }
 };
 
@@ -184,6 +184,6 @@ export const unregisterClasses = async (req, res) => {
 
     res.status(200).json({ok: true, message: ""});
   } catch (error){
-    return_error(res, 500, error.message, true)
+    return_error(res, 500, t(res.locals.t, "internal_server_error"), true)
   }
 }

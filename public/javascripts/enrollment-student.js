@@ -8,15 +8,15 @@ async function onRemoveClassesClick(){
   }
 
   if (selectedClasses.length === 0){
-    setMessage('message-enrolled', 'warning', 'Vui lòng chọn ít nhất một lớp học để thêm.');
+    setMessage('message-enrolled', 'warning', window.t ? t('select_at_least_one_class_to_remove') : 'Vui lòng chọn ít nhất một lớp học để xóa.');
     return;
   }
 
   const student_id = window.location.pathname.split('/').pop();
 
-  setMessage('message-enrolled', 'info', 'Đang xóa...');
+  setMessage('message-enrolled', 'info', window.t ? t('removing') : 'Đang xóa...');
 
-  const response = await fetch(`/enrollment/unregister/${student_id}`, {
+  const response = await fetch(`enrollment/unregister/${student_id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
@@ -24,19 +24,14 @@ async function onRemoveClassesClick(){
     body: JSON.stringify(selectedClasses)
   });
 
-  if (response.ok){
-    const result = await response.json();
-    if (result.ok){
-      setMessage('message-enrolled', 'success', 'Xóa lớp học thành công.');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } else {
-      setMessage('message-enrolled', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + result.message);
-    }
+  const result = await response.json();
+  if (response.ok && result.ok){
+    setMessage('message-enrolled', 'success', result.message || (window.t ? t('remove_class_success') : 'Xóa lớp học thành công.'));
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   } else {
-    const error = await response.json();
-    setMessage('message-enrolled', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + error.message);
+    setMessage('message-enrolled', 'error', result.message || result.error || (window.t ? t('remove_class_failed') : 'Có lỗi xảy ra khi xóa lớp học.'));
   }
 }
 
@@ -50,14 +45,14 @@ async function onAddClassesClick(){
   }
 
   if (selectedClasses.length === 0){
-    setMessage('message-available', 'warning', 'Vui lòng chọn ít nhất một lớp học để thêm.');
+    setMessage('message-available', 'warning', window.t ? t('select_at_least_one_class_to_add') : 'Vui lòng chọn ít nhất một lớp học để thêm.');
     return;
   }
 
   const student_id = window.location.pathname.split('/').pop();
-  setMessage('message-available', 'info', 'Đang thêm...');
+  setMessage('message-available', 'info', window.t ? t('adding') : 'Đang thêm...');
 
-  const response = await fetch(`/enrollment/register/${student_id}`, {
+  const response = await fetch(`enrollment/register/${student_id}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -65,19 +60,14 @@ async function onAddClassesClick(){
     body: JSON.stringify(selectedClasses)
   });
 
-  if (response.ok){
-    const result = await response.json();
-    if (result.ok){
-      setMessage('message-available', 'success', 'Thêm lớp học thành công.');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } else {
-      setMessage('message-available', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + result.message);
-    }
+  const result = await response.json();
+  if (response.ok && result.ok){
+    setMessage('message-available', 'success', result.message || (window.t ? t('add_class_success') : 'Thêm lớp học thành công.'));
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   } else {
-    const error = await response.json();
-    setMessage('message-available', 'error', 'Có lỗi xảy ra khi thêm lớp học: ' + error.message);
+    setMessage('message-available', 'error', result.message || result.error || (window.t ? t('add_class_failed') : 'Có lỗi xảy ra khi thêm lớp học.'));
   }
 }
 

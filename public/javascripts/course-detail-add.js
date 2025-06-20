@@ -20,7 +20,7 @@ async function onAddCourseSubmitted(event){
     is_active
   }
   
-  const response = await fetch(`/course`, {
+  const response = await fetch(`course`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -28,22 +28,14 @@ async function onAddCourseSubmitted(event){
     body: JSON.stringify(course)
   });
   
-  if (response.ok){
-    const result = await response.json();
-    if (result.ok){
-      console.log("Cập nhật khóa học thành công!");
-      setMessage('success', "Cập nhật khóa học thành công!");
-      setTimeout(() => {
-        window.location.href = `course/${course_id}`;
-      }, 1000);
-    } else {
-      console.error(result.message);
-      setMessage('error', result.message);
-    }
+  const result = await response.json();
+  if (response.ok && result.ok){
+    setMessage('success', result.message || (window.t ? t("add_course_success") : "Thêm khóa học thành công!"));
+    setTimeout(() => {
+      window.location.href = `course/${course_id}`;
+    }, 1000);
   } else {
-    const error = await response.json();
-    console.error(error.message);
-    setMessage('error', error.message);
+    setMessage('error', result.message || result.error || (window.t ? t("add_course_failed") : "Thêm khóa học thất bại!"));
   }
 }
 

@@ -23,7 +23,7 @@
         <div class="grow"></div>
         <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
           <label for="search-term" class="search-label"> <%= t.search %> </label>
-          <input id="search-term" type="text" class="input" placeholder="Nhập từ khóa" size="30"
+          <input id="search-term" type="text" class="input" placeholder="<%= t.input_keyword %>" size="30"
             value="<%= queryData ? queryData.search : '' %>">
           <select id="search-by">
             <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>> <%= t.student_id %> </option>
@@ -62,8 +62,7 @@
       </div>
       <div class="grow flex-row">
         <button class="add save-button" onclick="onAddStudentSaved()"> <%= t.save_changes %> </button>
-        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()"> <%= t.confirm_deletion %>
-          xóa</button>
+        <button class="remove save-button" style="display: none;" onclick="onRemoveStudentsSaved()"> <%= t.confirm_deletion %> </button>
         <button class="remove cancel-button" style="display: none;" onclick="onAddStudentCanceled()"> <%= t.cancel %> </button>
         <button class="add cancel-button" onclick="onAddStudentCanceled()"> <%= t.cancel %> </button>
         <button class="edit save-button" style="display: none;" onclick="onEditStudentSaved()"> <%= t.save_changes %> </button>
@@ -75,14 +74,14 @@
         <div class="flex-row align-center justify-right gap-8">
           <button 
             class="pagination-button <%= !results.hasPrevPage ? 'disabled' : ''%>"
-            onclick="onPageChange(<%= results.page - 1 %>)"> 
-            <
+            onclick="onPageChange('<%= results.page - 1 %>')">
+            &lt;
           </button>
           <span> <%= t.page %> <%= results.page %> / <%= results.totalPages %></span>
           <button 
             class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
-            onclick="onPageChange(<%= results.page + 1 %>)">
-            >
+            onclick="onPageChange('<%= results.page + 1 %>')">
+            &gt;
           </button>
         </div>
       </div>
@@ -449,6 +448,16 @@
       url.searchParams.set('page', page);
       url.searchParams.set('limit', '<%= results.limit %>');
       window.location.href = url.toString();
+    }
+  </script>
+  <script>
+    window.dict = <%- JSON.stringify(t) %>;
+    window.t = function(key, ...args) {
+      let msg = window.dict[key] || key;
+      args.forEach((arg, idx) => {
+        msg = msg.replace(new RegExp('\\$' + (idx + 1), 'g'), arg);
+      });
+      return msg;
     }
   </script>
 </body>

@@ -16,7 +16,7 @@ async function onRemoveClassesClick(){
 
   setMessage('message-enrolled', 'info', 'Đang xóa...');
 
-  const response = await fetch(`/enrollment/unregister/${student_id}`, {
+  const response = await fetch(`enrollment/unregister/${student_id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ async function onAddClassesClick(){
   const student_id = window.location.pathname.split('/').pop();
   setMessage('message-available', 'info', 'Đang thêm...');
 
-  const response = await fetch(`/enrollment/register/${student_id}`, {
+  const response = await fetch(`enrollment/register/${student_id}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

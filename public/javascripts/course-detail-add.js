@@ -20,7 +20,7 @@ async function onAddCourseSubmitted(event){
     is_active
   }
   
-  const response = await fetch(`/course`, {
+  const response = await fetch(`course`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

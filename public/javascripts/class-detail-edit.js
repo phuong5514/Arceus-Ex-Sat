@@ -30,7 +30,7 @@ async function onEditClassSubmitted(event) {
     };
 
     const originalClassId = window.location.pathname.split('/').pop();
-    const response = await fetch(`/class/${originalClassId}`, {
+    const response = await fetch(`class/${originalClassId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ async function onCreateClassSubmitted(event) {
         classroom
     };
 
-    const response = await fetch(`/class`, {
+    const response = await fetch(`class`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ async function onCreateClassSubmitted(event) {
 }
 
 async function onDeleteClassClicked(classId) {
-    const response = await fetch(`/class/${classId}`, {
+    const response = await fetch(`class/${classId}`, {
         method: 'DELETE'
     });
 

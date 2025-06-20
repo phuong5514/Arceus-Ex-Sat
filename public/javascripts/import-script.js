@@ -12,7 +12,7 @@ document.getElementById('importForm').addEventListener('submit', async (e) => {
   formData.append('fileType', document.getElementById('fileType').value);
   formData.append('file', document.getElementById('file').files[0]);
 
-  const response = await fetch('/import', {
+  const response = await fetch('import', {
     method: 'POST',
     body: formData
   });

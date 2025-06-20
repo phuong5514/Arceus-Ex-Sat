@@ -19,7 +19,7 @@ async function onEditCourseSubmitted(event){
   }
   
   const courseId = window.location.pathname.split('/').pop();
-  const response = await fetch(`/course/${courseId}`, {
+  const response = await fetch(`course/${courseId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ async function onEditCourseSubmitted(event){
 }
 
 async function onDeleteCourseClicked(courseId){
-  const response = await fetch(`/course/${courseId}`, {
+  const response = await fetch(`course/${courseId}`, {
     method: 'DELETE'
   });
   

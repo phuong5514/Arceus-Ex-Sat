@@ -5,6 +5,8 @@ import Class from "../models/class-model.js";
 import return_error from "../helpers/error-handler.js";
 import QueryValuesEnum from "../helpers/query-values.js";
 
+import t from "../helpers/translator.js"
+
 // Page for choosing students
 export const getStudents = async (req, res) => {
   try {
@@ -137,7 +139,9 @@ export const registerClasses = async (req, res) => {
 
       // Check prerequisites
       if (c.course_id.prerequisite_course && !enrolledCourses.includes(c.course_id.prerequisite_course)) {
-        return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký khoá ${c.course_id._id}`});
+
+        //return res.status(400).json({ok: false, message: `Sinh viên chưa hoàn thành khóa học ${c.course_id.prerequisite_course} để đăng ký khoá ${c.course_id._id}`});
+        return res.status(400).json({ok: false, message: t(res.locals.t, "prerequisite_failed", c.course_id.prerequisite_course, c.course_id._id)});
       }
 
       const newEnrollment = new Enrollment({

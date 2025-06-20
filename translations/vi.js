@@ -136,5 +136,6 @@ export default {
   students: "Sinh viên",
   courses: "Khóa học",
   classes: "Lớp học",
-  enrollements: "Học phần",
+  enrollments: "Học phần",
+  prerequisite_failed: "Sinh viên chưa hoàn thành khóa học $1 để đăng ký khoá $2"
 }

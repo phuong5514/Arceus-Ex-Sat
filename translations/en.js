@@ -136,5 +136,6 @@ export default {
   students: "Students",
   courses: "Khóa học",
   classes: "Classes",
-  enrollements: "Enrollments",
+  enrollments: "Enrollments",
+  prerequisite_failed: "The student didn't complete course $1 to be able to register course $2"
 }

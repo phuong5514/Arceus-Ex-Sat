@@ -146,7 +146,9 @@ export const getCourseDetail = async (req, res) => {
 
     const { id } = req.params;
     const course = await Course.findById({_id : id}).lean();
-    if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
+    if (!course) { 
+      return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
+    }
     res.render('course-detail', {course, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
     return_error(res, 500, err.message, true)

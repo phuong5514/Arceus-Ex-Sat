@@ -187,7 +187,7 @@ async function onEditStudentSaved() {
     
     setMessage("info", "Đang thay đổi...");
     
-    const response = await fetch(`/student/${selectedStudentId}`, {
+    const response = await fetch(`student/${selectedStudentId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
@@ -235,7 +235,7 @@ async function onAddStudentSaved() {
 
     setMessage("info", "Đang thêm...")
     
-    const response = await fetch("/student", {
+    const response = await fetch("student", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
@@ -266,7 +266,7 @@ async function onRemoveStudentsSaved() {
 
     setMessage("info", "Đang xóa...");
     
-    const response = await fetch("/student", {
+    const response = await fetch("student", {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",

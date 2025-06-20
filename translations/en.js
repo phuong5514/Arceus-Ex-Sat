@@ -134,7 +134,7 @@ export default {
   major_code: "Major Code",
   enter_new_major: "Enter New Major",
   students: "Students",
-  courses: "Khóa học",
+  courses: "Courses",
   classes: "Classes",
   enrollments: "Enrollments",
   prerequisite_failed: "The student didn't complete course $1 to be able to register course $2",

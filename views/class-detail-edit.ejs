@@ -22,7 +22,7 @@
     <div class="flex-column m-16 gap-16">
         <div class="flex-row space-between">
             <h1> <%= mode ? current_class._id : "Thêm mới lớp học" %> </h1>
-            <button onclick="window.location.href='class'">Quay lại</button>
+            <button onclick="window.location.href='class'"> <%= t.go_back %> </button>
         </div>
 
         <form class="grid box grid-gap-16 bg-grey-100 align-center px-64 pt-16 pb-32" onsubmit="onClassSubmitted(event, <%= mode %>)">

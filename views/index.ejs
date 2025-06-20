@@ -23,7 +23,7 @@
         <div class="grow"></div>
         <form class="flex-row align-center justify-right h-full" onsubmit="onSearchSubmitted(event)" id = "search-form">
           <label for="search-term" class="search-label"> <%= t.search %> </label>
-          <input id="search-term" type="text" class="input" placeholder="<%= t.input_keyword %>" size="30"
+          <input id="search-term" type="text" class="input" placeholder="Nhập từ khóa" size="30"
             value="<%= queryData ? queryData.search : '' %>">
           <select id="search-by">
             <option value="_id" <%= !queryData || queryData.search_by === "_id" ? "selected" : "" %>> <%= t.student_id %> </option>
@@ -78,7 +78,7 @@
             onclick="onPageChange(<%= results.page - 1 %>)"> 
             <
           </button>
-          <span>Trang <%= results.page %> / <%= results.totalPages %></span>
+          <span> <%= t.page %> <%= results.page %> / <%= results.totalPages %></span>
           <button 
             class="pagination-button <%= !results.hasNextPage ? 'disabled' : ''%>"
             onclick="onPageChange(<%= results.page + 1 %>)">
@@ -198,22 +198,22 @@
           <thead>
               <tr>
                   <th class="sticky"></th>
-                  <th class="sticky">MSSV</th>
-                  <th class="sticky">Họ tên</th>
-                  <th class="sticky">Ngày sinh</th>
-                  <th class="sticky">Giới tính</th>
-                  <th class="sticky">Khoa</th>
-                  <th class="sticky">Khóa</th>
-                  <th class="sticky">Chương trình</th>
-                  <th class="sticky">CCCD/CMND</th>
-                  <th class="sticky">Hộ chiếu</th>
-                  <th class="sticky">Địa chỉ thường trú</th>
-                  <th class="sticky">Địa chỉ tạm trú</th>
-                  <th class="sticky">Địa chỉ nhận thư</th>
-                  <th class="sticky">Email</th>
-                  <th class="sticky">SĐT</th>
-                  <th class="sticky">Tình trạng</th>
-                  <th class="sticky">Quốc gia</th>
+                  <th class="sticky"> <%= t.student_id %> </th>
+                  <th class="sticky"> <%= t.student_id %> </th>
+                  <th class="sticky"> <%= t.date_of_birth %> </th>
+                  <th class="sticky"> <%= t.date_of_birth %> </th>
+                  <th class="sticky"> <%= t.major %> </th>
+                  <th class="sticky"> <%= t.academic_year %> </th>
+                  <th class="sticky"> <%= t.program %> </th>
+                  <th class="sticky"> <%= t.id_card_information %> </th>
+                  <th class="sticky"> <%= t.passport_information %> </th>
+                  <th class="sticky"> <%= t.permanent_address %> </th>
+                  <th class="sticky"> <%= t.temporary_address %> </th>
+                  <th class="sticky"> <%= t.mailing_address %> </th>
+                  <th class="sticky"> Email </th>
+                  <th class="sticky"> <%= t.phone_number %> </th>
+                  <th class="sticky"> <%= t.study_status %> </th>
+                  <th class="sticky"> <%= t.country %> </th>
               </tr>
           </thead>
           <tbody>
@@ -233,14 +233,14 @@
                   </td>
                   <td>
                     <select name="gender" id="<%= mode %>-gender">
-                      <option value="" disabled selected>--Chọn giới tính--</option>
-                      <option value="Nam">Nam</option>
-                      <option value="Nữ">Nữ</option>
+                      <option value="" disabled selected>-- <%= t.select_gender %> --</option>
+                      <option value="Nam"> <%= t.male %> </option>
+                      <option value="Nữ"> <%= t.female %> </option>
                     </select>
                   </td>
                   <td>
                     <select name="major" id="<%= mode %>-major">
-                      <option value="" disabled selected>--Chọn khoa--</option>
+                      <option value="" disabled selected>-- <%= t.select_major %> --</option>
                       <% majors.forEach(major=> { %>
                         <option value="<%= major._id %>">
                           <%= major.major_name %>

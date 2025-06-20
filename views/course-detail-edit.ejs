@@ -18,7 +18,7 @@
   <div class="flex-column m-16 gap-16">
     <div class="flex-row space-between">
       <h1> <%= course._id %> - <%= course.course_name %></h1>
-      <button onclick="window.location.href='course'">Quay lại</button>
+      <button onclick="window.location.href='course'"> <%= t.go_back %> </button>
     </div>
     <form class="grid box grid-gap-16 bg-grey-100 align-center px-64 pt-16 pb-32" onsubmit="onEditCourseSubmitted(event)">
       <h2 class="grid-colspan-12 text-center">Thông tin khóa học</h2>

@@ -2,6 +2,7 @@ import Course from "../models/course-model.js";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import Department from "../models/department-model.js";
+import t from "../helpers/translator.js";
 
 import QueryValuesEnum from "../helpers/query-values.js";
 import return_error from "../helpers/error-handler.js";
@@ -13,13 +14,13 @@ export const createCourse = async (req, res) => {
     const { _id, course_name, credits, department, description, prerequisite_course} = req.body;
 
     if (credits < 2) {
-      return res.status(400).json({ message: "Số tín chỉ phải >= 2." });
+      return res.status(400).json({ message: t(res.locals.t, "invalid_credits") });
     }
 
     if (prerequisite_course) {
       const exists = await Course.findOne({ _id: prerequisite_course });
       if (!exists) {
-        return res.status(400).json({ message: "Môn tiên quyết không tồn tại." });
+        return res.status(400).json({ message: t(res.locals.t, "course_not_found", prerequisite_course) });
       }
     }
 
@@ -47,7 +48,7 @@ export const updateCourse = async (req, res) => {
     const { course_name, credits, description, department, is_active, prerequisite_course} = req.body;
 
     const course = await Course.findOne({ _id : id });
-    if (!course) return res.status(404).json({ message: `Không tìm thấy khóa học với mã ${id}` });
+    if (!course) return res.status(404).json({ message: t(res.locals.t, "course_not_found", id) });
 
     course.set({
       course_name: course_name ?? course.course_name,
@@ -72,20 +73,20 @@ export const deleteCourse = async (req, res) => {
     const { id } = req.params;
 
     const course = await Course.findOne({ _id : id });
-    if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
+    if (!course) return res.status(404).json({ ok: false, message: t(res.locals.t, "course_not_found", id) });
 
     const now = new Date();
     const diffMinutes = (now - course.created_at) / (1000 * 60);
 
     if (diffMinutes > 30) {
-      return res.status(403).json({ ok: false, message: `Chỉ có thể xóa trong vòng 30 phút sau khi tạo. Đã ${Math.floor(diffMinutes)} phút.` });
+      return res.status(403).json({ ok: false, message: t(res.locals.t, "course_delete_time_limit", Math.floor(diffMinutes)) });
     }
 
     // TODO: kiểm tra chưa có lớp học mở – chỗ này placeholder
     const hasClasses = false; // giả sử kiểm tra sau này
 
     if (hasClasses) {
-      return res.status(403).json({ ok: false, message: "Đã có lớp học mở. Không thể xóa." });
+      return res.status(403).json({ ok: false, message: t(res.locals.t, "course_has_class") });
     }
 
     await Course.deleteOne({ code });
@@ -100,7 +101,7 @@ export const deactivateCourse = async (req, res) => {
     const { id } = req.params;
 
     const course = await Course.findOne({ _id : id });
-    if (!course) return res.status(404).json({ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
+    if (!course) return res.status(404).json({ok: false, message: t(res.locals.t, "course_not_found", id) });
 
     course.is_active = false;
     await course.save();
@@ -147,7 +148,7 @@ export const getCourseDetail = async (req, res) => {
     const { id } = req.params;
     const course = await Course.findById({_id : id}).lean();
     if (!course) { 
-      return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
+      return res.status(404).json({ ok: false, message: t(res.locals.t, "course_not_found", id) });
     }
     res.render('course-detail', {course, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
@@ -162,7 +163,7 @@ export const getCourseDetailEdit = async (req, res) => {
 
     const { id } = req.params;
     const course = await Course.findById({_id : id}).lean();
-    if (!course) return res.status(404).json({ ok: false, message: `Không tìm thấy khóa học với mã ${id}` });
+    if (!course) return res.status(404).json({ ok: false, message: t(res.locals.t, "course_not_found", id) });
     res.render('course-detail-edit', {course, departments: availableDepartments, prerequisite_courses: availableCourses});
   } catch (err) {
     return_error(res, 500, err.message, true)
@@ -185,13 +186,13 @@ export const addCourse = async (req, res) => {
     const { _id, course_name, credits, department, description, prerequisite_course} = req.body;
 
     if (credits < 2) {
-      return res.status(400).json({ ok: false, message: "Số tín chỉ phải >= 2." });
+      return res.status(400).json({ ok: false, message: t(res.locals.t, "invalid_credits") });
     }
 
     if (prerequisite_course) {
       const exists = await Course.findOne({ _id: prerequisite_course });
       if (!exists) {
-        return res.status(400).json({ ok: false, message: `Môn tiên quyết với mã ${prerequisite_course} không tồn tại.` });
+        return res.status(400).json({ ok: false, message: t(res.locals.t, "course_not_found", prerequisite_course) });
       }
     }
 

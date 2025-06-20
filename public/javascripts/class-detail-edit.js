@@ -38,22 +38,14 @@ async function onEditClassSubmitted(event) {
         body: JSON.stringify(classData)
     });
 
-    if (response.ok) {
-        const result = await response.json();
-        if (result.ok) {
-            console.log("Cập nhật lớp học thành công!");
-            setMessage('success', "Cập nhật lớp học thành công!");
-            setTimeout(() => {
-                window.location.href = `class/${originalClassId}`;
-            }, 1000);
-        } else {
-            console.error(result.message);
-            setMessage('error', result.message);
-        }
+    const result = await response.json();
+    if (response.ok && result.ok) {
+        setMessage('success', result.message || (window.t ? t("update_class_success") : "Cập nhật lớp học thành công!"));
+        setTimeout(() => {
+            window.location.href = `class/${originalClassId}`;
+        }, 1000);
     } else {
-        const error = await response.json();
-        console.error(error.message);
-        setMessage('error', error.message);
+        setMessage('error', result.message || result.error || (window.t ? t("update_class_failed") : "Cập nhật lớp học thất bại!"));
     }
 }
 
@@ -89,24 +81,15 @@ async function onCreateClassSubmitted(event) {
         body: JSON.stringify(classData)
     });
 
-    if (response.ok) {
-        const result = await response.json();
-        if (result.ok) {
-            console.log("Thêm lớp học thành công!");
-            setMessage('success', "Thêm lớp học thành công!");
-            setTimeout(() => {
-                window.location.href = `class`;
-            }, 1000);
-        } else {
-            console.error(result.message);
-            setMessage('error', result.message);
-        }
+    const result = await response.json();
+    if (response.ok && result.ok) {
+        setMessage('success', result.message || (window.t ? t("add_class_success") : "Thêm lớp học thành công!"));
+        setTimeout(() => {
+            window.location.href = `class`;
+        }, 1000);
     } else {
-        const error = await response.json();
-        console.error(error.message);
-        setMessage('error', error.message);
+        setMessage('error', result.message || result.error || (window.t ? t("add_class_failed") : "Thêm lớp học thất bại!"));
     }
-
 }
 
 async function onDeleteClassClicked(classId) {
@@ -114,22 +97,14 @@ async function onDeleteClassClicked(classId) {
         method: 'DELETE'
     });
 
-    if (response.ok) {
-        const result = await response.json();
-        if (result.ok) {
-            console.log("Xóa lớp học thành công!");
-            setMessage('success', "Xóa lớp học thành công!");
-            setTimeout(() => {
-                window.location.href = `class`;
-            }, 1000);
-        } else {
-            console.error(result.message);
-            setMessage('error', result.message);
-        }
+    const result = await response.json();
+    if (response.ok && result.ok) {
+        setMessage('success', result.message || (window.t ? t("delete_class_success") : "Xóa lớp học thành công!"));
+        setTimeout(() => {
+            window.location.href = `class`;
+        }, 1000);
     } else {
-        const error = await response.json();
-        console.error(error.message);
-        setMessage('error', error.message);
+        setMessage('error', result.message || result.error || (window.t ? t("delete_class_failed") : "Xóa lớp học thất bại!"));
     }
 }
 

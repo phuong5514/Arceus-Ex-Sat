@@ -1,6 +1,7 @@
 import Class from "../models/class-model.js";
 import Course from "../models/course-model.js";
 import * as courseController from "./course-controller.js";
+import t from "../helpers/translator.js";
 
 import { return_error } from "../helpers/error-handler.js";
 import QueryValuesEnum from "../helpers/query-values.js";
@@ -37,7 +38,7 @@ export const getClassDetail = async (req, res) => {
     try {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
-        if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
+        if (!current_class) return res.status(404).json({ ok: false, message: t(res.locals.t, "class_not_found", id) });
         const formatted_created_at = current_class.created_at.toLocaleString('vi-VN', options);
         res.render('class-detail', { current_class, formatted_created_at });
 
@@ -50,7 +51,7 @@ export const getClassDetailEdit = async (req, res) => {
     try {
         const { id } = req.params;
         const current_class = await Class.findById({ _id: id }).lean();
-        if (!current_class) return res.status(404).json({ ok: false, message: `Không tìm thấy lớp học với mã ${id}` });
+        if (!current_class) return res.status(404).json({ ok: false, message: t(res.locals.t, "class_not_found", id) });
         const courses = await courseController.getAvailableCourses();
 
         res.render('class-detail-edit', { current_class, courses });
@@ -75,7 +76,7 @@ export const createClass = async (req, res) => {
 
         const existingClass = await Class.findOne({ _id });
         if (existingClass) {
-            throw new Error("Mã lớp học đã tồn tại.");
+            throw new Error(t(res.locals.t, "class_already_exists"));
         }
 
         await checkData(req.body);
@@ -105,7 +106,7 @@ export const updateClass = async (req, res) => {
         const { course_id, academic_year, semester, lecturer, max_students, schedule, classroom } = req.body;
         let classToUpdate = await Class.findOne({ _id: id });
         if (!classToUpdate) {
-            throw new Error(`Không tìm thấy lớp học với mã ${id}`);
+            throw new Error(t(res.locals.t, "class_not_found", id));
         }
 
         await checkData(req.body);
@@ -132,7 +133,7 @@ export const deleteClass = async (req, res) => {
         const { id } = req.params;
         const classToDelete = await Class.findOne({ _id: id });
         if (!classToDelete) {
-            throw new Error(`Không tìm thấy lớp học với mã ${id}`);
+            throw new Error(t(res.locals.t, "class_not_found", id));
         }
 
         await Class.deleteOne({ _id: id });
@@ -155,52 +156,52 @@ async function checkData(data) {
 function checkMissingField(data) {
     const missingFields = [];
     if (!data.course_id) {
-        missingFields.push("mã môn học");
+        missingFields.push(t(res.locals.t, "course_not_found"));
     }
     if (!data.academic_year) {
-        missingFields.push("năm học");
+        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["năm học"]));
     }
     if (!data.semester) {
-        missingFields.push("học kỳ");
+        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["học kỳ"]));
     }
     if (!data.lecturer) {
-        missingFields.push("giảng viên");
+        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["giảng viên"]));
     }
     if (!data.max_students) {
-        missingFields.push("số lượng sinh viên tối đa");
+        missingFields.push(t(res.locals.t, "fill_all_required_fields", ["số lượng sinh viên tối đa"]));
     }
     if (missingFields.length > 0) {
-        throw new Error(`Vui lòng điền dầy đủ thông tin. Các trường còn thiếu: ${missingFields.join(", ")}`)
+        throw new Error(t(res.locals.t, "fill_all_required_fields", missingFields.join(", ")));
     }
 }
 
 function checkMaxStudentCount(max_students) {
     const num = Number(max_students);
     if (!Number.isInteger(num)) {
-        throw new Error("Số lượng sinh viên tối đa phải là số nguyên.");
+        throw new Error(t(res.locals.t, "max_students_must_be_integer"));
     }
     if (num < 1) {
-        throw new Error("Số lượng sinh viên tối đa phải >= 1.");
+        throw new Error(t(res.locals.t, "max_students_must_be_positive"));
     }
 }
 
 function checkAcademicYear(year) {
     const regex = /^\d{4}-\d{4}$/;
     if (!regex.test(year)) {
-        throw new Error("Năm học không hợp lệ. Vui lòng nhập theo định dạng YYYY-YYYY.");
+        throw new Error(t(res.locals.t, "invalid_academic_year_format"));
     }
 }
 
 function checkSemester(semester) {
     // TODO: change the hard coded array
     if (!["1", "2", "summer"].includes(semester)) {
-        throw new Error(`Học kỳ ${semester} không nằm trong danh sách học kỳ hợp lệ`);
+        throw new Error(t(res.locals.t, "invalid_semester", semester));
     }
 }
 
 async function checkCourse(course_id) {
     const courseExists = await Course.findOne({ _id: course_id });
     if (!courseExists) {
-        throw new Error(`Khóa học ${course_id} không tồn tại.`);
+        throw new Error(t(res.locals.t, "course_not_found", course_id));
     }
 }

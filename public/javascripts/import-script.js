@@ -6,7 +6,7 @@ function showFormat() {
 
 document.getElementById('importForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  setMessage('info', 'Đang import file...');
+  setMessage('info', window.t ? t('importing_file') : 'Đang import file...');
 
   const formData = new FormData();
   formData.append('fileType', document.getElementById('fileType').value);
@@ -18,16 +18,10 @@ document.getElementById('importForm').addEventListener('submit', async (e) => {
   });
   
   const result = await response.json();
-  if (response.ok) {
-    const result = response.json();
-    if (result.ok){
-      setMessage('success', 'Import file thành công');
-    } else {
-      setMessage('error', 'Lỗi khi import file: ' + result.message);
-    }
+  if (response.ok && result.ok){
+    setMessage('success', result.message || (window.t ? t('import_file_success') : 'Import file thành công'));
   } else {
-    const error = response.json();
-    setMessage('error', 'Lỗi khi import file: ' + error.message);
+    setMessage('error', result.message || result.error || (window.t ? t('import_file_failed') : 'Lỗi khi import file'));
   }
 });
 

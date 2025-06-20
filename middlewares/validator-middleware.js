@@ -3,6 +3,7 @@ import Student from "../models/student-model.js";
 import Major from "../models/major-model.js";
 import Program from "../models/program-model.js";
 import Status from "../models/status-model.js";
+import t from "../helpers/translator.js";
 
 import fs from "fs";
 const config = JSON.parse(fs.readFileSync(new URL("../config/business-rules.json", import.meta.url), "utf-8"));
@@ -12,7 +13,7 @@ const validateStudentIdParam = () =>
 
 const validateStudentId = () =>
     body('_id')
-        .trim().notEmpty().withMessage('MSSV không được để trống').bail() // empty check
+        .trim().notEmpty().withMessage((value, { req, location, path }) => t(req.res?.locals?.t, 'student_id_required')).bail() // empty check
         .isNumeric().withMessage('MSSV phải là số').bail() // numeric check
         .isLength({ min: 8, max: 8 }).withMessage('MSSV phải có 8 chữ số').bail() // length check
         .custom(async (value) => { // Check if student id already existed
@@ -24,29 +25,29 @@ const validateStudentId = () =>
 
 const validateName = () =>
     body('name')
-        .trim().notEmpty().withMessage('Họ tên không được để trống').bail();
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'name_required')).bail();
 
 const validateEmail = () =>
     body('email')
-        .trim().notEmpty().withMessage('Email không được để trống').bail()
-        .isEmail().withMessage('Email không hợp lệ').bail()
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'email_required')).bail()
+        .isEmail().withMessage((value, { req }) => t(req.res?.locals?.t, 'email_invalid')).bail()
         .custom(async (value) => {
             const student = await Student.findOne({ email: value });
             if (student) {
-                return Promise.reject('Email đã tồn tại');
+                return Promise.reject(t(req.res?.locals?.t, 'email_exists'));
             }
         }).bail()
-        .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject("Email phải thuộc domain: " + config.emailDomain)).bail();
+        .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject(t(req.res?.locals?.t, 'email_domain', config.emailDomain))).bail();
 
 const validateUpdateEmail = () =>
     body('email')
-        .trim().notEmpty().withMessage('Email không được để trống').bail()
-        .isEmail().withMessage('Email không hợp lệ').bail()
-        .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject("Email phải thuộc domain: " + config.emailDomain)).bail();
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'email_required')).bail()
+        .isEmail().withMessage((value, { req }) => t(req.res?.locals?.t, 'email_invalid')).bail()
+        .custom(email => email.endsWith(config.emailDomain) ? true : Promise.reject(t(req.res?.locals?.t, 'email_domain', config.emailDomain))).bail();
 
 const validatePhoneNumber = () =>
     body('phone_number')
-        .trim().notEmpty().withMessage('Số điện thoại không được để trống').bail()
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'phone_required')).bail()
         .custom(async (value) => {
             const student = await Student.findOne({ phone_number: value });
             if (student) {
@@ -68,46 +69,46 @@ const validateUpdatePhoneNumber = () =>
 
 const validateBirthdate = () =>
     body('birthdate')
-        .trim().notEmpty().withMessage('Ngày sinh không được để trống').bail()
-        .isISO8601().withMessage('Ngày sinh không hợp lệ').bail();
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'birthdate_required')).bail()
+        .isISO8601().withMessage((value, { req }) => t(req.res?.locals?.t, 'birthdate_invalid')).bail();
 
 const validateGender = () =>
     body('gender')
-        .trim().notEmpty().withMessage('Giới tính không được để trống').bail()
-        .isIn(['Nam', 'Nữ']).withMessage('Giới tính phải là Nam hoặc Nữ').bail();
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'gender_required')).bail()
+        .isIn(['Nam', 'Nữ']).withMessage((value, { req }) => t(req.res?.locals?.t, 'gender_invalid')).bail();
 
 const validateClassYear = () =>
     body('class_year')
-        .trim().notEmpty().withMessage('Khóa không được để trống').bail()
-        .isLength({ min: 4, max: 4 }).withMessage('Khóa phải là 4 chữ số').bail();
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'class_year_required')).bail()
+        .isLength({ min: 4, max: 4 }).withMessage((value, { req }) => t(req.res?.locals?.t, 'class_year_invalid')).bail();
 
 const validateMajor = () =>
     body('major')
-        .trim().notEmpty().withMessage('Khoa không được để trống').bail()
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'major_required')).bail()
         .custom(async (value) => {
             const major = await Major.findOne({ _id: value });
             if (!major) {
-                return Promise.reject('Ngành học không nằm trong danh sách ngành học có sẵn');
+                return Promise.reject(t(req.res?.locals?.t, 'major_not_in_list'));
             }
         }).bail();
 
 const validateProgram = () =>
     body('program')
-        .trim().notEmpty().withMessage('Chương trình học không được để trống').bail()
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'program_required')).bail()
         .custom(async (value) => {
             const program = await Program.findOne({ _id: value });
             if (!program) {
-                return Promise.reject('Chương trình học không nằm trong danh sách chương trình học có sẵn');
+                return Promise.reject(t(req.res?.locals?.t, 'program_not_in_list'));
             }
         }).bail();
 
 const validateStatus = () =>
     body('status')
-        .trim().notEmpty().withMessage('Trạng thái không được để trống').bail()
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'status_required')).bail()
         .custom(async (value) => {
             const status = await Status.findOne({ _id: value });
             if (!status) {
-                return Promise.reject('Trạng thái không nằm trong danh sách trạng thái có sẵn');
+                return Promise.reject(t(req.res?.locals?.t, 'status_not_in_list'));
             }
         }).bail();
 
@@ -135,7 +136,7 @@ const validateStatusUpdate = () =>
 
 const validateNationality = () =>
     body('nationality')
-        .trim().notEmpty().withMessage('Quốc tịch không được để trống').bail();
+        .trim().notEmpty().withMessage((value, { req }) => t(req.res?.locals?.t, 'nationality_required')).bail();
 
 const validateIdentityCard = () => [
     body('identity_card._id')
